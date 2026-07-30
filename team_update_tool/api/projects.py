@@ -1724,16 +1724,18 @@ def get_member_scorecard():
             team_list = list(all_teams)
 
             # Query 1: Projects with completion_date in the period
+            # Note: expand team_list for IN clause — Frappe/PyMySQL doesn't expand lists in %s
+            team_placeholders = ', '.join(['%s'] * len(team_list))
             by_date = frappe.db.sql(
-                """SELECT name, project_title, owner, team, completion_date
+                f"""SELECT name, project_title, owner, team, completion_date
                  FROM `tabProject`
-                 WHERE team IN %s
+                 WHERE team IN ({team_placeholders})
                    AND completion_date >= %s
                    AND completion_date <= %s
                    AND completion_date IS NOT NULL
                    AND docstatus < 2
                  ORDER BY completion_date DESC""",
-                [team_list, period_start, period_end],
+                team_list + [period_start, period_end],
                 as_dict=1
             )
             completed_in_period = list(by_date)
@@ -1742,17 +1744,18 @@ def get_member_scorecard():
             # Add one day to period_end for datetime comparison (modified is Datetime, not Date)
             modified_end = period_end + timedelta(days=1)
             if completion_status_names:
+                status_placeholders = ', '.join(['%s'] * len(completion_status_names))
                 by_status = frappe.db.sql(
-                    """SELECT name, project_title, owner, team, completion_date
+                    f"""SELECT name, project_title, owner, team, completion_date
                      FROM `tabProject`
-                     WHERE team IN %s
-                       AND status IN %s
+                     WHERE team IN ({team_placeholders})
+                       AND status IN ({status_placeholders})
                        AND completion_date IS NULL
                        AND modified >= %s
                        AND modified < %s
                        AND docstatus < 2
                      ORDER BY modified DESC""",
-                    [team_list, completion_status_names, period_start, modified_end],
+                    team_list + completion_status_names + [period_start, modified_end],
                     as_dict=1
                 )
                 # Merge, avoiding duplicates (by name)
