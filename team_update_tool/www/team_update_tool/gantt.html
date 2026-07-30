@@ -26,7 +26,7 @@
 
 /* Page Header */
 .gantt-header {
-  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
+  background: linear-gradient(135deg, #0066CC 0%, #0073E6 50%, #0089FF 100%);
   padding: 1.75rem 0 1.25rem;
   position: relative;
   overflow: hidden;
@@ -38,7 +38,7 @@
   right: -5%;
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.12) 0%, transparent 70%);
   border-radius: 50%;
   animation: ganttPulse 8s ease-in-out infinite;
 }
@@ -355,7 +355,7 @@
   z-index: 5;
 }
 .gantt-sidebar-cell.header-cell {
-  background: linear-gradient(135deg, #4c1d95, #6d28d9);
+  background: linear-gradient(135deg, #0066CC, #0073E6);
   color: #fff;
   padding: 0.65rem 1rem;
   font-size: 0.72rem;
@@ -388,7 +388,7 @@
 .gantt-sidebar-title {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #1e1b4b;
+  color: #05133C;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -492,7 +492,7 @@
   dominant-baseline: central;
   pointer-events: none;
 }
-.gantt-bar-label.outside { fill: #1e1b4b; }
+.gantt-bar-label.outside { fill: #05133C; }
 
 /* Empty State */
 .gantt-empty {
@@ -504,7 +504,7 @@
   text-align: center;
 }
 .gantt-empty svg { opacity: 0.3; margin-bottom: 1rem; width: 56px; height: 56px; color: var(--tut-primary); }
-.gantt-empty h3 { font-size: 1.15rem; font-weight: 600; color: #1e1b4b; margin: 0 0 0.5rem; }
+.gantt-empty h3 { font-size: 1.15rem; font-weight: 600; color: #05133C; margin: 0 0 0.5rem; }
 .gantt-empty p { color: var(--tut-text-muted); margin: 0; }
 
 /* Loading & Error */
@@ -548,7 +548,7 @@
 .gantt-summary-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #05133C;
   line-height: 1.2;
 }
 .gantt-summary-label {
@@ -565,7 +565,7 @@
 .gantt-tooltip {
   position: fixed;
   z-index: 9999;
-  background: #1e1b4b;
+  background: #05133C;
   color: #fff;
   border-radius: 0.75rem;
   padding: 0.85rem 1.1rem;
@@ -656,7 +656,7 @@
   font-family: 'Playfair Display', serif;
   font-size: 0.95rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #05133C;
   margin: 0;
 }
 .gantt-milestone-panel-close {
@@ -695,7 +695,7 @@
 .gantt-milestone-form-title {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #05133C;
   margin-bottom: 0.75rem;
 }
 .gantt-milestone-form-row {
@@ -744,7 +744,7 @@
 .gantt-milestone-form-btn {
   width: 100%;
   padding: 0.5rem;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
+  background: linear-gradient(135deg, #f59e0b, #FF8C00);
   color: #fff;
   border: none;
   border-radius: 0.4rem;
@@ -806,7 +806,7 @@
 .gantt-milestone-item-title {
   font-size: 0.82rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #05133C;
   line-height: 1.3;
 }
 .gantt-milestone-item-meta {
@@ -1411,7 +1411,7 @@ function drawGanttChart() {
   svg += '<text x="16" y="' + (headerTotalHeight / 2 + 4) + '" fill="#fff" font-size="0.75rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="start" dominant-baseline="middle">Project</text>';
 
   // Header gradient def
-  svg += '<defs><linearGradient id="headerGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4c1d95"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>';
+  svg += '<defs><linearGradient id="headerGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0066CC"/><stop offset="100%" stop-color="#0073E6"/></linearGradient></defs>';
 
   // Date header ticks
   var currentY = 4;
@@ -1432,7 +1432,7 @@ function drawGanttChart() {
       var ml = monthLabels[key];
       var nextX = idx < monthKeys.length - 1 ? monthLabels[monthKeys[idx + 1]].x : sidebarW + totalDays * dayW + pad.left;
       var monthWidth = nextX - ml.x;
-      svg += '<text x="' + (ml.x + monthWidth / 2) + '" y="' + (currentY + 14) + '" fill="#4c1d95" font-size="0.78rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="middle">' + ml.month + '</text>';
+      svg += '<text x="' + (ml.x + monthWidth / 2) + '" y="' + (currentY + 14) + '" fill="#0066CC" font-size="0.78rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="middle">' + ml.month + '</text>';
     });
     currentY += 22;
 
@@ -1490,7 +1490,7 @@ function drawGanttChart() {
       if (currentDate.getDate() === 1) {
         var mx = sidebarW + d6 * dayW + pad.left;
         var monthName = currentDate.toLocaleDateString('en-US', { month: 'short' });
-        svg += '<text x="' + (mx + 2) + '" y="' + (currentY + 13) + '" fill="#4c1d95" font-size="0.72rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="start">' + monthName + '</text>';
+        svg += '<text x="' + (mx + 2) + '" y="' + (currentY + 13) + '" fill="#0066CC" font-size="0.72rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="start">' + monthName + '</text>';
       }
       currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -1522,7 +1522,7 @@ function drawGanttChart() {
       var yl = yearLabels[key];
       var nextX = idx < yKeys.length - 1 ? yearLabels[yKeys[idx + 1]].x : sidebarW + totalDays * dayW + pad.left;
       var yW = nextX - yl.x;
-      svg += '<text x="' + (yl.x + yW / 2) + '" y="' + (currentY + 12) + '" fill="#4c1d95" font-size="0.75rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="middle">' + key + '</text>';
+      svg += '<text x="' + (yl.x + yW / 2) + '" y="' + (currentY + 12) + '" fill="#0066CC" font-size="0.75rem" font-weight="700" font-family="Inter,sans-serif" text-anchor="middle">' + key + '</text>';
     });
     currentY += 18;
 
@@ -1547,7 +1547,7 @@ function drawGanttChart() {
     // Sidebar: project name
     svg += '<rect x="0" y="' + yPos + '" width="' + sidebarW + '" height="' + rowH + '" fill="transparent" class="gantt-sidebar-bg"/>';
     svg += '<circle cx="12" cy="' + barYCenter + '" r="5" fill="' + (p.status_color || '#6b7280') + '"/>';
-    svg += '<text x="24" y="' + (barYCenter + 1) + '" fill="#1e1b4b" font-size="0.82rem" font-weight="600" font-family="Inter,sans-serif" text-anchor="start" dominant-baseline="middle">' + truncateText(p.title, 28) + '</text>';
+    svg += '<text x="24" y="' + (barYCenter + 1) + '" fill="#05133C" font-size="0.82rem" font-weight="600" font-family="Inter,sans-serif" text-anchor="start" dominant-baseline="middle">' + truncateText(p.title, 28) + '</text>';
 
     // Overdue badge
     if (p.is_overdue) {

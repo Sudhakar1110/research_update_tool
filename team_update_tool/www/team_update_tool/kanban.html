@@ -21,7 +21,7 @@
 
 /* Page Header */
 .kanban-header {
-  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
+  background: linear-gradient(135deg, #0066CC 0%, #0073E6 50%, #0089FF 100%);
   padding: 1.75rem 0 1.25rem;
   position: relative;
   overflow: hidden;
@@ -33,7 +33,7 @@
   right: -5%;
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.12) 0%, transparent 70%);
   border-radius: 50%;
   animation: kanbanPulse 8s ease-in-out infinite;
 }
@@ -105,7 +105,7 @@
   gap: 0.5rem;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #05133C;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -167,7 +167,7 @@
 .kanban-card-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1e1b4b;
+  color: #05133C;
   margin-bottom: 0.5rem;
   line-height: 1.4;
   display: -webkit-box;
@@ -199,9 +199,9 @@
   letter-spacing: 0.03em;
 }
 .kanban-card-priority.low { background: rgba(5, 150, 105, 0.1); color: #059669; }
-.kanban-card-priority.medium { background: rgba(217, 119, 6, 0.1); color: #d97706; }
+.kanban-card-priority.medium { background: rgba(255, 140, 0, 0.1); color: #FF8C00; }
 .kanban-card-priority.high { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
-.kanban-card-priority.urgent { background: rgba(124, 58, 237, 0.15); color: #7c3aed; }
+.kanban-card-priority.urgent { background: rgba(0, 137, 255, 0.15); color: #0089FF; }
 .kanban-card-footer {
   display: flex;
   align-items: center;
@@ -282,7 +282,7 @@
 .kanban-empty-board h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e1b4b;
+  color: #05133C;
   margin-bottom: 0.5rem;
 }
 .kanban-empty-board p {
@@ -302,7 +302,7 @@
 }
 .kanban-toast {
   background: #fff;
-  border-left: 4px solid #7c3aed;
+  border-left: 4px solid #0089FF;
   border-radius: 0.5rem;
   padding: 0.85rem 1.25rem;
   box-shadow: 0 4px 16px rgba(0,0,0,0.1);
@@ -473,7 +473,7 @@ function escHtml(s) {
 }
 
 function kanbanToast(msg, type) {
-  var colors = { info: '#7c3aed', success: '#059669', error: '#dc2626' };
+  var colors = { info: '#0089FF', success: '#059669', error: '#dc2626' };
   var bg = colors[type] || colors.info;
   var container = document.getElementById('kanbanToast');
   var toast = document.createElement('div');

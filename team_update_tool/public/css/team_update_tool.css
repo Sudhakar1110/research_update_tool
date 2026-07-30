@@ -5,57 +5,57 @@
 
 /* --- Royal Professional Root Variables --- */
 :root {
-  /* Royal Primary Gradient Palette - Deep Purple */
-  --tut-primary: #7c3aed;
-  --tut-primary-dark: #4c1d95;
-  --tut-primary-light: rgba(124, 58, 237, 0.12);
-  --tut-primary-gradient: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
-  --tut-primary-gradient-hover: linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%);
+  /* Bizaxl Blue Primary — Professional Navy & Blue */
+  --tut-primary: #0089FF;
+  --tut-primary-dark: #0066CC;
+  --tut-primary-light: rgba(0, 137, 255, 0.12);
+  --tut-primary-gradient: linear-gradient(135deg, #0066CC 0%, #0073E6 50%, #0089FF 100%);
+  --tut-primary-gradient-hover: linear-gradient(135deg, #0073E6 0%, #0089FF 100%);
   
-  /* Royal Gold Accent */
-  --tut-gold: #d97706;
-  --tut-gold-light: #fbbf24;
-  --tut-gold-gradient: linear-gradient(135deg, #d97706 0%, #fbbf24 100%);
+  /* Warm Orange Accent */
+  --tut-gold: #FF8C00;
+  --tut-gold-light: #FFC53D;
+  --tut-gold-gradient: linear-gradient(135deg, #E67600 0%, #FF8C00 50%, #FFC53D 100%);
   
-  /* Secondary Accent Colors */
-  --tut-secondary: #ec4899;
-  --tut-secondary-dark: #db2777;
-  --tut-secondary-light: rgba(236, 72, 153, 0.12);
+  /* Secondary Accent — Cyan */
+  --tut-secondary: #00B4D8;
+  --tut-secondary-dark: #0096B4;
+  --tut-secondary-light: rgba(0, 180, 216, 0.12);
   
   /* Success/Emerald Gradient */
   --tut-success: #059669;
   --tut-success-gradient: linear-gradient(135deg, #059669 0%, #10b981 100%);
   
   /* Warning/Orange Gradient */
-  --tut-warning: #d97706;
-  --tut-warning-gradient: linear-gradient(135deg, #d97706 0%, #fbbf24 100%);
+  --tut-warning: #FF8C00;
+  --tut-warning-gradient: linear-gradient(135deg, #E67600 0%, #FF8C00 50%, #FFC53D 100%);
   
   /* Danger/Red Gradient */
   --tut-danger: #dc2626;
   --tut-danger-gradient: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
   
-  /* Info/Cyan Gradient */
-  --tut-info: #0891b2;
-  --tut-info-gradient: linear-gradient(135deg, #0891b2 0%, #22d3ee 100%);
+  /* Info — matches primary blue */
+  --tut-info: #0089FF;
+  --tut-info-gradient: linear-gradient(135deg, #0066CC 0%, #0089FF 100%);
   
-  /* Royal Dark Theme */
-  --tut-dark: #0f172a;
-  --tut-dark-light: #1e1b4b;
-  --tut-dark-gradient: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  /* Bizaxl Dark Navy */
+  --tut-dark: #05133C;
+  --tut-dark-light: #0A1E4A;
+  --tut-dark-gradient: linear-gradient(135deg, #05133C 0%, #003D99 50%, #0066CC 100%);
   
-  /* Background Colors */
-  --tut-bg: #f8f5ff;
-  --tut-bg-dark: #f3f0ff;
+  /* Background Colors — Light Blue */
+  --tut-bg: #f0f7ff;
+  --tut-bg-dark: #e6f2ff;
   --tut-card-bg: #ffffff;
   
-  /* Royal Border Colors */
-  --tut-border: rgba(124, 58, 237, 0.1);
+  /* Border Colors */
+  --tut-border: rgba(0, 137, 255, 0.1);
   --tut-border-light: #e2e8f0;
-  --tut-border-gradient: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
-  --tut-royal-border: rgba(139, 92, 246, 0.2);
+  --tut-border-gradient: linear-gradient(135deg, #0066CC 0%, #0089FF 100%);
+  --tut-royal-border: rgba(0, 137, 255, 0.2);
   
   /* Text Colors */
-  --tut-text: #1e1b4b;
+  --tut-text: #05133C;
   --tut-text-muted: #6b7280;
   --tut-text-light: #9ca3af;
   --tut-text-white: #ffffff;
@@ -69,15 +69,15 @@
   --tut-sidebar-width: 270px;
   
   /* Royal Shadows */
-  --tut-shadow-sm: 0 1px 2px 0 rgba(76, 29, 149, 0.05);
-  --tut-shadow: 0 4px 6px -1px rgba(76, 29, 149, 0.1), 0 2px 4px -2px rgba(76, 29, 149, 0.1);
-  --tut-shadow-md: 0 10px 15px -3px rgba(76, 29, 149, 0.1), 0 4px 6px -4px rgba(76, 29, 149, 0.1);
-  --tut-shadow-lg: 0 20px 25px -5px rgba(76, 29, 149, 0.15), 0 8px 10px -6px rgba(76, 29, 149, 0.1);
-  --tut-shadow-xl: 0 25px 50px -12px rgba(76, 29, 149, 0.25);
-  --tut-shadow-glow: 0 0 40px rgba(124, 58, 237, 0.3);
-  --tut-shadow-glow-gold: 0 0 40px rgba(217, 119, 6, 0.3);
-  --tut-royal-shadow: 0 25px 50px -12px rgba(76, 29, 149, 0.25);
-  --tut-royal-glow: 0 0 60px rgba(109, 40, 217, 0.15);
+  --tut-shadow-sm: 0 1px 2px 0 rgba(0, 102, 204, 0.05);
+  --tut-shadow: 0 4px 6px -1px rgba(0, 102, 204, 0.1), 0 2px 4px -2px rgba(0, 102, 204, 0.1);
+  --tut-shadow-md: 0 10px 15px -3px rgba(0, 102, 204, 0.1), 0 4px 6px -4px rgba(0, 102, 204, 0.1);
+  --tut-shadow-lg: 0 20px 25px -5px rgba(0, 102, 204, 0.15), 0 8px 10px -6px rgba(0, 102, 204, 0.1);
+  --tut-shadow-xl: 0 25px 50px -12px rgba(0, 102, 204, 0.25);
+  --tut-shadow-glow: 0 0 40px rgba(0, 137, 255, 0.3);
+  --tut-shadow-glow-gold: 0 0 40px rgba(255, 140, 0, 0.3);
+  --tut-royal-shadow: 0 25px 50px -12px rgba(0, 102, 204, 0.25);
+  --tut-royal-glow: 0 0 60px rgba(0, 137, 255, 0.15);
   
   /* Border Radius */
   --tut-radius-sm: 0.5rem;
@@ -720,7 +720,7 @@ body {
 .tut-priority-low { color: #16a34a; }
 .tut-priority-medium { color: #f59e0b; }
 .tut-priority-high { color: #dc2626; }
-.tut-priority-urgent { color: #7c3aed; }
+.tut-priority-urgent { color: #0089FF; }
 
 /* --- Form Section Card --- */
 .tut-form-card {
@@ -1195,19 +1195,19 @@ body {
    Royal Purple, Gold & Premium Theme
    ===================================== */
 
-/* Royal Color Variables for Dashboard */
+/* Bizaxl Brand Colors for Dashboard */
 :root {
-  --tut-royal-primary: #4c1d95;
-  --tut-royal-secondary: #6d28d9;
-  --tut-royal-gold: #d97706;
-  --tut-royal-gold-light: #fbbf24;
-  --tut-royal-gradient: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
-  --tut-royal-gradient-dark: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  --tut-royal-primary: #0066CC;
+  --tut-royal-secondary: #0073E6;
+  --tut-royal-gold: #FF8C00;
+  --tut-royal-gold-light: #FFC53D;
+  --tut-royal-gradient: linear-gradient(135deg, #0066CC 0%, #0073E6 50%, #0089FF 100%);
+  --tut-royal-gradient-dark: linear-gradient(135deg, #05133C 0%, #003D99 50%, #0066CC 100%);
   --tut-royal-glass: rgba(255, 255, 255, 0.95);
   --tut-royal-surface: rgba(255, 255, 255, 0.08);
-  --tut-royal-border: rgba(139, 92, 246, 0.2);
-  --tut-royal-shadow: 0 25px 50px -12px rgba(76, 29, 149, 0.25);
-  --tut-royal-glow: 0 0 60px rgba(109, 40, 217, 0.15);
+  --tut-royal-border: rgba(0, 137, 255, 0.2);
+  --tut-royal-shadow: 0 25px 50px -12px rgba(0, 102, 204, 0.25);
+  --tut-royal-glow: 0 0 60px rgba(0, 137, 255, 0.15);
 }
 
 /* Dashboard Hero - Royal Elegant Header */
@@ -1226,7 +1226,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%237c3aed' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   opacity: 0.5;
 }
 
@@ -1237,7 +1237,7 @@ body {
   right: -20%;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.15) 0%, transparent 70%);
   border-radius: 50%;
   animation: royalPulse 8s ease-in-out infinite;
 }
@@ -1270,7 +1270,7 @@ body {
   height: 40px;
   background: linear-gradient(180deg, var(--tut-royal-gold) 0%, var(--tut-royal-gold-light) 100%);
   border-radius: 4px;
-  box-shadow: 0 0 20px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 0 20px rgba(255, 140, 0, 0.4);
 }
 
 .tut-dash-subtitle {
@@ -1318,7 +1318,7 @@ body {
   color: var(--tut-royal-gold);
   opacity: 0.25;
   animation: crownFloat 4s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(217, 119, 6, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(255, 140, 0, 0.3));
   z-index: 2;
 }
 
@@ -1336,7 +1336,7 @@ body {
 .tut-welcome-name {
   font-weight: 700;
   color: var(--tut-royal-gold-light);
-  text-shadow: 0 2px 10px rgba(251, 191, 36, 0.3);
+  text-shadow: 0 2px 10px rgba(255, 197, 61, 0.3);
 }
 
 @keyframes floatShape {
@@ -1355,7 +1355,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-size: 0.85rem !important;
-  box-shadow: 0 10px 30px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
   position: relative;
   overflow: hidden;
@@ -1379,7 +1379,7 @@ body {
 .tut-dash-hero .btn:not(.btn-link):hover {
   background: linear-gradient(135deg, #b45309 0%, #92400e 100%) !important;
   transform: translateY(-3px) scale(1.02) !important;
-  box-shadow: 0 15px 40px rgba(217, 119, 6, 0.45), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+  box-shadow: 0 15px 40px rgba(255, 140, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.3) !important;
 }
 
 /* Dashboard Content Area */
@@ -1458,7 +1458,7 @@ body {
 .tut-dash-card-header h5 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #1e1b4b;
+  color: #05133C;
   margin: 0;
   display: flex;
   align-items: center;
@@ -1551,26 +1551,27 @@ body {
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
 }
 
-.tut-dash-stat-icon-purple { 
-  background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); 
+.tut-dash-stat-icon-blue { 
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); 
   color: #ffffff;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35);
 }
 
 .tut-dash-stat-icon-orange { 
-  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); 
+  background: linear-gradient(135deg, #FF8C00 0%, #FFC53D 100%); 
   color: #ffffff;
-  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.35);
+  box-shadow: 0 8px 24px rgba(255, 140, 0, 0.35);
 }
 
 .tut-dash-stat-num { 
   font-size: 2.25rem; 
   font-weight: 800; 
-  color: #1e1b4b; 
+  color: #05133C; 
   line-height: 1; 
   margin-bottom: 0.5rem;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%);
+  background: var(--tut-dark-gradient);
+  
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1692,7 +1693,7 @@ body {
 .tut-proj-title { 
   font-size: 1rem; 
   font-weight: 700; 
-  color: #1e1b4b; 
+  color: #05133C; 
   white-space: nowrap; 
   overflow: hidden; 
   text-overflow: ellipsis;
@@ -1755,7 +1756,7 @@ body {
 .tut-repo-name { 
   font-size: 1rem; 
   font-weight: 700; 
-  color: #1e1b4b; 
+  color: #05133C; 
   display: flex; 
   align-items: center; 
   gap: 0.5rem; 
@@ -1771,7 +1772,7 @@ body {
 
 .tut-repo-btn { 
   padding: 0.5rem 1.15rem; 
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  background: var(--tut-dark-gradient);
   color: #ffffff; 
   border-radius: 50px; 
   font-size: 0.78rem; 
@@ -1785,7 +1786,7 @@ body {
 
 .tut-repo-item:hover .tut-repo-btn { 
   background: linear-gradient(135deg, var(--tut-royal-gold) 0%, #b45309 100%);
-  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+  box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
 }
 
 /* Royal Dashboard Navigation */
@@ -1824,7 +1825,7 @@ body {
 .tut-dash-link:hover { 
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(167, 139, 250, 0.04) 100%);
   border-color: var(--tut-royal-border);
-  color: #1e1b4b; 
+  color: #05133C; 
   text-decoration: none;
   transform: translateX(6px);
 }
@@ -1851,8 +1852,8 @@ body {
 
 .tut-link-green { background: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%); color: #059669; }
 .tut-link-blue { background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%); color: #2563eb; }
-.tut-link-purple { background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(139, 92, 246, 0.1) 100%); color: #7c3aed; }
-.tut-link-orange { background: linear-gradient(135deg, rgba(217, 119, 6, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%); color: #d97706; }
+.tut-link-blue { background: linear-gradient(135deg, rgba(0, 137, 255, 0.15) 0%, rgba(0, 115, 230, 0.1) 100%); color: #0089FF; }
+.tut-link-orange { background: linear-gradient(135deg, rgba(255, 140, 0, 0.15) 0%, rgba(255, 197, 61, 0.1) 100%); color: #FF8C00; }
 .tut-link-red { background: linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%); color: #dc2626; }
 .tut-link-dark { background: linear-gradient(135deg, rgba(30, 41, 59, 0.12) 0%, rgba(51, 65, 85, 0.08) 100%); color: #1e293b; }
 .tut-link-danger { background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(239, 68, 68, 0.08) 100%); color: #dc2626; }
@@ -2941,7 +2942,7 @@ body {
 }
 .tut-priority-modern.high {
   background: rgba(245, 158, 11, 0.1);
-  color: #d97706;
+  color: #FF8C00;
 }
 .tut-priority-modern.urgent {
   background: rgba(239, 68, 68, 0.1);
@@ -3485,7 +3486,7 @@ body {
 }
 .tut-priority-badge.low { background: rgba(34, 197, 94, 0.1); color: #16a34a; }
 .tut-priority-badge.medium { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-.tut-priority-badge.high { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+.tut-priority-badge.high { background: rgba(245, 158, 11, 0.1); color: #FF8C00; }
 .tut-priority-badge.urgent { background: rgba(239, 68, 68, 0.1); color: #dc2626; }
 .tut-project-title {
   font-size: 2rem;
