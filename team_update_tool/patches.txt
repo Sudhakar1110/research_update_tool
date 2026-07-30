@@ -5,3 +5,4 @@ team_update_tool.patches.create_domain
 team_update_tool.patches.fix_project_update_child_table
 team_update_tool.patches.fix_workspace_content
 team_update_tool.patches.rename_roles
+team_update_tool.patches.fix_naming_series

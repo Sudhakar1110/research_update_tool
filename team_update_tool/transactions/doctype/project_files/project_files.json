@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:PF-.YYYY.-.#####",
+ "autoname": "PF-.YYYY.-.#####",
  "creation": "2026-07-08 10:00:00",
  "doctype": "DocType",
  "istable": 1,
@@ -60,7 +60,7 @@
  "modified": "2026-07-08 10:00:00",
  "modified_by": "Administrator",
  "name": "Project Files",
- "naming_rule": "Expression",
+ "naming_rule": "By Naming Series",
  "owner": "Administrator",
  "permissions": [
   {

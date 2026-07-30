@@ -8,11 +8,23 @@ from datetime import date, datetime, timedelta
 import frappe
 from frappe import _
 from frappe.utils import today, now_datetime, getdate, fmt_money
+from frappe.model.naming import make_autoname
 
 
 # ---------------------------------------------------------------------------
 # Remote-added: helpers and project CRUD
 # ---------------------------------------------------------------------------
+
+
+def _set_resolved_name(doc, naming_pattern, prefix):
+    """Set a resolved name on a document using the naming series.
+
+    Falls back to a hash-based unique name if the naming series fails.
+    """
+    try:
+        doc.name = make_autoname(naming_pattern)
+    except Exception:
+        doc.name = f"{prefix}-{frappe.generate_hash(length=10)}"
 
 def _get_default_status():
     """Return the name of a default Project Status (first available, or creates 'Pending')."""
@@ -41,14 +53,34 @@ def _get_or_create_github_repository(github_url, branch="main"):
     # Extract repo name from URL
     repo_name = github_url.rstrip("/").split("/")[-1] if github_url else ""
 
+    # Create the document with an explicitly resolved naming series name.
+    # This avoids role-dependent failures in Frappe's document-level naming.
     doc = frappe.get_doc({
         "doctype": "GitHub Repository",
         "repository_url": github_url,
         "repository_name": repo_name,
         "default_branch": branch or "main",
     })
-    doc.insert(ignore_permissions=True)
-    return doc.name
+    _set_resolved_name(doc, "GR-.YYYY.-.#####", "GR")
+
+    try:
+        doc.insert(ignore_permissions=True, set_name=True)
+        return doc.name
+    except frappe.DuplicateEntryError:
+        frappe.db.rollback()
+        # Another request may have created this repo concurrently.
+        existing = frappe.db.get_value("GitHub Repository", {"repository_url": github_url}, "name")
+        if existing:
+            return existing
+        doc = frappe.get_doc({
+            "doctype": "GitHub Repository",
+            "repository_url": github_url,
+            "repository_name": repo_name,
+            "default_branch": branch or "main",
+        })
+        doc.name = f"GR-{frappe.generate_hash(length=10)}"
+        doc.insert(ignore_permissions=True, set_name=True)
+        return doc.name
 
 
 @frappe.whitelist()
@@ -1172,7 +1204,22 @@ def add_time_log(project, hours, description=None, log_date=None):
         "description": (description or "").strip(),
         "log_date": log_date,
     })
-    doc.insert(ignore_permissions=True)
+    _set_resolved_name(doc, "TL-.YYYY.-.#####", "TL")
+
+    try:
+        doc.insert(ignore_permissions=True, set_name=True)
+    except frappe.DuplicateEntryError:
+        frappe.db.rollback()
+        doc = frappe.get_doc({
+            "doctype": "Project Time Log",
+            "project": project,
+            "hours": hours_val,
+            "description": (description or "").strip(),
+            "log_date": log_date,
+        })
+        doc.name = f"TL-{frappe.generate_hash(length=10)}"
+        doc.insert(ignore_permissions=True, set_name=True)
+
     frappe.db.commit()
 
     return {
@@ -1388,7 +1435,24 @@ def add_milestone():
         "description": (data.get("description") or "").strip(),
         "project": data.get("project") or None,
     })
-    doc.insert(ignore_permissions=True)
+    _set_resolved_name(doc, "MS-.YYYY.-.#####", "MS")
+
+    try:
+        doc.insert(ignore_permissions=True, set_name=True)
+    except frappe.DuplicateEntryError:
+        frappe.db.rollback()
+        doc = frappe.get_doc({
+            "doctype": "Project Milestone",
+            "milestone_title": title.strip(),
+            "milestone_date": milestone_date,
+            "milestone_type": data.get("milestone_type") or "Milestone",
+            "color": data.get("color") or "#f59e0b",
+            "description": (data.get("description") or "").strip(),
+            "project": data.get("project") or None,
+        })
+        doc.name = f"MS-{frappe.generate_hash(length=10)}"
+        doc.insert(ignore_permissions=True, set_name=True)
+
     frappe.db.commit()
 
     return {

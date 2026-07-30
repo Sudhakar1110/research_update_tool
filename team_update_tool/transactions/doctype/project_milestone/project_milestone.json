@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 0,
- "autoname": "format:MS-.YYYY.-.#####",
+ "autoname": "MS-.YYYY.-.#####",
  "creation": "2026-07-21 10:00:00",
  "doctype": "DocType",
  "module": "Transactions",
@@ -73,7 +73,7 @@
  "modified": "2026-07-21 10:00:00",
  "modified_by": "Administrator",
  "name": "Project Milestone",
- "naming_rule": "Expression",
+ "naming_rule": "By Naming Series",
  "owner": "Administrator",
  "permissions": [
   {
