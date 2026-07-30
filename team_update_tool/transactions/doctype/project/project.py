@@ -3,6 +3,7 @@
 
 import frappe
 from frappe import _
+from frappe.utils import today
 from frappe.model.document import Document
 
 
@@ -10,6 +11,15 @@ class Project(Document):
 	def validate(self):
 		self.validate_role_permissions()
 		self.validate_duplicate_project()
+
+	def before_save(self):
+		"""Auto-set completion_date when status changes.
+
+		This mirrors the logic in update_project_status() API so that
+		projects completed via the desk (standard Frappe form) also get
+		their completion_date set, making them visible in the scorecard.
+		"""
+		self._auto_set_completion_date()
 
 	def validate_role_permissions(self):
 		roles = frappe.get_roles(frappe.session.user)
@@ -37,10 +47,47 @@ class Project(Document):
 			if frappe.db.exists("Project", filters):
 				frappe.throw(_("A project with this title already exists. Duplicate project titles are not allowed."))
 
+	def _auto_set_completion_date(self):
+		"""Set or clear completion_date based on status change.
+
+		- When moving TO a completion status (completed, approved, done, etc.):
+		  set completion_date = today (if not already set)
+		- When moving AWAY FROM a completion status:
+		  clear completion_date
+		"""
+		old_status = self._doc_before_save.status if self._doc_before_save else None
+
+		if not self.status or self.status == old_status:
+			return  # No change in status
+
+		new_is_completed = _check_completion_status(self.status)
+		old_is_completed = _check_completion_status(old_status) if old_status else False
+
+		if new_is_completed and not old_is_completed:
+			# Moving to a completion status — set completion_date
+			if not self.completion_date:
+				self.completion_date = today()
+		elif old_is_completed and not new_is_completed:
+			# Moving away from a completion status — clear completion_date
+			self.completion_date = None
+
 	def on_trash(self):
 		roles = frappe.get_roles(frappe.session.user)
 		if "Admin" not in roles and "System Manager" not in roles:
 			frappe.throw(_("Only Admin can delete projects."), frappe.PermissionError)
+
+
+def _check_completion_status(status_name):
+	"""Check if a status name indicates a completed/finished state.
+
+	Matches whole words from: completed, approved, done, finished, closed.
+	"""
+	if not status_name:
+		return False
+	name_lower = status_name.lower().strip()
+	completion_keywords = {"completed", "approved", "done", "finished", "closed"}
+	words = set(name_lower.split())
+	return bool(words & completion_keywords)
 
 
 def validate_project(doc, method=None):
