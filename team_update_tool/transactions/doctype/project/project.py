@@ -117,28 +117,79 @@ Created by: {doc.owner}</p>
 		except Exception as notification_error:
 			frappe.log_error(f"Failed to create system notification", "Project Notification Error")
 		
-	except Exception as e:
-		frappe.log_error(f"Error sending new project notification", "Project Notification Error")
+	except Exception as e:			frappe.log_error(f"Error sending new project notification", "Project Notification Error")
 
 
 def get_permission_query_conditions(user):
-	"""Server-enforced list view filtering. View-Only Users see only projects with status 'Approved'."""
-	if not user:
+	"""Server-enforced list view filtering for the Frappe desk.
+
+	- Managers (System Manager, Admin, Team Update Admin, Team Update Team Leader): see ALL projects
+	- Viewers (Team Update Viewer, View-Only User): see only projects with status 'Approved'
+	- Regular users (Team Members): see ONLY their own projects (by owner)
+	"""
+	if not user or user == "Guest":
 		return ""
+
 	roles = frappe.get_roles(user)
-	if "Team Update Viewer" in roles or "View-Only User" in roles and "Admin" not in roles:
+
+	# Check if user is a manager — they see all
+	is_manager = bool(
+		"System Manager" in roles
+		or "Team Update Admin" in roles
+		or "Team Update Team Leader" in roles
+		or "Admin" in roles
+	)
+	if is_manager:
+		return ""
+
+	# Check if user is a viewer — they see only approved
+	is_viewer = "Team Update Viewer" in roles or "View-Only User" in roles
+	if is_viewer:
 		approved_status = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
 		if approved_status:
 			return "`tabProject`.`status` = " + frappe.db.escape(approved_status)
-	return ""
+		return ""
+
+	# Regular users (including Team Members) — see ONLY their own projects
+	return "`tabProject`.`owner` = " + frappe.db.escape(user)
 
 
 def has_permission(doc, ptype, user):
-	"""Doc-level permission check."""
-	if ptype == "read":
-		roles = frappe.get_roles(user)
-		if "Team Update Viewer" in roles or "View-Only User" in roles and "Admin" not in roles:
+	"""Doc-level permission check for the Frappe desk.
+
+	- Managers: full access to all projects
+	- Viewers: read-only access to approved projects
+	- Regular users: read-only access to their own projects
+	"""
+	roles = frappe.get_roles(user)
+
+	# Managers have full access
+	is_manager = bool(
+		"System Manager" in roles
+		or "Team Update Admin" in roles
+		or "Team Update Team Leader" in roles
+		or "Admin" in roles
+	)
+	if is_manager:
+		return True
+
+	# Viewers — only approved projects
+	is_viewer = "Team Update Viewer" in roles or "View-Only User" in roles
+	if is_viewer:
+		if ptype == "read":
 			approved_status = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
 			if approved_status and doc.status != approved_status:
 				return False
-	return True
+			return True
+		# Viewers cannot write
+		return False
+
+	# Regular users — only their own projects
+	if ptype == "read":
+		return doc.owner == user
+
+	# Regular users can write to their own projects
+	if ptype in ("write", "create"):
+		return doc.owner == user if not doc.is_new() else True
+
+	return False
