@@ -434,29 +434,37 @@
     padding: 0 1rem;
 }
 
-/* Loading State */
+/* Loading State — Skeleton Shimmer */
+@keyframes proShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
 .tut-pro-loading {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
+    padding: 2rem 0;
 }
-.tut-pro-loading .spinner {
-    width: 48px;
-    height: 48px;
-    border: 3px solid #e2e8f0;
-    border-top-color: #22c55e;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+.pro-skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: proShimmer 1.4s infinite ease-in-out;
+    border-radius: 0.75rem;
 }
-.tut-pro-loading p {
-    margin-top: 1rem;
-    color: #64748b;
-    font-size: 0.95rem;
+.pro-skeleton--card {
+    height: 380px;
+    border-radius: 1.25rem;
 }
-@keyframes spin {
-    to { transform: rotate(360deg); }
+
+/* Card Entrance Animation */
+@keyframes proCardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.pro-animate-in {
+    animation: proCardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
 }
 
 /* Priority Badge */
@@ -576,10 +584,13 @@ Showing <strong id="showingCount">0</strong> of <strong id="totalResults">0</str
 </div>
 </div>
 
-<!-- Loading State -->
+<!-- Loading State — Smimmer -->
 <div class="tut-pro-loading" id="projectsLoading">
-<div class="spinner"></div>
-<p>Loading projects...</p>
+    <div class="row g-4 w-100">
+        <div class="col-md-6 col-lg-4"><div class="pro-skeleton pro-skeleton--card"></div></div>
+        <div class="col-md-6 col-lg-4"><div class="pro-skeleton pro-skeleton--card"></div></div>
+        <div class="col-md-6 col-lg-4"><div class="pro-skeleton pro-skeleton--card"></div></div>
+    </div>
 </div>
 
 <!-- Projects Content -->
@@ -745,13 +756,12 @@ frappe.ready(function() {
       document.getElementById('resultsInfo').style.display = 'flex';
       var showingEnd = projects.length > 0 ? Math.min(d.offset + currentLimit, d.total) : 0;
       document.getElementById('showingCount').textContent = showingEnd;
-      document.getElementById('totalResults').textContent = d.total;
+      document.getElementById('totalResults').textContent = d.total;                    if (projects.length === 0) { showEmpty(); return; }
+                    document.getElementById('projectsEmpty').style.display = 'none';
 
-      if (projects.length === 0) { showEmpty(); return; }
-      document.getElementById('projectsEmpty').style.display = 'none';
-
-      var html = '';
-      projects.forEach(function(p) {
+                    var html = '';
+                    projects.forEach(function(p, idx) {
+                        var animDelay = (0.05 * (idx + 1)).toFixed(2) + 's';
         var color = p.status_color || '#6b7280';
         var sname = p.status_name || p.status || 'Open';
         var priorityClass = '';
@@ -766,7 +776,7 @@ frappe.ready(function() {
           ? '<div class="tut-pro-card-image"><img src="' + p.screenshot_preview + '" alt="" loading="lazy"><span class="tut-pro-card-badge"><span class="status-dot" style="background:' + color + '"></span>' + escHtml(sname) + '</span></div>'
           : '<div class="tut-pro-card-image"><div class="tut-pro-card-placeholder"><i class="fas fa-folder-tree"></i><span style="font-size:0.75rem;">No Preview</span></div><span class="tut-pro-card-badge"><span class="status-dot" style="background:' + color + '"></span>' + escHtml(sname) + '</span></div>';
 
-        html += '<a href="/team_update_tool/project/' + p.name + '" class="tut-pro-project-card">' +
+        html += '<a href="/team_update_tool/project/' + p.name + '" class="tut-pro-project-card pro-animate-in" style="animation-delay:' + animDelay + '">' +
           imgHtml +
           '<div class="tut-pro-card-body">' +
           '<div class="tut-pro-card-meta">' +
@@ -782,7 +792,7 @@ frappe.ready(function() {
         
         html += '</div>' +
           '<h3 class="tut-pro-card-title">' + escHtml(p.project_title) + '</h3>' +
-          '<div class="tut-pro-card-footer">' +
+          '<div class="tut-pro-card-footer" style="border-top-color: ' + color + '25;">' +
           '<span class="tut-pro-card-date"><i class="fas fa-clock"></i> ' + getRelativeTime(p.modified || p.creation) + '</span>' +
           '<span class="tut-pro-card-link">View Details <i class="fas fa-arrow-right"></i></span>' +
           '</div>' +
