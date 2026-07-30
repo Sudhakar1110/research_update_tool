@@ -1776,6 +1776,8 @@ def get_member_scorecard():
         completed_in_period = []
 
     # Attribute projects to team members (by owner)
+    # If the owner is not in user_map (e.g. manager not registered as Team Member),
+    # add them as an implicit member so their completed projects appear in the scorecard.
     for p in completed_in_period:
         owner = p.owner
         if owner in user_map:
@@ -1785,6 +1787,31 @@ def get_member_scorecard():
                 "title": p.project_title,
                 "completion_date": str(p.completion_date) if p.completion_date else None,
             })
+        elif is_manager:
+            # Manager-level users who own a completed project but are NOT
+            # registered as a Team Member — add them implicitly so their
+            # projects show up in the scorecard.
+            team_doc_name = p.team or ""
+            team_display_name = team_doc_name
+            if team_doc_name:
+                try:
+                    t = frappe.get_cached_doc("Team", team_doc_name)
+                    team_display_name = t.team_name or team_doc_name
+                except Exception:
+                    pass
+            user_map[owner] = {
+                "user": owner,
+                "full_name": "",
+                "teams": [team_doc_name] if team_doc_name else [],
+                "completed": 1,
+                "completed_projects": [{
+                    "name": p.name,
+                    "title": p.project_title,
+                    "completion_date": str(p.completion_date) if p.completion_date else None,
+                }],
+                "team_names": {team_display_name},
+                "role": "Member",
+            }
 
     # Build team-level summary
     team_project_counts = {}
@@ -1804,6 +1831,23 @@ def get_member_scorecard():
                 "member_count": 0,
             }
         team_summary[t]["member_count"] += 1
+
+    # If a team has completed projects but NO registered members (manager case),
+    # still include it in the summary so it appears on the scorecard.
+    for p in completed_in_period:
+        team_key = p.team
+        if team_key and team_key not in team_summary:
+            team_display_name = team_key
+            try:
+                t = frappe.get_cached_doc("Team", team_key)
+                team_display_name = t.team_name or team_key
+            except Exception:
+                pass
+            team_summary[team_key] = {
+                "team_name": team_display_name,
+                "completed": team_project_counts.get(team_key, 0),
+                "member_count": 0,
+            }
 
     # Add team names to team_summary keys
     team_summary_named = {}
