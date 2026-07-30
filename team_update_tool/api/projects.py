@@ -1687,13 +1687,19 @@ def get_member_scorecard():
     user_emails = list(user_map.keys())
     user_fullnames = {}
     try:
-        user_data = frappe.db.sql(
-            """SELECT name, full_name FROM `tabUser`
-             WHERE name IN %s""",
-            [user_emails], as_dict=1
-        )
-        for ud in user_data:
-            user_fullnames[ud.name] = ud.full_name or ud.name.split("@")[0]
+        if user_emails:
+            email_placeholders = ', '.join(['%s'] * len(user_emails))
+            user_data = frappe.db.sql(
+                f"""SELECT name, full_name FROM `tabUser`
+                 WHERE name IN ({email_placeholders})""",
+                user_emails, as_dict=1
+            )
+            for ud in user_data:
+                user_fullnames[ud.name] = ud.full_name or ud.name.split("@")[0]
+        # Fallback for any emails not found
+        for email in user_emails:
+            if email not in user_fullnames:
+                user_fullnames[email] = email.split("@")[0]
     except Exception:
         for email in user_emails:
             user_fullnames[email] = email.split("@")[0]
@@ -1966,16 +1972,20 @@ def get_reports():
             if _is_completion_status(s_obj.status_name):
                 completion_status_names.append(s_obj.name)
 
-        completed_q = frappe.db.sql(
-            """SELECT name, project_title, team, status, priority, completion_date
-             FROM `tabProject`
-             WHERE status IN %s
-               AND docstatus < 2
-             ORDER BY COALESCE(completion_date, modified) DESC
-             LIMIT 20""",
-            [completion_status_names] if completion_status_names else [[""]],
-            as_dict=1
-        ) if completion_status_names else []
+        if completion_status_names:
+            status_placeholders = ', '.join(['%s'] * len(completion_status_names))
+            completed_q = frappe.db.sql(
+                f"""SELECT name, project_title, team, status, priority, completion_date
+                 FROM `tabProject`
+                 WHERE status IN ({status_placeholders})
+                   AND docstatus < 2
+                 ORDER BY COALESCE(completion_date, modified) DESC
+                 LIMIT 20""",
+                completion_status_names,
+                as_dict=1
+            )
+        else:
+            completed_q = []
 
         for p in completed_q:
             team_name = ""
