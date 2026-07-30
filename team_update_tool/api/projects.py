@@ -64,7 +64,7 @@ def _get_or_create_github_repository(github_url, branch="main"):
     _set_resolved_name(doc, "GR-.YYYY.-.#####", "GR")
 
     try:
-        doc.insert(ignore_permissions=True, set_name=True)
+        doc.insert(ignore_permissions=True)
         return doc.name
     except frappe.DuplicateEntryError:
         frappe.db.rollback()
@@ -79,7 +79,7 @@ def _get_or_create_github_repository(github_url, branch="main"):
             "default_branch": branch or "main",
         })
         doc.name = f"GR-{frappe.generate_hash(length=10)}"
-        doc.insert(ignore_permissions=True, set_name=True)
+        doc.insert(ignore_permissions=True)
         return doc.name
 
 
@@ -1207,7 +1207,7 @@ def add_time_log(project, hours, description=None, log_date=None):
     _set_resolved_name(doc, "TL-.YYYY.-.#####", "TL")
 
     try:
-        doc.insert(ignore_permissions=True, set_name=True)
+        doc.insert(ignore_permissions=True)
     except frappe.DuplicateEntryError:
         frappe.db.rollback()
         doc = frappe.get_doc({
@@ -1218,7 +1218,7 @@ def add_time_log(project, hours, description=None, log_date=None):
             "log_date": log_date,
         })
         doc.name = f"TL-{frappe.generate_hash(length=10)}"
-        doc.insert(ignore_permissions=True, set_name=True)
+        doc.insert(ignore_permissions=True)
 
     frappe.db.commit()
 
@@ -1438,7 +1438,7 @@ def add_milestone():
     _set_resolved_name(doc, "MS-.YYYY.-.#####", "MS")
 
     try:
-        doc.insert(ignore_permissions=True, set_name=True)
+        doc.insert(ignore_permissions=True)
     except frappe.DuplicateEntryError:
         frappe.db.rollback()
         doc = frappe.get_doc({
@@ -1451,7 +1451,7 @@ def add_milestone():
             "project": data.get("project") or None,
         })
         doc.name = f"MS-{frappe.generate_hash(length=10)}"
-        doc.insert(ignore_permissions=True, set_name=True)
+        doc.insert(ignore_permissions=True)
 
     frappe.db.commit()
 
