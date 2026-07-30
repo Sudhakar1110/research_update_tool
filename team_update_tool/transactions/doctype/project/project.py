@@ -13,9 +13,21 @@ class Project(Document):
 
 	def validate_role_permissions(self):
 		roles = frappe.get_roles(frappe.session.user)
-		if "Team Update Viewer" in roles or "View-Only User" in roles and "Admin" not in roles and "System Manager" not in roles:
-			if not self.is_new():
-				frappe.throw(_("View-Only Users cannot edit projects."), frappe.PermissionError)
+
+		# Skip check for managers — they can edit anything
+		is_manager = bool(
+			"System Manager" in roles
+			or "Admin" in roles
+			or "Team Update Admin" in roles
+			or "Team Update Team Leader" in roles
+		)
+		if is_manager:
+			return
+
+		# Block non-manager users with Viewer/View-Only roles from editing
+		is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles)
+		if is_viewer and not self.is_new():
+			frappe.throw(_("View-Only Users cannot edit projects."), frappe.PermissionError)
 
 	def validate_duplicate_project(self):
 		if self.project_title:
