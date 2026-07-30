@@ -514,6 +514,74 @@
     .tut-projects-grid {
         grid-template-columns: 1fr;
     }
+    .tut-pro-card-image {
+        height: 160px;
+    }
+    .tut-pro-card-badge {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.65rem;
+    }
+    .tut-pro-card-body {
+        padding: 1.25rem;
+    }
+    .tut-pro-card-title {
+        font-size: 1rem;
+    }
+    .tut-clear-filters-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+@media (max-width: 480px) {
+    .tut-projects-hero {
+        padding: 1.5rem 0 2.5rem;
+    }
+    .tut-projects-hero h1 {
+        font-size: 1.35rem;
+    }
+    .tut-projects-hero h1::before {
+        height: 30px;
+    }
+    .tut-projects-stats-item .count {
+        font-size: 1.3rem;
+    }
+    .tut-projects-stats-item .label {
+        font-size: 0.75rem;
+    }
+    .tut-new-project-btn {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.8rem;
+    }
+    .tut-filter-section {
+        margin-top: -1rem;
+        padding: 0.85rem;
+    }
+    .tut-filter-section .form-control,
+    .tut-filter-section .form-select {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.82rem;
+    }
+    .tut-pro-card-image {
+        height: 140px;
+    }
+    .tut-pro-card-body {
+        padding: 1rem;
+    }
+    .tut-pro-card-title {
+        font-size: 0.95rem;
+    }
+    .tut-pro-card-meta span {
+        font-size: 0.72rem;
+    }
+    .tut-results-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    .tut-pro-pagination button {
+        padding: 0.45rem 1rem;
+        font-size: 0.8rem;
+    }
 }
 </style>
 {% endblock %}

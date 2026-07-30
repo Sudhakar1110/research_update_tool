@@ -1320,6 +1320,121 @@ html { scroll-behavior: smooth; }
     .erp-card-body {
         padding: 1rem;
     }
+    
+    .erp-project-info-row {
+        gap: 1rem;
+    }
+    
+    .erp-project-info-item {
+        font-size: 0.82rem;
+    }
+    
+    .erp-project-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .erp-back-btn {
+        padding: 0.55rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .erp-status-select {
+        min-width: 90px;
+        font-size: 0.7rem;
+    }
+    
+    .erp-tech-badge {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.75rem;
+    }
+    
+    .erp-screenshot-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 480px) {
+    .erp-page-header {
+        padding: 1rem 0 1rem;
+    }
+    .erp-breadcrumb ol {
+        font-size: 0.78rem;
+        flex-wrap: wrap;
+    }
+    .erp-project-hero {
+        padding: 1.25rem;
+        border-radius: 1rem;
+    }
+    .erp-project-title {
+        font-size: 1.25rem;
+    }
+    .erp-project-meta {
+        gap: 0.5rem;
+    }
+    .erp-project-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .erp-card-header {
+        padding: 0.85rem 1rem;
+    }
+    .erp-card-body {
+        padding: 0.85rem 1rem;
+    }
+    .erp-card-title {
+        font-size: 0.9rem;
+    }
+    .erp-description-text {
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+    .erp-timeline {
+        padding-left: 1.5rem;
+    }
+    .erp-timeline-content {
+        padding: 1rem;
+    }
+    .erp-timeline-header {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .erp-timeline-title {
+        font-size: 0.85rem;
+    }
+    .erp-sidebar-card-body {
+        padding: 1rem;
+    }
+    .erp-github-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.82rem;
+    }
+    .erp-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+    .erp-detail-value {
+        text-align: left;
+    }
+    .erp-back-btn {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.75rem;
+    }
+    .erp-back-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+    .erp-screenshot-gallery {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    .erp-activity-composer {
+        padding: 0.5rem;
+    }
+    .erp-activity-submit {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.72rem;
+    }
 }
 </style>
 {% endblock %}
