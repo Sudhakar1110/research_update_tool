@@ -1581,26 +1581,61 @@ def get_member_scorecard():
 
     roles = frappe.get_roles(user)
     is_admin = "System Manager" in roles or "Team Update Admin" in roles
+    is_manager = _is_manager(user)
     is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) and not is_admin
 
     # Calculate date range for the current period
     today_date = date.today()
     period_start, period_end, display_label, period_key = _get_period_range(today_date, period, offset)
 
-    # Fetch all team members (active teams)
+    # Fetch team members — scope by user's permissions
     team_members = []
     try:
-        if team_filter:
-            teams_data = frappe.get_all("Team",
-                fields=["name", "team_name"],
-                filters={"name": team_filter, "is_active": 1}
-            )
+        if is_manager:
+            # Managers see all teams
+            if team_filter:
+                teams_data = frappe.get_all("Team",
+                    fields=["name", "team_name"],
+                    filters={"name": team_filter, "is_active": 1}
+                )
+            else:
+                teams_data = frappe.get_all("Team",
+                    fields=["name", "team_name"],
+                    filters={"is_active": 1},
+                    order_by="team_name asc"
+                )
         else:
-            teams_data = frappe.get_all("Team",
-                fields=["name", "team_name"],
-                filters={"is_active": 1},
-                order_by="team_name asc"
+            # Regular users see only teams they belong to
+            user_teams = frappe.get_all("Team Member",
+                fields=["parent"],
+                filters={"user": user, "parenttype": "Team"},
+                pluck="parent"
             )
+            if not user_teams:
+                # User is not a member of any team
+                return {
+                    "scorecard": [],
+                    "period": period,
+                    "period_label": display_label,
+                    "period_start": str(period_start),
+                    "period_end": str(period_end),
+                    "teams": _get_team_options(),
+                    "team_summary": {},
+                    "total_completed": 0,
+                }
+
+            team_filter_value = team_filter if team_filter else user_teams
+            if isinstance(team_filter_value, list):
+                teams_data = frappe.get_all("Team",
+                    fields=["name", "team_name"],
+                    filters=[["name", "in", team_filter_value], ["is_active", "=", 1]],
+                    order_by="team_name asc"
+                )
+            else:
+                teams_data = frappe.get_all("Team",
+                    fields=["name", "team_name"],
+                    filters={"name": team_filter_value, "is_active": 1}
+                )
 
         for team_doc in teams_data:
             # Fetch members of each team via the child table
@@ -1631,6 +1666,7 @@ def get_member_scorecard():
                 "completed": 0,
                 "completed_projects": [],
                 "team_names": set(),
+                "role": tm["role"],
             }
         user_map[u]["teams"].append(tm["team"])
         user_map[u]["team_names"].add(tm["team_name"])
@@ -1774,7 +1810,7 @@ def get_member_scorecard():
             "user": u,
             "full_name": full_name,
             "teams": team_list_str,
-            "role": um["teams"][0].get("role", "Member") if um["teams"] else "Member",
+            "role": um.get("role", "Member"),
             "completed": um["completed"],
             "completed_projects": sorted(um["completed_projects"],
                 key=lambda x: x.get("completion_date", ""), reverse=True),
@@ -1981,3 +2017,238 @@ def get_reports():
             title="Team Update Tool - get_reports Error"
         )
         frappe.throw(_("Failed to load reports: {0}").format(str(e)))
+
+
+# ---------------------------------------------------------------------------
+# Repositories Listing
+# ---------------------------------------------------------------------------
+
+@frappe.whitelist()
+def get_repositories():
+    """Return paginated list of GitHub repositories.
+
+    Query params:
+      - limit (default 20)
+      - offset (default 0)
+
+    Permission scoping:
+      - Managers: see all repos
+      - Viewers: see repos linked to approved projects
+      - Regular users: see repos linked to their own projects
+    """
+    user = frappe.session.user
+    if user == "Guest":
+        frappe.throw(_("Please log in."), frappe.PermissionError)
+
+    data = frappe.local.form_dict
+    try:
+        limit = int(data.get("limit", 20))
+    except (ValueError, TypeError):
+        limit = 20
+    try:
+        offset = int(data.get("offset", 0))
+    except (ValueError, TypeError):
+        offset = 0
+
+    try:
+        roles = frappe.get_roles(user)
+        is_manager = _is_manager(user)
+        is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) \
+            and "System Manager" not in roles and "Team Update Admin" not in roles
+
+        # Build list of repo names that the user is allowed to see
+        allowed_repos = None  # None = all repos
+
+        if not is_manager:
+            # Scope repos by the user's projects
+            project_filters = {}
+            if is_viewer:
+                approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
+                if approved:
+                    project_filters["status"] = approved
+            else:
+                project_filters["owner"] = user
+
+            # Get projects the user can see
+            user_projects = frappe.get_all("Project",
+                fields=["github_repository"],
+                filters=project_filters
+            )
+            allowed_repos = set()
+            for p in user_projects:
+                if p.github_repository:
+                    allowed_repos.add(p.github_repository)
+
+            if not allowed_repos:
+                return {"repositories": [], "total": 0, "offset": offset, "has_more": False}
+
+        # Fetch repos
+        repo_filters = None
+        if allowed_repos is not None:
+            repo_filters = [["name", "in", list(allowed_repos)]]
+
+        total = frappe.db.count("GitHub Repository", filters=repo_filters)
+
+        repos = frappe.get_all(
+            "GitHub Repository",
+            fields=["name", "repository_name", "repository_url", "default_branch", "languages", "commit_hash", "creation"],
+            filters=repo_filters,
+            limit=limit,
+            start=offset,
+            order_by="creation desc",
+        )
+
+        has_more = (offset + limit) < total
+
+        return {
+            "repositories": repos,
+            "total": total,
+            "offset": offset,
+            "has_more": has_more,
+        }
+
+    except Exception as e:
+        frappe.log_error(
+            message=f"get_repositories failed: {str(e)}\n{frappe.get_traceback()}",
+            title="Team Update Tool - get_repositories Error"
+        )
+        frappe.throw(_("Failed to load repositories: {0}").format(str(e)))
+
+
+# ---------------------------------------------------------------------------
+# Documents Listing
+# ---------------------------------------------------------------------------
+
+@frappe.whitelist()
+def get_documents():
+    """Return paginated list of project documents (Project Files).
+
+    Query params:
+      - limit (default 20)
+      - offset (default 0)
+
+    Returns list of files with associated project title and status info.
+    Permission scoping:
+      - Managers: see all documents
+      - Viewers: see documents from approved projects only
+      - Regular users: see documents from their own projects only
+    """
+    user = frappe.session.user
+    if user == "Guest":
+        frappe.throw(_("Please log in."), frappe.PermissionError)
+
+    data = frappe.local.form_dict
+    try:
+        limit = int(data.get("limit", 20))
+    except (ValueError, TypeError):
+        limit = 20
+    try:
+        offset = int(data.get("offset", 0))
+    except (ValueError, TypeError):
+        offset = 0
+
+    try:
+        roles = frappe.get_roles(user)
+        is_manager = _is_manager(user)
+        is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) \
+            and "System Manager" not in roles and "Team Update Admin" not in roles
+
+        if is_manager:
+            # Managers see all documents
+            total = frappe.db.count("Project Files")
+            files = frappe.get_all(
+                "Project Files",
+                fields=["name", "file", "file_name", "file_type", "file_description", "project", "creation"],
+                limit=limit,
+                start=offset,
+                order_by="creation desc",
+            )
+        elif is_viewer:
+            # Viewers see documents from approved projects
+            approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
+            if not approved:
+                return {"documents": [], "total": 0, "offset": offset, "has_more": False}
+
+            approved_projects = frappe.get_all("Project",
+                fields=["name"],
+                filters={"status": approved},
+                pluck="name"
+            )
+            if not approved_projects:
+                return {"documents": [], "total": 0, "offset": offset, "has_more": False}
+
+            file_filters = [["project", "in", approved_projects]]
+            total = frappe.db.count("Project Files", filters=file_filters)
+            files = frappe.get_all(
+                "Project Files",
+                fields=["name", "file", "file_name", "file_type", "file_description", "project", "creation"],
+                filters=file_filters,
+                limit=limit,
+                start=offset,
+                order_by="creation desc",
+            )
+        else:
+            # Regular users see documents from their own projects
+            own_projects = frappe.get_all("Project",
+                fields=["name"],
+                filters={"owner": user},
+                pluck="name"
+            )
+            if not own_projects:
+                return {"documents": [], "total": 0, "offset": offset, "has_more": False}
+
+            file_filters = [["project", "in", own_projects]]
+            total = frappe.db.count("Project Files", filters=file_filters)
+            files = frappe.get_all(
+                "Project Files",
+                fields=["name", "file", "file_name", "file_type", "file_description", "project", "creation"],
+                filters=file_filters,
+                limit=limit,
+                start=offset,
+                order_by="creation desc",
+            )
+
+        # Enrich with project title and status
+        documents = []
+        for f in files:
+            project_title = ""
+            is_approved = False
+            if f.project:
+                try:
+                    p = frappe.get_cached_doc("Project", f.project)
+                    project_title = p.project_title
+                    # Check if approved
+                    if p.status:
+                        status_doc = frappe.get_cached_doc("Project Status", p.status)
+                        if _is_completion_status(status_doc.status_name):
+                            is_approved = True
+                except Exception:
+                    project_title = f.project
+
+            documents.append({
+                "name": f.name,
+                "file": f.file,
+                "file_name": f.file_name or f.file.split("/")[-1] if f.file else "",
+                "file_type": f.file_type or "",
+                "description": f.file_description or "",
+                "project": f.project,
+                "project_title": project_title,
+                "is_approved": is_approved,
+                "creation": str(f.creation) if f.creation else None,
+            })
+
+        has_more = (offset + limit) < total
+
+        return {
+            "documents": documents,
+            "total": total,
+            "offset": offset,
+            "has_more": has_more,
+        }
+
+    except Exception as e:
+        frappe.log_error(
+            message=f"get_documents failed: {str(e)}\n{frappe.get_traceback()}",
+            title="Team Update Tool - get_documents Error"
+        )
+        frappe.throw(_("Failed to load documents: {0}").format(str(e)))
