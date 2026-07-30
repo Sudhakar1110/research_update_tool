@@ -20,10 +20,12 @@ def get_context(context):
 	try:
 		project = frappe.get_doc("Project", project_name)
 	except frappe.DoesNotExistError:
+		context.project = None
 		context.page_error = "Project not found. It may have been deleted."
 		return
 	except Exception as e:
 		frappe.log_error(f"Error loading project {project_name}: {str(e)}", "Project View Error")
+		context.project = None
 		context.page_error = f"Error loading project: {str(e)}"
 		return
 
@@ -37,6 +39,7 @@ def get_context(context):
 	if is_viewer:
 		approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
 		if not approved or project.status != approved:
+			context.project = None
 			context.page_error = "You do not have permission to view this project."
 			return
 

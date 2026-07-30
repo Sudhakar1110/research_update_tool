@@ -1295,6 +1295,7 @@
 {% endblock %}
 
 {% block page_content %}
+{% if project %}
 {% if is_admin or is_team_leader %}
 <script>
 window._canChangeStatus = true;
@@ -1304,6 +1305,12 @@ window._currentProjectName = '{{ project.name }}';
 <script>
 window._canChangeStatus = false;
 window._currentProjectName = '{{ project.name }}';
+</script>
+{% endif %}
+{% else %}
+<script>
+window._canChangeStatus = false;
+window._currentProjectName = '';
 </script>
 {% endif %}
 <!-- Toast Container -->
