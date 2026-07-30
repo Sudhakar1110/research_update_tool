@@ -326,18 +326,40 @@ def create_project_update():
 # Helpers (added by our Kanban / Activity / Time features)
 # ---------------------------------------------------------------------------
 
+def _is_manager(user=None):
+    """Check if user has a manager-level role that can see all projects."""
+    if user is None:
+        user = frappe.session.user
+    roles = frappe.get_roles(user)
+    return bool(
+        "System Manager" in roles
+        or "Team Update Admin" in roles
+        or "Team Update Team Leader" in roles
+        or "Admin" in roles
+    )
+
+
 def _get_base_filters(user=None):
-    """Return permission-aware base filters for the current user."""
+    """Return permission-aware base filters for the current user.
+
+    - Viewers: only see Approved projects
+    - Managers (Admin, Team Leader, etc.): see ALL projects
+    - Regular users (Team Members): see ONLY their own projects (by owner)
+    """
     if user is None:
         user = frappe.session.user
     roles = frappe.get_roles(user)
     is_admin = "System Manager" in roles or "Team Update Admin" in roles
+    is_manager = _is_manager(user)
     is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) and not is_admin
     filters = {}
     if is_viewer:
         approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
         if approved:
             filters["status"] = approved
+    elif not is_manager:
+        # Regular team members see only their own projects
+        filters["owner"] = user
     return filters, is_admin
 
 
@@ -379,6 +401,7 @@ def get_dashboard_stats():
 
     roles = frappe.get_roles(user)
     is_admin = "System Manager" in roles or "Team Update Admin" in roles
+    is_manager = _is_manager(user)
     is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) and not is_admin
 
     # Build base filters
@@ -389,6 +412,9 @@ def get_dashboard_stats():
         )
         if approved:
             base_filters["status"] = approved
+    elif not is_manager:
+        # Regular team members see only their own projects
+        base_filters["owner"] = user
 
     # Statistics
     total_projects = frappe.db.count("Project", filters=base_filters)
@@ -411,10 +437,12 @@ def get_dashboard_stats():
                 "color": s.color,
             })
 
-    # Recent projects
+    # Recent projects (scoped to user's own projects for regular members)
+    recent_filters = dict(base_filters) if base_filters else {}
     recent_projects = frappe.get_all(
         "Project",
         fields=["name", "project_title", "status", "owner", "creation"],
+        filters=recent_filters or None,
         limit=5,
         order_by="modified desc",
     )
@@ -458,12 +486,26 @@ def get_all_public_stats():
 
     Called by projects.html JS (team_update_tool.api.projects.get_all_public_stats).
     Returns:
-      - total_projects
+      - total_projects (scoped to user's own projects for non-manager users)
       - teams: [{name, team_name}]
       - statuses: [{name, status_name}]
       - categories: [{name, category_name}]
     """
-    total_projects = frappe.db.count("Project")
+    user = frappe.session.user
+    if user != "Guest" and not _is_manager(user):
+        roles = frappe.get_roles(user)
+        is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) \
+            and "System Manager" not in roles and "Team Update Admin" not in roles
+        if is_viewer:
+            approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
+            if approved:
+                total_projects = frappe.db.count("Project", filters={"status": approved})
+            else:
+                total_projects = 0
+        else:
+            total_projects = frappe.db.count("Project", filters={"owner": user})
+    else:
+        total_projects = frappe.db.count("Project")
 
     teams = frappe.get_all("Team", fields=["name", "team_name"], filters={"is_active": 1}, order_by="team_name asc")
     statuses = frappe.get_all("Project Status", fields=["name", "status_name", "color"], order_by="status_name asc")
@@ -523,6 +565,15 @@ def get_projects():
         query_filters.append(["project_category", "=", category_filter])
     if search:
         query_filters.append(["project_title", "like", f"%{search}%"])
+
+    # Permission scoping — regular users see only their own projects
+    user = frappe.session.user
+    if user != "Guest" and not _is_manager(user):
+        roles = frappe.get_roles(user)
+        is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) \
+            and "System Manager" not in roles and "Team Update Admin" not in roles
+        if not is_viewer:
+            query_filters.append(["owner", "=", user])
 
     try:
         # Get total count with same filters
@@ -641,6 +692,12 @@ def get_project_detail(name):
     if is_viewer:
         approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
         if not approved or project.status != approved:
+            frappe.throw(_("You do not have permission to view this project."), frappe.PermissionError)
+
+    # Permission check for regular users — only see their own projects
+    is_manager = _is_manager(user)
+    if not is_manager and not is_viewer:
+        if project.owner != user:
             frappe.throw(_("You do not have permission to view this project."), frappe.PermissionError)
 
     # Get team name
@@ -1815,6 +1872,9 @@ def get_reports():
             approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
             if approved:
                 base_filters["status"] = approved
+        elif not _is_manager(user):
+            # Regular team members see only their own projects
+            base_filters["owner"] = user
 
         # Total projects
         total_projects = frappe.db.count("Project", filters=base_filters or None)

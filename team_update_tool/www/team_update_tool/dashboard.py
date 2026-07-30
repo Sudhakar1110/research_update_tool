@@ -19,6 +19,12 @@ def get_context(context):
 
 	roles = frappe.get_roles(user)
 	is_admin = "Team Update Admin" in roles or "Admin" in roles or "System Manager" in roles
+	is_manager = bool(
+		"System Manager" in roles
+		or "Team Update Admin" in roles
+		or "Team Update Team Leader" in roles
+		or "Admin" in roles
+	)
 	is_viewer = ("Team Update Viewer" in roles or "View-Only User" in roles) and not is_admin
 
 	context.is_admin = is_admin
@@ -31,9 +37,12 @@ def get_context(context):
 		approved = frappe.db.get_value("Project Status", {"status_name": "Approved"}, "name")
 		if approved:
 			base_filters["status"] = approved
+	elif not is_manager:
+		# Regular team members see only their own projects
+		base_filters["owner"] = user
 
 	# Stats
-	context.total_projects = frappe.db.count("Project", filters=base_filters)
+	context.total_projects = frappe.db.count("Project", filters=base_filters if base_filters else None)
 	context.total_teams = frappe.db.count("Team", filters={"is_active": 1})
 	context.my_projects = frappe.db.count("Project", filters={"owner": user})
 
