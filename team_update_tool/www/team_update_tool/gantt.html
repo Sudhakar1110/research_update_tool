@@ -12,8 +12,8 @@
 :root {
   --gantt-bg: #f8f5ff;
   --gantt-card-bg: #ffffff;
-  --gantt-border: rgba(124, 58, 237, 0.12);
-  --gantt-shadow: 0 4px 16px rgba(76, 29, 149, 0.08);
+  --gantt-border: rgba(0, 137, 255, 0.12);
+  --gantt-shadow: 0 4px 16px rgba(5, 19, 60, 0.08);
   --gantt-radius: 0.75rem;
   --gantt-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --gantt-bar-height: 32px;
@@ -21,7 +21,7 @@
   --gantt-sidebar-width: 280px;
   --gantt-header-height: 52px;
   --gantt-today-color: #ef4444;
-  --gantt-weekend-color: rgba(124, 58, 237, 0.04);
+  --gantt-weekend-color: rgba(0, 137, 255, 0.04);
 }
 
 /* Page Header */
@@ -109,7 +109,7 @@
 }
 .gantt-search input:focus {
   border-color: var(--tut-primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 137, 255, 0.1);
 }
 .gantt-search svg {
   position: absolute;
@@ -136,7 +136,7 @@
 }
 .gantt-filter-select:focus {
   border-color: var(--tut-primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 137, 255, 0.1);
 }
 
 /* Zoom Controls */
@@ -159,7 +159,7 @@
   border-right: 1px solid var(--gantt-border);
 }
 .gantt-zoom-btn:last-child { border-right: none; }
-.gantt-zoom-btn:hover { color: var(--tut-primary); background: rgba(124, 58, 237, 0.04); }
+.gantt-zoom-btn:hover { color: var(--tut-primary); background: rgba(0, 137, 255, 0.04); }
 .gantt-zoom-btn.active { color: #fff; background: var(--tut-primary); }
 
 /* Today Button */
@@ -180,7 +180,7 @@
 .gantt-today-btn:hover {
   border-color: var(--tut-primary);
   color: var(--tut-primary);
-  background: rgba(124, 58, 237, 0.04);
+  background: rgba(0, 137, 255, 0.04);
 }
 .gantt-today-btn svg { width: 14px; height: 14px; }
 
@@ -202,7 +202,7 @@
 }
 .gantt-export-btn:hover {
   border-color: var(--tut-primary);
-  background: rgba(124, 58, 237, 0.04);
+  background: rgba(0, 137, 255, 0.04);
   color: var(--tut-primary);
 }
 .gantt-export-btn svg {
@@ -319,7 +319,7 @@
   height: 6px;
 }
 .gantt-chart-scroll::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.15);
+  background: rgba(0, 137, 255, 0.15);
   border-radius: 3px;
 }
 .gantt-chart-scroll::-webkit-scrollbar-track {
@@ -371,13 +371,13 @@
   padding: 0.25rem 1rem;
   height: var(--gantt-row-height);
   box-sizing: border-box;
-  border-bottom: 1px solid rgba(124, 58, 237, 0.06);
+  border-bottom: 1px solid rgba(0, 137, 255, 0.06);
   cursor: pointer;
   transition: var(--gantt-transition);
   overflow: hidden;
 }
 .gantt-sidebar-item:hover {
-  background: rgba(124, 58, 237, 0.05);
+  background: rgba(0, 137, 255, 0.05);
 }
 .gantt-sidebar-dot {
   width: 10px;
@@ -447,15 +447,15 @@
 
 /* Grid lines */
 .gantt-grid-line {
-  stroke: rgba(124, 58, 237, 0.06);
+  stroke: rgba(0, 137, 255, 0.06);
   stroke-width: 1;
 }
 .gantt-grid-line.weekend-line {
-  stroke: rgba(124, 58, 237, 0.03);
+  stroke: rgba(0, 137, 255, 0.03);
   stroke-dasharray: 3,3;
 }
 .gantt-grid-line.month-line {
-  stroke: rgba(124, 58, 237, 0.12);
+  stroke: rgba(0, 137, 255, 0.12);
   stroke-width: 1.5;
 }
 .gantt-grid-line.today-line {
@@ -519,7 +519,7 @@
 .gantt-spinner {
   width: 44px;
   height: 44px;
-  border: 3px solid rgba(124, 58, 237, 0.15);
+  border: 3px solid rgba(0, 137, 255, 0.15);
   border-top-color: var(--tut-primary);
   border-radius: 50%;
   animation: ganttSpin 0.7s linear infinite;
@@ -888,6 +888,30 @@
   }
   .gantt-sidebar-title { font-size: 0.75rem; }
   .gantt-summary { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .gantt-header { padding: 1rem 0 0.85rem; }
+  .gantt-header h1 { font-size: 1.05rem; gap: 0.5rem; }
+  .gantt-header h1 svg { width: 20px; height: 20px; }
+  .gantt-controls {
+    flex-wrap: wrap;
+  }
+  .gantt-search {
+    min-width: 100%;
+    flex-basis: 100%;
+  }
+  .gantt-filter-select { min-width: 100%; flex: 1; }
+  .gantt-summary { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  :root {
+    --gantt-sidebar-width: 150px;
+    --gantt-row-height: 36px;
+  }
+  .gantt-summary-card { padding: 0.75rem; }
+  .gantt-summary-value { font-size: 1.1rem; }
+  .gantt-summary-label { font-size: 0.65rem; }
+  .gantt-today-btn,
+  .gantt-export-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
 }
 </style>
 {% endblock %}

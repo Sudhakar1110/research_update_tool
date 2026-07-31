@@ -67,10 +67,34 @@
 
 <div class="tut-main-area">
 	<div class="container py-4">
-		<!-- Loading -->
-		<div class="tut-pro-loading" id="docsLoading">
-			<div class="spinner"></div>
-			<p>Loading documents...</p>
+		<!-- Loading (skeleton shimmer) -->
+		<div class="tut-pro-loading" id="docsLoading" style="display:block;padding-top:0.5rem;">
+			<div class="row g-3" style="width:100%;">
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="doc-skeleton-card">
+						<div class="doc-skeleton-line" style="width:40%;height:20px;"></div>
+						<div class="doc-skeleton-line" style="width:80%;"></div>
+						<div class="doc-skeleton-line" style="width:60%;"></div>
+						<div class="doc-skeleton-line" style="width:90%;"></div>
+					</div>
+				</div>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="doc-skeleton-card">
+						<div class="doc-skeleton-line" style="width:40%;height:20px;"></div>
+						<div class="doc-skeleton-line" style="width:75%;"></div>
+						<div class="doc-skeleton-line" style="width:55%;"></div>
+						<div class="doc-skeleton-line" style="width:85%;"></div>
+					</div>
+				</div>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="doc-skeleton-card">
+						<div class="doc-skeleton-line" style="width:40%;height:20px;"></div>
+						<div class="doc-skeleton-line" style="width:70%;"></div>
+						<div class="doc-skeleton-line" style="width:65%;"></div>
+						<div class="doc-skeleton-line" style="width:80%;"></div>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div id="docsContent" style="display:none;">
@@ -146,7 +170,7 @@ function getFileIcon(file_type) {
     if (type === 'docx' || type === 'doc' || type.includes('word')) return '<i class="fas fa-file-word" style="color: #3b82f6;"></i>';
     if (type === 'xlsx' || type === 'xls' || type.includes('excel')) return '<i class="fas fa-file-excel" style="color: #22c55e;"></i>';
     if (type === 'pptx' || type === 'ppt') return '<i class="fas fa-file-powerpoint" style="color: #f59e0b;"></i>';
-    if (type === 'txt' || type === 'md') return '<i class="fas fa-file-code" style="color: #8b5cf6;"></i>';
+    if (type === 'txt' || type === 'md') return '<i class="fas fa-file-code" style="color: #0089FF;"></i>';
     return '<i class="fas fa-file" style="color: #64748b;"></i>';
 }
 
@@ -334,6 +358,65 @@ function loadDocuments(offset) {
 .tut-doc-download:hover {
     color: var(--tut-primary-dark);
     gap: 0.5rem;
+}
+
+/* Skeleton Shimmer */
+.doc-skeleton-card {
+    background: var(--tut-card-bg);
+    border: 1px solid var(--tut-border);
+    border-radius: var(--tut-radius-xl);
+    padding: 1.25rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.doc-skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e6f0ff 25%, #f2f7ff 50%, #e6f0ff 75%);
+    background-size: 200% 100%;
+    animation: docShimmer 1.4s ease-in-out infinite;
+}
+@keyframes docShimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+/* Doc card entrance */
+.tut-doc-card {
+    animation: docCardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes docCardIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .tut-doc-card { animation: none; }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .tut-doc-header {
+        padding: 1rem;
+    }
+    .tut-doc-body {
+        padding: 1rem;
+    }
+    .tut-doc-footer {
+        padding: 0.85rem 1rem;
+    }
+    .tut-doc-filename {
+        font-size: 0.9rem;
+    }
+    .tut-doc-icon {
+        font-size: 1.6rem;
+    }
+    .tut-pro-pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
 }
 </style>
 {% endblock %}

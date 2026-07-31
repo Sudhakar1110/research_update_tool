@@ -90,7 +90,7 @@
 .tut-hero-shape-2 {
 	width: 400px;
 	height: 400px;
-	background: rgba(124, 58, 237, 0.15);
+	background: rgba(0, 137, 255, 0.15);
 	bottom: -100px;
 	left: -100px;
 }
@@ -98,7 +98,7 @@
 .tut-hero-shape-3 {
 	width: 300px;
 	height: 300px;
-	background: rgba(109, 40, 217, 0.1);
+	background: rgba(0, 61, 153, 0.1);
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
@@ -158,12 +158,12 @@
 	padding: 1rem 2rem !important;
 	border-radius: 50rem !important;
 	font-weight: 700 !important;
-	box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+	box-shadow: 0 10px 30px rgba(0, 137, 255, 0.4);
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .royal-primary-btn:hover {
 	transform: translateY(-4px) scale(1.02);
-	box-shadow: 0 15px 40px rgba(124, 58, 237, 0.5);
+	box-shadow: 0 15px 40px rgba(0, 137, 255, 0.5);
 	color: #fff;
 }
 
@@ -180,12 +180,77 @@
 	background: var(--tut-primary) !important;
 	color: #fff !important;
 	transform: translateY(-4px);
-	box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+	box-shadow: 0 10px 30px rgba(0, 137, 255, 0.3);
 }
 
 @keyframes crownFloat {
 	0%, 100% { transform: translateY(0) rotate(-5deg); }
 	50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+	.tut-home-hero {
+		min-height: 72vh;
+	}
+	.tut-hero-title {
+		font-size: clamp(2rem, 8vw, 2.8rem);
+	}
+	.tut-hero-desc {
+		font-size: 1.05rem;
+	}
+	.tut-hero-shape-1 {
+		width: 300px;
+		height: 300px;
+		top: -100px;
+		right: -80px;
+	}
+	.tut-hero-shape-2 {
+		width: 250px;
+		height: 250px;
+		bottom: -80px;
+		left: -80px;
+	}
+	.tut-royal-crown-home {
+		font-size: 2.5rem;
+		top: 5%;
+		right: 6%;
+	}
+}
+
+@media (max-width: 480px) {
+	.tut-home-hero {
+		min-height: 68vh;
+	}
+	.tut-hero-title {
+		font-size: clamp(1.7rem, 7vw, 2.2rem);
+	}
+	.tut-hero-desc {
+		font-size: 0.95rem;
+	}
+	.tut-hero-badge {
+		font-size: 0.75rem;
+		padding: 6px 14px;
+	}
+	.tut-royal-crown-home {
+		display: none;
+	}
+	.tut-hero-shape-3 {
+		display: none;
+	}
+	.btn-lg {
+		padding: 0.8rem 1.25rem !important;
+		font-size: 0.9rem !important;
+	}
+	.tut-stat-box {
+		padding: 1rem !important;
+	}
+	.tut-stat-value {
+		font-size: 1.75rem !important;
+	}
+	.tut-pro-card-title {
+		font-size: 0.95rem !important;
+	}
 }
 </style>
 

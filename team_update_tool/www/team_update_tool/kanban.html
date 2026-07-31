@@ -13,8 +13,8 @@
   --kanban-bg: #f8f5ff;
   --kanban-card-bg: #ffffff;
   --kanban-column-bg: #f3f0ff;
-  --kanban-border: rgba(124, 58, 237, 0.12);
-  --kanban-shadow: 0 4px 16px rgba(76, 29, 149, 0.08);
+  --kanban-border: rgba(0, 137, 255, 0.12);
+  --kanban-shadow: 0 4px 16px rgba(5, 19, 60, 0.08);
   --kanban-radius: 0.75rem;
   --kanban-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -86,8 +86,8 @@
 }
 .kanban-column.drag-over {
   border-color: var(--tut-primary);
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
-  background: rgba(124, 58, 237, 0.05);
+  box-shadow: 0 0 0 2px rgba(0, 137, 255, 0.2);
+  background: rgba(0, 137, 255, 0.05);
 }
 
 /* Column Header */
@@ -135,7 +135,7 @@
   width: 4px;
 }
 .kanban-col-body::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.2);
+  background: rgba(0, 137, 255, 0.2);
   border-radius: 2px;
 }
 
@@ -150,10 +150,18 @@
   transition: var(--kanban-transition);
   position: relative;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  animation: kanbanCardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes kanbanCardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kanban-card { animation: none; }
 }
 .kanban-card:hover {
-  border-color: rgba(124, 58, 237, 0.25);
-  box-shadow: 0 4px 12px rgba(76, 29, 149, 0.1);
+  border-color: rgba(0, 137, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(5, 19, 60, 0.1);
   transform: translateY(-2px);
 }
 .kanban-card.dragging {
@@ -243,25 +251,47 @@
   height: 36px;
 }
 
-/* Loading & Error */
+/* Loading — Skeleton Shimmer Columns */
 .kanban-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
+  padding: 0;
   min-height: 50vh;
 }
-.kanban-spinner {
-  width: 44px;
-  height: 44px;
-  border: 3px solid rgba(124, 58, 237, 0.15);
-  border-top-color: var(--tut-primary);
-  border-radius: 50%;
-  animation: kanbanSpin 0.7s linear infinite;
+.kanban-skeleton-row {
+  display: flex;
+  gap: 1.25rem;
+  overflow: hidden;
 }
-@keyframes kanbanSpin {
-  to { transform: rotate(360deg); }
+.kanban-skeleton-col {
+  min-width: 300px;
+  max-width: 340px;
+  flex-shrink: 0;
+  background: var(--kanban-column-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--kanban-border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.kanban-skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e8efff 25%, #f4f8ff 50%, #e8efff 75%);
+  background-size: 200% 100%;
+  animation: kanbanShimmer 1.4s ease-in-out infinite;
+}
+.kanban-skeleton-line.short { width: 45%; }
+.kanban-skeleton-line.medium { width: 75%; }
+.kanban-skeleton-card {
+  height: 92px;
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg, #e8efff 25%, #f4f8ff 50%, #e8efff 75%);
+  background-size: 200% 100%;
+  animation: kanbanShimmer 1.4s ease-in-out infinite;
+}
+@keyframes kanbanShimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
 }
 .kanban-error {
   text-align: center;
@@ -341,7 +371,7 @@
 }
 .kanban-search input:focus {
   border-color: var(--tut-primary);
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 137, 255, 0.1);
 }
 .kanban-search svg {
   position: absolute;
@@ -369,7 +399,7 @@
 .kanban-refresh-btn:hover {
   border-color: var(--tut-primary);
   color: var(--tut-primary);
-  background: rgba(124, 58, 237, 0.04);
+  background: rgba(0, 137, 255, 0.04);
 }
 
 /* Scrollbar for the entire board */
@@ -377,7 +407,7 @@
   height: 6px;
 }
 .kanban-board::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.15);
+  background: rgba(0, 137, 255, 0.15);
   border-radius: 3px;
 }
 .kanban-board::-webkit-scrollbar-track {
@@ -398,6 +428,54 @@
   }
   .kanban-header h1 {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kanban-header h1 {
+    font-size: 1.05rem;
+    gap: 0.5rem;
+  }
+  .kanban-header h1 svg {
+    width: 20px;
+    height: 20px;
+  }
+  .kanban-board {
+    padding: 1rem 0;
+  }
+  .kanban-board-wrapper {
+    gap: 0.85rem;
+  }
+  .kanban-column {
+    min-width: 230px;
+    max-width: 245px;
+  }
+  .kanban-col-header {
+    padding: 0.8rem 1rem;
+  }
+  .kanban-col-title {
+    font-size: 0.78rem;
+  }
+  .kanban-card {
+    padding: 0.8rem;
+  }
+  .kanban-card-title {
+    font-size: 0.82rem;
+  }
+  .kanban-controls {
+    gap: 0.6rem;
+  }
+  .kanban-search {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+  .kanban-refresh-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  .kanban-skeleton-col {
+    min-width: 230px;
+    max-width: 245px;
   }
 }
 </style>
@@ -436,10 +514,28 @@
       </button>
     </div>
 
-    <!-- Loading -->
+    <!-- Loading (skeleton shimmer) -->
     <div class="kanban-loading" id="kanbanLoading">
-      <div class="kanban-spinner"></div>
-      <p style="color:#6b7280;margin-top:1rem;font-size:0.9rem;">Loading board...</p>
+      <div class="kanban-skeleton-row">
+        <div class="kanban-skeleton-col">
+          <div class="kanban-skeleton-line short"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-line medium"></div>
+        </div>
+        <div class="kanban-skeleton-col">
+          <div class="kanban-skeleton-line short"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-line medium"></div>
+          <div class="kanban-skeleton-card"></div>
+        </div>
+        <div class="kanban-skeleton-col">
+          <div class="kanban-skeleton-line short"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-card"></div>
+        </div>
+      </div>
     </div>
 
     <!-- Error -->

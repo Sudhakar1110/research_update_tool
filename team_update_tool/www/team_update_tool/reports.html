@@ -77,13 +77,13 @@
 .erp-header-icon {
     width: 56px;
     height: 56px;
-    background: rgba(124, 58, 237, 0.25);
+    background: rgba(0, 137, 255, 0.25);
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 1.25rem;
-    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 137, 255, 0.3);
 }
 
 .erp-header-icon svg {
@@ -535,6 +535,37 @@
     .erp-data-table th,
     .erp-data-table td {
         padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .erp-page-header {
+        padding: 1.25rem 0 1rem;
+    }
+
+    .erp-page-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .erp-reports-content {
+        padding: 1.25rem 0;
+    }
+
+    .erp-card-body {
+        padding: 0.85rem;
+        overflow-x: auto;
+    }
+
+    .erp-data-table {
+        min-width: 480px;
+    }
+
+    .erp-stat-card {
+        padding: 0.85rem !important;
+    }
+
+    .erp-stat-count {
+        font-size: 1.2rem !important;
     }
 }
 

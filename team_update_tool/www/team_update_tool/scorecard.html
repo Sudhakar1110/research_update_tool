@@ -1240,7 +1240,7 @@ function renderTeamSummary(teamSummary) {
     // Deterministic dot color
     var hash = 0;
     for (var i = 0; i < teamName.length; i++) hash = teamName.charCodeAt(i) + ((hash << 5) - hash);
-    var colors = ['#0089FF','#4f46e5','#0ea5e9','#059669','#FF8C00','#dc2626','#db2777','#0891b2'];
+    var colors = ['#0089FF','#2563eb','#0ea5e9','#059669','#FF8C00','#dc2626','#db2777','#0891b2'];
     var dotColor = colors[Math.abs(hash) % colors.length];
 
     html += '<div class="sc-team-card">';
@@ -1433,8 +1433,8 @@ function getAvatarColor(str) {
   for (var i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }    var colors = [
-    '#0089FF','#4f46e5','#0ea5e9','#059669','#FF8C00',
-    '#dc2626','#db2777','#0891b2','#65a30d','#9333ea'
+    '#0089FF','#2563eb','#0ea5e9','#059669','#FF8C00',
+    '#dc2626','#db2777','#0891b2','#65a30d','#3b82f6'
   ];
   return colors[Math.abs(hash) % colors.length];
 }
