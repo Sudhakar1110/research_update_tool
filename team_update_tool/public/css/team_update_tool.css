@@ -2008,6 +2008,31 @@ textarea.tut-form-control:focus {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
 }
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+/* =====================================
+   ACCESSIBILITY: REDUCED MOTION
+   ===================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .tut-dash-hero::after,
+  .tut-hero-shape-1,
+  .tut-hero-shape-2,
+  .tut-royal-crown {
+    animation: none !important;
+  }
+}
 
 /* =====================================
    PROFESSIONAL SELECTION HIGHLIGHT
