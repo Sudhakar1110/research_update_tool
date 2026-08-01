@@ -10,7 +10,7 @@ app_color = "#2E8B57"
 required_apps = ["erpnext"]
 
 app_include_css = "/assets/team_update_tool/css/team_update_tool.css"
-website_include_css = "/assets/team_update_tool/css/team_update_tool.css"
+website_include_css = "/team_update_tool/style.css"
 website_include_js = "/assets/team_update_tool/js/team_update_tool.js"
 
 after_install = "team_update_tool.install.after_install"
@@ -35,4 +35,3 @@ doc_events = {
 		"after_insert": "team_update_tool.transactions.doctype.project.project.send_new_project_notification",
 	}
 }
-
