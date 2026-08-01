@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        bench-branch: [v15.x]
+
+    name: Frappe v15 CI
+
+    services:
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MYSQL_ROOT_PASSWORD: travis
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+      redis-cache:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      CI_BUILD: true
+      SITE_NAME: test-site.local
+      BENCH_BRANCH: ${{ matrix.bench-branch }}
+      DB_ROOT_USER: root
+      DB_ROOT_PASSWORD: travis
+      NODE: 18
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Redis
+        run: |
+          redis-cli ping
+          sudo apt-get update
+          sudo apt-get install -y redis-server
+
+      - name: Install bench
+        run: |
+          pip3 install frappe-bench --upgrade
+          bench --version
+
+      - name: Init bench
+        run: |
+          bench init --skip-redis-config-generation --frappe-branch $BENCH_BRANCH frappe-bench
+          cd frappe-bench
+
+      - name: Get app
+        run: |
+          cd frappe-bench
+          bench get-app team_update_tool ${{ github.workspace }}
+
+      - name: Get ERPNext
+        run: |
+          cd frappe-bench
+          bench get-app --branch $BENCH_BRANCH erpnext
+
+      - name: Create site
+        run: |
+          cd frappe-bench
+          bench new-site --mariadb-root-password travis --admin-password admin $SITE_NAME
+
+      - name: Install app
+        run: |
+          cd frappe-bench
+          bench --site $SITE_NAME install-app erpnext
+          bench --site $SITE_NAME install-app team_update_tool
+
+      - name: Run migration
+        run: |
+          cd frappe-bench
+          bench --site $SITE_NAME migrate
+
+      - name: Build assets
+        run: |
+          cd frappe-bench
+          bench build --app team_update_tool
+
+      - name: Run tests
+        run: |
+          cd frappe-bench
+          bench --site $SITE_NAME run-tests --app team_update_tool
+
+      - name: Check Python syntax
+        run: |
+          cd frappe-bench/apps/team_update_tool
+          python -m py_compile team_update_tool/**/*.py

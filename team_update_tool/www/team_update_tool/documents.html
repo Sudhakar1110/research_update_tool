@@ -1,0 +1,422 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Documents - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block page_content %}
+<!-- Page Header - Royal -->
+<div class="tut-projects-hero royal-projects-hero">
+	<div class="container">
+		<div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+			<div>
+				<h1 class="royal-h1"><i class="fas fa-file-alt me-2"></i>Documents</h1>
+				<p>Project files, README and documentation</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.royal-projects-hero {
+    background: var(--tut-dark-gradient);
+    padding: 3rem 0 3.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.royal-projects-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+.royal-projects-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.royal-projects-hero h1::before {
+    content: '';
+    width: 8px;
+    height: 40px;
+    background: linear-gradient(180deg, var(--tut-gold) 0%, var(--tut-gold-light) 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(255, 140, 0, 0.4);
+}
+.royal-projects-hero h1 i {
+    color: var(--tut-gold) !important;
+}
+.royal-projects-hero p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+}
+</style>
+
+<div class="tut-main-area">
+	<div class="container py-4">
+		<!-- Loading (skeleton shimmer) -->
+		<div class="tut-pro-loading" id="docsLoading" style="display:block;padding-top:0.5rem;">
+			<div class="row g-3" style="width:100%;">
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="doc-skeleton-card">
+						<div class="doc-skeleton-line" style="width:40%;height:20px;"></div>
+						<div class="doc-skeleton-line" style="width:80%;"></div>
+						<div class="doc-skeleton-line" style="width:60%;"></div>
+						<div class="doc-skeleton-line" style="width:90%;"></div>
+					</div>
+				</div>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="doc-skeleton-card">
+						<div class="doc-skeleton-line" style="width:40%;height:20px;"></div>
+						<div class="doc-skeleton-line" style="width:75%;"></div>
+						<div class="doc-skeleton-line" style="width:55%;"></div>
+						<div class="doc-skeleton-line" style="width:85%;"></div>
+					</div>
+				</div>
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="doc-skeleton-card">
+						<div class="doc-skeleton-line" style="width:40%;height:20px;"></div>
+						<div class="doc-skeleton-line" style="width:70%;"></div>
+						<div class="doc-skeleton-line" style="width:65%;"></div>
+						<div class="doc-skeleton-line" style="width:80%;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="docsContent" style="display:none;">
+			<!-- Stats Row -->
+			<div class="row g-3 mb-4">
+				<div class="col-md-4 col-sm-6">
+					<div class="tut-stat-card" id="docsStats">
+						<div class="tut-stat-icon" style="background: var(--tut-info-gradient);">
+							<i class="fas fa-file-alt"></i>
+						</div>
+						<div>
+							<div class="tut-stat-number" id="totalDocs">0</div>
+							<div class="tut-stat-label">Total Documents</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6">
+					<div class="tut-stat-card">
+						<div class="tut-stat-icon" style="background: var(--tut-success-gradient);">
+							<i class="fas fa-check-circle"></i>
+						</div>
+						<div>
+							<div class="tut-stat-number" id="approvedDocs">0</div>
+							<div class="tut-stat-label">Approved Projects</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-6">
+					<div class="tut-stat-card">
+						<div class="tut-stat-icon" style="background: var(--tut-warning-gradient);">
+							<i class="fas fa-clock"></i>
+						</div>
+						<div>
+							<div class="tut-stat-number" id="pendingDocs">0</div>
+							<div class="tut-stat-label">Pending Approval</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Documents List -->
+			<div class="row g-3" id="docsList"></div>
+
+			<!-- Empty State -->
+			<div class="tut-pro-empty-state" id="docsEmpty" style="display:none;">
+				<div class="tut-pro-empty-icon">
+					<i class="fas fa-folder-open"></i>
+				</div>
+				<h4>No Documents Found</h4>
+				<p id="docsEmptyMsg">No project files have been uploaded yet.</p>
+			</div>
+
+			<!-- Pagination -->
+			<div class="tut-pro-pagination" id="docsPagination" style="display:none;"></div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+frappe.ready(function() { loadDocuments(0); });
+
+function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function getFileIcon(file_type) {
+    var type = (file_type || '').toLowerCase();
+    if (type === 'pdf') return '<i class="fas fa-file-pdf" style="color: #ef4444;"></i>';
+    if (type.includes('image') || type === 'png' || type === 'jpg' || type === 'jpeg') return '<i class="fas fa-file-image" style="color: #06b6d4;"></i>';
+    if (type === 'docx' || type === 'doc' || type.includes('word')) return '<i class="fas fa-file-word" style="color: #3b82f6;"></i>';
+    if (type === 'xlsx' || type === 'xls' || type.includes('excel')) return '<i class="fas fa-file-excel" style="color: #22c55e;"></i>';
+    if (type === 'pptx' || type === 'ppt') return '<i class="fas fa-file-powerpoint" style="color: #f59e0b;"></i>';
+    if (type === 'txt' || type === 'md') return '<i class="fas fa-file-code" style="color: #0089FF;"></i>';
+    return '<i class="fas fa-file" style="color: #64748b;"></i>';
+}
+
+function loadDocuments(offset) {
+	document.getElementById('docsLoading').style.display = 'flex';
+	document.getElementById('docsContent').style.display = 'none';
+	document.getElementById('docsEmpty').style.display = 'none';
+	document.getElementById('docsPagination').style.display = 'none';
+
+	fetch('/api/method/team_update_tool.api.projects.get_documents?limit=20&offset=' + offset)
+		.then(function(r) {
+			if (!r.ok) throw new Error('API request failed');
+			return r.json();
+		})
+		.then(function(data) {
+			document.getElementById('docsLoading').style.display = 'none';
+			document.getElementById('docsContent').style.display = 'block';
+			
+			if (!data.message) {
+				document.getElementById('docsEmpty').style.display = 'block';
+				document.getElementById('docsEmptyMsg').textContent = 'No data received from server.';
+				return;
+			}
+			
+			var d = data.message;
+			
+			// Update stats
+			document.getElementById('totalDocs').textContent = d.total || 0;
+			
+			// Count approved vs pending
+			var approvedCount = 0;
+			var pendingCount = 0;
+			if (d.documents && d.documents.length) {
+				d.documents.forEach(function(f) {
+					if (f.is_approved) approvedCount++;
+					else pendingCount++;
+				});
+			}
+			document.getElementById('approvedDocs').textContent = approvedCount;
+			document.getElementById('pendingDocs').textContent = pendingCount;
+
+			if (d.documents && d.documents.length) {
+				var html = '';
+				d.documents.forEach(function(f) {
+					var statusClass = f.is_approved ? 'approved' : 'pending';
+					var statusIcon = f.is_approved ? 'fa-check-circle' : 'fa-clock';
+					var statusBg = f.is_approved ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)';
+					var statusColor = f.is_approved ? '#10b981' : '#f59e0b';
+					var statusText = f.is_approved ? 'Approved' : 'Pending';
+					
+					// Ensure file URL is complete
+					var fileUrl = f.file;
+					if (fileUrl && !fileUrl.startsWith('http://') && !fileUrl.startsWith('https://')) {
+						fileUrl = window.location.origin + (fileUrl.startsWith('/') ? '' : '/') + fileUrl;
+					}
+					html += '<div class="col-12 col-md-6 col-lg-4">';
+					html += '<div class="tut-doc-card">';
+					html += '<div class="tut-doc-header">';
+					html += '<div class="tut-doc-icon">' + getFileIcon(f.file_type) + '</div>';
+					html += '<span class="tut-doc-status" style="background:' + statusBg + '; color:' + statusColor + ';">';
+					html += '<i class="fas ' + statusIcon + ' me-1"></i>' + statusText;
+					html += '</span>';
+					html += '</div>';
+					html += '<div class="tut-doc-body">';
+					html += '<h5 class="tut-doc-filename">' + escHtml(f.file_name) + '</h5>';
+					html += '<div class="tut-doc-project">';
+					html += '<i class="fas fa-folder me-1"></i> ' + escHtml(f.project_title);
+					html += '</div>';
+					if (f.description) {
+						html += '<p class="tut-doc-desc">' + escHtml(f.description) + '</p>';
+					}
+					html += '</div>';
+					html += '<div class="tut-doc-footer">';
+					html += '<span class="tut-doc-type">' + (f.file_type || 'File') + '</span>';
+					html += '<a href="' + fileUrl + '" target="_blank" class="tut-doc-download">';
+					html += '<i class="fas fa-download me-1"></i> View';
+					html += '</a>';
+					html += '</div>';
+					html += '</div></div>';
+				});
+				document.getElementById('docsList').innerHTML = html;
+
+				// Pagination
+				if (d.has_more || offset > 0) {
+					var pagHtml = '<button ' + (offset > 0 ? 'onclick="loadDocuments(' + (offset - 20) + ')"' : 'disabled') + '>';
+					pagHtml += '<i class="fas fa-chevron-left"></i> Previous</button>';
+					pagHtml += '<span class="page-info">' + (offset + 1) + '–' + Math.min(offset + 20, d.total) + ' of ' + d.total + '</span>';
+					pagHtml += '<button ' + (d.has_more ? 'onclick="loadDocuments(' + (offset + 20) + ')"' : 'disabled') + '>';
+					pagHtml += 'Next <i class="fas fa-chevron-right"></i></button>';
+					document.getElementById('docsPagination').innerHTML = pagHtml;
+					document.getElementById('docsPagination').style.display = 'flex';
+				}
+			} else {
+				var emptyMsg = 'No project files have been uploaded yet.';
+				document.getElementById('docsEmptyMsg').textContent = emptyMsg;
+				document.getElementById('docsEmpty').style.display = 'block';
+			}
+		})
+		.catch(function(err) {
+			console.error('Documents load error:', err);
+			document.getElementById('docsLoading').innerHTML = '<div class="tut-pro-empty-state"><div class="tut-pro-empty-icon"><i class="fas fa-exclamation-triangle"></i></div><h4>Failed to Load</h4><p>' + err.message + '</p><button class="btn btn-outline-secondary" onclick="loadDocuments(0)"><i class="fas fa-rotate me-1"></i> Try Again</button></div>';
+		});
+}
+</script>
+<style>
+.tut-doc-card {
+    background: var(--tut-card-bg);
+    border: 1px solid var(--tut-border);
+    border-radius: var(--tut-radius-xl);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+.tut-doc-card:hover {
+    box-shadow: var(--tut-shadow-lg);
+    transform: translateY(-4px);
+    border-color: transparent;
+}
+.tut-doc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--tut-bg);
+    border-bottom: 1px solid var(--tut-border);
+}
+.tut-doc-icon {
+    font-size: 2rem;
+}
+.tut-doc-status {
+    padding: 0.35rem 0.75rem;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+}
+.tut-doc-body {
+    padding: 1.25rem;
+}
+.tut-doc-filename {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--tut-text);
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+}
+.tut-doc-project {
+    font-size: 0.85rem;
+    color: var(--tut-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.tut-doc-desc {
+    font-size: 0.85rem;
+    color: var(--tut-text-muted);
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+.tut-doc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--tut-border);
+    background: var(--tut-bg);
+}
+.tut-doc-type {
+    font-size: 0.75rem;
+    color: var(--tut-text-light);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.tut-doc-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--tut-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.tut-doc-download:hover {
+    color: var(--tut-primary-dark);
+    gap: 0.5rem;
+}
+
+/* Skeleton Shimmer */
+.doc-skeleton-card {
+    background: var(--tut-card-bg);
+    border: 1px solid var(--tut-border);
+    border-radius: var(--tut-radius-xl);
+    padding: 1.25rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.doc-skeleton-line {
+    height: 12px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e6f0ff 25%, #f2f7ff 50%, #e6f0ff 75%);
+    background-size: 200% 100%;
+    animation: docShimmer 1.4s ease-in-out infinite;
+}
+@keyframes docShimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+/* Doc card entrance */
+.tut-doc-card {
+    animation: docCardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes docCardIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .tut-doc-card { animation: none; }
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .tut-doc-header {
+        padding: 1rem;
+    }
+    .tut-doc-body {
+        padding: 1rem;
+    }
+    .tut-doc-footer {
+        padding: 0.85rem 1rem;
+    }
+    .tut-doc-filename {
+        font-size: 0.9rem;
+    }
+    .tut-doc-icon {
+        font-size: 1.6rem;
+    }
+    .tut-pro-pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

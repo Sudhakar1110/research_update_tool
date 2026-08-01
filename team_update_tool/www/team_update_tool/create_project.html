@@ -1,0 +1,1950 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ title }} - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================
+   Royal Professional Create Project UI
+   ===================================== */
+
+/* Page Header - Royal Style */
+.erp-page-header {
+    background: var(--tut-dark-gradient);
+    border-bottom: none;
+    padding: 2.5rem 0 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.erp-page-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.erp-page-header::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: 10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 140, 0, 0.1);
+    border-radius: 50%;
+}
+
+.erp-page-header .container {
+    position: relative;
+    z-index: 1;
+}
+
+.erp-page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.erp-page-header h1::before {
+    content: '';
+    width: 6px;
+    height: 35px;
+    background: linear-gradient(180deg, var(--tut-gold) 0%, var(--tut-gold-light) 100%);
+    border-radius: 3px;
+}
+
+.erp-page-header p {
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+}
+
+/* Main Content Area */
+.erp-create-content {
+    background: #f5f7fa;
+    min-height: calc(100vh - var(--tut-navbar-height));
+    padding: 2rem 0;
+}
+
+/* Step Progress - Royal Style */
+.erp-step-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    position: relative;
+    padding: 0 1rem;
+}
+
+.erp-step-progress::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    right: 40px;
+    height: 3px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    z-index: 0;
+}
+
+.erp-step-progress-fill {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--tut-primary) 0%, var(--tut-gold) 100%);
+    border-radius: 2px;
+    z-index: 1;
+    transition: width 0.3s ease;
+}
+
+.erp-step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    flex: 1;
+    max-width: 120px;
+}
+
+.erp-step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.erp-step-item.active .erp-step-circle {
+    background: var(--tut-primary);
+    border-color: var(--tut-primary);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 137, 255, 0.4);
+}
+
+.erp-step-item.completed .erp-step-circle {
+    background: var(--tut-gold);
+    border-color: var(--tut-gold);
+    color: #ffffff;
+}
+
+.erp-step-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1c1e21;
+    margin-bottom: 0.25rem;
+}
+
+.erp-step-desc {
+    font-size: 0.75rem;
+    color: #ffffff;
+    text-align: center;
+}
+
+.erp-step-item.active .erp-step-label {
+    color: var(--tut-primary);
+}
+
+/* Form Card - Royal Style */
+.erp-form-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 137, 255, 0.1), 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 137, 255, 0.1);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.erp-form-card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e8eaed;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);
+}
+
+.erp-form-card-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--tut-primary-gradient);
+    border-radius: 50%;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.erp-form-card-icon.blue { background: linear-gradient(135deg, #e3f2fd, #bbdefb); color: #1565c0; }
+.erp-form-card-icon.green { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); color: #2e7d32; }
+.erp-form-card-icon.purple { background: var(--tut-primary-light); color: var(--tut-primary); }
+.erp-form-card-icon.orange { background: linear-gradient(135deg, #fff3e0, #ffe0b2); color: #e65100; }
+.erp-form-card-icon.cyan { background: linear-gradient(135deg, #e0f7fa, #b2ebf2); color: #00838f; }
+
+.erp-form-card-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.erp-form-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1c1e21;
+    margin: 0;
+}
+
+.erp-form-card-subtitle {
+    font-size: 0.85rem;
+    color: #ffffff;
+    margin: 0.25rem 0 0;
+}
+
+.erp-form-card-body {
+    padding: 1.5rem;
+}
+
+/* Form Group */
+.erp-form-group {
+    margin-bottom: 1.25rem;
+}
+
+.erp-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.erp-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1c1e21;
+    margin-bottom: 0.5rem;
+}
+
+.erp-form-label .required {
+    color: #c62828;
+}
+
+/* Input Styles - Royal */
+.erp-form-input,
+.erp-form-select,
+.erp-form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    color: #1c1e21;
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.erp-form-input:focus,
+.erp-form-select:focus,
+.erp-form-textarea:focus {
+    outline: none;
+    border-color: var(--tut-primary);
+    box-shadow: 0 0 0 4px rgba(0, 137, 255, 0.1);
+}
+
+.erp-form-input::placeholder,
+.erp-form-textarea::placeholder {
+    color: #9aa0a6;
+}
+
+.erp-form-input.is-invalid,
+.erp-form-select.is-invalid,
+.erp-form-textarea.is-invalid {
+    border-color: #c62828;
+    background: #fff5f5;
+}
+
+.erp-form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230089FF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.erp-form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Tech Grid - Royal */
+.erp-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.erp-tech-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--tut-primary-light);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    color: #1c1e21;
+}
+
+.erp-tech-label:hover {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    border-color: var(--tut-primary);
+}
+
+.erp-tech-label input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--tut-primary);
+}
+
+.erp-tech-label.selected {
+    background: var(--tut-primary-light);
+    border-color: var(--tut-primary);
+    color: var(--tut-primary);
+}
+
+/* File Upload Area */
+.erp-upload-area {
+    border: 2px dashed var(--tut-primary);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.erp-upload-area:hover {
+    border-color: var(--tut-primary);
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+}
+
+.erp-upload-area.dragover {
+    border-color: var(--tut-primary);
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+}
+
+.erp-upload-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--tut-primary-gradient);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background: var(--tut-primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.erp-upload-text {
+    font-size: 0.95rem;
+    color: #1c1e21;
+    margin-bottom: 0.25rem;
+}
+
+.erp-upload-hint {
+    font-size: 0.8rem;
+    color: #ffffff;
+}
+
+/* Preview Images */
+.erp-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.erp-preview-item {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 16/10;
+    border: 2px solid var(--tut-primary-light);
+}
+
+.erp-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.erp-preview-remove {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.erp-preview-remove:hover {
+    background: #c62828;
+}
+
+/* File List */
+.erp-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.erp-file-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: var(--tut-primary-light);
+    border: 2px solid var(--tut-primary-light);
+    border-radius: 10px;
+}
+
+.erp-file-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+}
+
+.erp-file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.erp-file-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1c1e21;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.erp-file-size {
+    font-size: 0.75rem;
+    color: #ffffff;
+}
+
+.erp-file-remove {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: 2px solid var(--tut-primary-light);
+    color: #ffffff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.erp-file-remove:hover {
+    background: #ffebee;
+    border-color: #c62828;
+    color: #c62828;
+}
+
+/* Alert */
+.erp-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.erp-alert.warning {
+    background: #fff3e0;
+    border: 1px solid #ffb74d;
+    color: #e65100;
+}
+
+.erp-alert-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.erp-alert-content {
+    flex: 1;
+    font-size: 0.875rem;
+}
+
+/* Form Buttons */
+.erp-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #fafafa 0%, #f5f3ff 100%);
+    border-top: 1px solid #e8eaed;
+}
+
+.erp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.erp-btn-primary {
+    background: var(--tut-primary-gradient);
+    color: #ffffff;
+}
+
+.erp-btn-primary:hover {
+    transform: translateY(-2px);
+    transform: translateY(-1px);
+}
+
+.erp-btn-secondary {
+    background: #ffffff;
+    color: #1a73e8;
+    border: 2px solid #e0e0e0;
+}
+
+.erp-btn-secondary:hover {
+    background: #f5f7fa;
+    border-color: var(--tut-primary);
+}
+
+.erp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Message */
+.erp-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.erp-message.success {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+    border: 2px solid #22c55e;
+    color: #166534;
+    box-shadow: 0 10px 40px rgba(34, 197, 94, 0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 500px;
+    margin: 2rem auto;
+}
+
+.erp-message.error {
+    background: #ffebee;
+    border: 1px solid #e57373;
+    color: #c62828;
+}
+
+.erp-message-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.erp-message.success .erp-message-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    display: block;
+}
+
+.erp-message-content {
+    flex: 1;
+}
+
+.erp-message-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.erp-message.success .erp-message-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.erp-message.success .erp-message-subtitle {
+    font-size: 0.95rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+}
+
+.erp-message-link {
+    color: #1a73e8;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.erp-message.success .erp-message-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.erp-message.success .erp-message-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.erp-message.success .erp-message-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.erp-message.success .erp-message-secondary-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.erp-message.success .erp-message-secondary-link:hover {
+    background: #e5e7eb;
+    text-decoration: none;
+    color: #1f2937;
+}
+
+/* GitHub Status */
+.erp-github-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+}
+
+.erp-github-status.valid {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.erp-github-status.invalid {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* Toast */
+.erp-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.erp-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    animation: erp-toast-in 0.3s ease;
+}
+
+.erp-toast-icon {
+    flex-shrink: 0;
+}
+
+.erp-toast-content {
+    flex: 1;
+}
+
+.erp-toast-success .erp-toast-icon { color: #34a853; }
+.erp-toast-error .erp-toast-icon { color: #ea4335; }
+
+@keyframes erp-toast-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Additional Classes */
+.erp-btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+.erp-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 300px;
+    animation: erp-toast-in 0.3s ease;
+}
+
+.erp-toast-icon {
+    flex-shrink: 0;
+}
+
+.erp-toast-content {
+    flex: 1;
+}
+
+.erp-toast-success .erp-toast-icon { color: #34a853; }
+.erp-toast-error .erp-toast-icon { color: #ea4335; }
+
+.erp-preview-value {
+    font-size: 0.875rem;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.erp-preview-value.large {
+    font-size: 1rem;
+    color: #1c1e21;
+    font-weight: 600;
+}
+
+.erp-preview-section {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.erp-preview-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.erp-preview-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.35rem;
+}
+
+.erp-preview-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.erp-preview-image-thumb {
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 16/10;
+    border: 2px solid var(--tut-primary-light);
+}
+
+.erp-preview-image-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.erp-tech-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: var(--tut-primary);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.erp-tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.erp-upload-formats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.erp-upload-format-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    background: #f1f3f4;
+    color: #ffffff;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.erp-preview-desc-box {
+    background: var(--tut-primary-light);
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+    max-height: 150px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .erp-page-header {
+        padding: 1.5rem 0 1.25rem;
+    }
+    
+    .erp-page-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .erp-create-content {
+        padding: 1.5rem 0;
+    }
+    
+    .erp-step-progress {
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+    
+    .erp-step-item {
+        min-width: 80px;
+    }
+    
+    .erp-form-card-header,
+    .erp-form-card-body {
+        padding: 1rem;
+    }
+    
+    .erp-form-actions {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .erp-form-actions .erp-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .erp-page-header {
+        padding: 1.25rem 0 1rem;
+    }
+    
+    .erp-page-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .erp-create-content {
+        padding: 1.25rem 0;
+    }
+    
+    .erp-step-item {
+        min-width: 70px;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .erp-step-label {
+        font-size: 0.65rem;
+    }
+    
+    .erp-form-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .erp-form-card-body {
+        padding: 0.85rem;
+    }
+    
+    .erp-form-card-body .row > [class*="col-"] {
+        padding-right: 0.5rem;
+        padding-left: 0.5rem;
+    }
+    
+    .erp-form-group {
+        margin-bottom: 0.85rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<!-- Toast Container -->
+<div class="erp-toast-container" id="toastContainer"></div>
+
+<!-- ERPNext 15 Style Page Header -->
+<div class="erp-page-header">
+	<div class="container">
+		<div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+			<div>
+				<h1>{{ title }}</h1>
+				<p id="stepIndicator">Step 1 of 4: Project Information</p>
+			</div>
+			<div class="erp-step-badge" style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border-radius: 50px; color: #fff; font-weight: 600;">
+				<span id="currentStepDisplay">1</span> / 5
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Main Content Area -->
+<div class="erp-create-content">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-lg-10 col-xl-9">
+
+				<!-- Modern Step Progress -->
+				<div class="">
+					<div class="erp-step-progress" id="stepProgress">
+						<div class="erp-step-progress-fill" id="stepLineFill"></div>
+						{% set steps = [
+							{ 'name': 'Info', 'desc': 'Basic details', 'icon': 'info' },
+							{ 'name': 'GitHub', 'desc': 'Repository', 'icon': 'code' },
+							{ 'name': 'Documents', 'desc': 'Files', 'icon': 'file' },
+							{ 'name': 'Preview', 'desc': 'Review', 'icon': 'check' }
+						] %}
+						{% for s in steps %}
+						<div class="erp-step-item {{ 'active' if loop.index == 1 else '' }}" data-step="{{ loop.index }}">
+							<div class="erp-step-circle">
+								<span class="step-number">{{ loop.index }}</span>
+								<span class="step-check" style="display:none;">
+									<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+								</span>
+							</div>
+							<div class="erp-step-label">{{ s.name }}</div>
+							<div class="erp-step-desc">{{ s.desc }}</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+
+				<!-- Form -->
+				<form id="projectForm" novalidate>
+					<!-- Step 1: Project Information -->
+					<div class="erp-form-card step-panel" id="step1">
+						<div class="erp-form-card-header">
+							<div class="erp-form-card-icon green">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+							</div>
+							<div>
+								<h3 class="erp-form-card-title">Project Information</h3>
+								<p class="erp-form-card-subtitle">Enter the basic details about your project</p>
+							</div>
+						</div>
+						<div class="erp-form-card-body">
+							<div class="row g-4">
+								<div class="col-md-12">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Project Title <span class="required">*</span></label>
+										<input type="text" id="project_title" name="project_title" class="erp-form-input" required placeholder="Enter a descriptive project title">
+										<div class="erp-invalid-feedback">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+											Project title is required.
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Category <span class="required">*</span></label>
+										<select id="project_category" name="project_category" class="erp-form-select" required>
+											<option value="">Select a category</option>
+											{% for c in categories %}
+											<option value="{{ c.name }}">{{ c.category_name }}</option>
+											{% endfor %}
+										</select>
+										<div class="erp-invalid-feedback">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+											Please select a category.
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Team <span class="required">*</span></label>
+										<select id="team" name="team" class="erp-form-select" required>
+											<option value="">Select a team</option>
+											{% for t in teams %}
+											<option value="{{ t.name }}">{{ t.team_name }}</option>
+											{% endfor %}
+										</select>
+										<div class="erp-invalid-feedback">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+											Please select a team.
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Priority</label>
+										<select id="priority" name="priority" class="erp-form-select">
+											<option value="Low">Low Priority</option>
+											<option value="Medium" selected>Medium Priority</option>
+											<option value="High">High Priority</option>
+											<option value="Urgent">Urgent</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Start Date</label>
+										<input type="date" id="start_date" name="start_date" class="erp-form-input">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Due Date</label>
+										<input type="date" id="due_date" name="due_date" class="erp-form-input">
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Technologies <span class="required">*</span></label>
+										{% if technologies %}
+										<div class="erp-tech-grid" id="techGrid">
+											{% for t in technologies %}
+											<label class="erp-tech-label">
+												<input type="checkbox" name="technologies" value="{{ t.name }}">
+												<span>{{ t.technology_name }}</span>
+											</label>
+											{% endfor %}
+										</div>
+										<div id="techValidation" class="erp-invalid-feedback">At least one technology must be selected.</div>
+										{% else %}
+										<div class="erp-alert warning">
+											<svg class="erp-alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+											<div>No technologies found. Please create Technology records in Desk first before creating a project.</div>
+										</div>
+										{% endif %}
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Description <span class="required">*</span></label>
+										<textarea id="description" name="description" class="erp-form-textarea" rows="4" required placeholder="Describe your project goals, features, and deliverables..."></textarea>
+										<div class="erp-invalid-feedback">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+											Description is required.
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="erp-form-actions">
+							<div></div>
+							<button type="button" class="erp-btn erp-btn-primary" onclick="goToStep(2)">
+								Continue to GitHub
+								<svg class="erp-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+							</button>
+						</div>
+					</div>
+
+					<!-- Step 2: GitHub Repository -->
+					<div class="erp-form-card step-panel" id="step2" style="display:none;">
+						<div class="erp-form-card-header">
+							<div class="erp-form-card-icon blue">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="#24292e"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+							</div>
+							<div>
+								<h3 class="erp-form-card-title">GitHub Repository</h3>
+								<p class="erp-form-card-subtitle">Connect your project's source code repository</p>
+							</div>
+						</div>
+						<div class="erp-form-card-body">
+							<div class="erp-alert warning">
+								<svg class="erp-alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								<div>A valid GitHub repository URL is required. Example: <strong>https://github.com/user/repo</strong></div>
+							</div>
+							<div class="row g-4">
+								<div class="col-md-8">
+									<div class="erp-form-group">
+										<label class="erp-form-label">GitHub URL <span class="required">*</span></label>
+										<div class="erp-github-input-wrapper">
+											<input type="url" id="github_url" name="github_url" class="erp-form-input" placeholder="https://github.com/username/repository" style="padding-right: 3rem;">
+											<div id="githubValidation" class="erp-github-status" style="display:none;"></div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Branch</label>
+										<input type="text" id="github_branch" name="github_branch" class="erp-form-input" value="main" placeholder="main">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="erp-form-actions">
+							<button type="button" class="erp-btn erp-btn-secondary" onclick="goToStep(1)">
+								<svg class="erp-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+								Back
+							</button>
+							<button type="button" class="erp-btn erp-btn-primary" onclick="goToStep(3)">
+								Continue to Documents
+								<svg class="erp-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+							</button>
+						</div>
+					</div>
+
+					<!-- Step 3: Documents -->
+					<div class="erp-form-card step-panel" id="step3" style="display:none;">
+						<div class="erp-form-card-header">
+							<div class="erp-form-card-icon orange">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+							</div>
+							<div>
+								<h3 class="erp-form-card-title">Documents</h3>
+								<p class="erp-form-card-subtitle">Upload project files and documentation</p>
+							</div>
+						</div>
+						<div class="erp-form-card-body">
+							<div class="erp-alert warning">
+								<svg class="erp-alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+								<div>Upload PDF, DOCX, TXT, or ZIP files related to your project. At least one document is required.</div>
+							</div>
+							<div class="row g-4">
+								<div class="col-md-12">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Upload Files <span class="required">*</span></label>
+										<div class="erp-upload-area" id="fileDropZone">
+											<input type="file" id="fileInput" accept=".pdf,.docx,.txt,.zip,.png,.jpg,.jpeg" multiple class="d-none">
+											<div class="erp-upload-icon">
+												<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+											</div>
+											<h5>Drag & drop files here</h5>
+											<p>or click to browse your files</p>
+											<div class="erp-upload-formats">
+												<span class="erp-upload-format-tag">PDF</span>
+												<span class="erp-upload-format-tag">DOCX</span>
+												<span class="erp-upload-format-tag">TXT</span>
+												<span class="erp-upload-format-tag">ZIP</span>
+											</div>
+										</div>
+										<div class="erp-invalid-feedback">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+											At least one document file is required.
+										</div>
+									</div>
+									<div id="filePreview" class="d-flex flex-column gap-2 mt-3"></div>
+								</div>
+								<div class="col-md-12">
+									<div class="erp-form-group">
+										<label class="erp-form-label">Reference Document <span class="required">*</span></label>
+										<div class="erp-upload-area" id="referDocDropZone">
+											<input type="file" id="referDocInput" accept=".pdf,.docx,.txt,.md" style="position:absolute;width:1px;height:1px;opacity:0;left:0;top:0;">
+											<div class="erp-upload-icon">
+												<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
+											</div>
+											<h5>Upload Reference Document</h5>
+											<p>PDF, DOCX, TXT, or Markdown file</p>
+										</div>
+										<div class="erp-invalid-feedback">
+											<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+											Reference document is required.
+										</div>
+									</div>
+									<div id="referDocPreview"></div>
+								</div>
+							</div>
+							<input type="hidden" id="filesData" name="files" value="">
+						</div>
+						<div class="erp-form-actions">
+							<button type="button" class="erp-btn erp-btn-secondary" onclick="goToStep(3)">
+								<svg class="erp-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+								Back
+							</button>
+							<button type="button" class="erp-btn erp-btn-primary" onclick="goToStep(4)">
+								Review Project
+								<svg class="erp-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+							</button>
+						</div>
+					</div>
+
+					<!-- Step 4: Preview & Submit -->
+					<div class="erp-form-card step-panel" id="step4" style="display:none;">
+						<div class="erp-form-card-header">
+							<div class="erp-form-card-icon cyan">
+								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+							</div>
+							<div>
+								<h3 class="erp-form-card-title">Review Your Project</h3>
+								<p class="erp-form-card-subtitle">Verify all information before submitting</p>
+							</div>
+						</div>
+						<div class="erp-form-card-body">
+							<div id="previewContent" class="erp-form-card">
+								<div class="text-center py-5">
+									<div class="spinner-border text-success" role="status"></div>
+									<p class="mt-3 text-muted">Loading preview...</p>
+								</div>
+							</div>
+						</div>
+						<div class="erp-form-actions">
+							<button type="button" class="erp-btn erp-btn-secondary" onclick="goToStep(3)">
+								<svg class="erp-btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+								Back
+							</button>
+							<button type="submit" class="erp-btn erp-btn-primary tut-btn-lg" id="submitBtn">
+								<svg class="erp-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+								Submit Project
+							</button>
+						</div>
+					</div>
+				</form>
+
+				<div id="formMessage" class="erp-message" style="display:none;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+// ============================
+// Toast Notification System
+// ============================
+function erpToast(message, type) {
+    type = type || 'info';
+    var container = document.getElementById('toastContainer');
+    var icons = {
+        success: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+        warning: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        error: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+        info: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+    };
+    
+    var toast = document.createElement('div');
+    toast.className = 'erp-toast ' + type;
+    toast.innerHTML = 
+        '<div class="erp-toast-icon">' + icons[type] + '</div>' +
+        '<div class="erp-toast-content">' +
+            '<div class="erp-toast-message">' + message + '</div>' +
+        '</div>';
+    
+    container.appendChild(toast);
+    
+    // Auto remove after 4 seconds
+    setTimeout(function() {
+        toast.style.animation = 'erpToastSlideOut 0.3s ease forwards';
+        setTimeout(function() {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+    }, 4000);
+}
+
+// ============================
+// Utility: escape HTML to prevent XSS
+// ============================
+function escHtml(str) {
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str || ''));
+    return div.innerHTML;
+}
+
+// ============================
+// Multi-step Form State
+// ============================
+var currentStep = 1;
+var maxStep = 5;
+var uploadedFiles = [];
+var referDocFile = null;
+
+// ============================
+// Step Navigation
+// ============================
+function goToStep(step) {
+    // Validate current step before proceeding
+    if (step > currentStep) {
+        if (!validateStep(currentStep)) return;
+    }
+
+    // Hide all steps
+    document.querySelectorAll('.step-panel').forEach(function(el) { el.style.display = 'none'; });
+    // Show target step
+    var target = document.getElementById('step' + step);
+    if (target) target.style.display = 'block';
+
+    currentStep = step;
+
+    // Update progress indicators
+    var progressItems = document.querySelectorAll('.erp-step-item');
+    progressItems.forEach(function(item) {
+        var s = parseInt(item.dataset.step);
+        item.classList.remove('active', 'completed');
+        if (s < step) {
+            item.classList.add('completed');
+        } else if (s === step) {
+            item.classList.add('active');
+        }
+    });
+
+    // Update progress line
+    var lineFill = document.getElementById('stepLineFill');
+    var progressWidth = ((step - 1) / (maxStep - 1)) * 100;
+    lineFill.style.width = 'calc(' + progressWidth + '% - 48px)';
+
+    // Update step badge
+    var currentBadge = document.querySelector('#currentStepDisplay');
+    if (currentBadge) currentBadge.textContent = step;
+
+    // Update step indicator
+    var names = ['Project Information', 'GitHub Repository', 'Documents', 'Review & Submit'];
+    document.getElementById('stepIndicator').textContent = 'Step ' + step + ' of 4: ' + names[step - 1];
+
+    // Refresh preview on step 5
+    if (step === 4) refreshPreview();
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================
+// Validation
+// ============================
+function validateStep(step) {
+    var valid = true;
+    var msg = '';
+
+    if (step === 1) {
+        var title = document.getElementById('project_title').value.trim();
+        var category = document.getElementById('project_category').value;
+        var team = document.getElementById('team').value;
+        var techChecked = document.querySelectorAll('input[name="technologies"]:checked').length;
+        var techGrid = document.getElementById('techGrid');
+        var desc = document.getElementById('description').value.trim();
+        
+        if (!title) { valid = false; msg = 'Project title is required.'; }
+        else if (!category) { valid = false; msg = 'Please select a category.'; }
+        else if (!team) { valid = false; msg = 'Please select a team.'; }
+        else if (!desc) { valid = false; msg = 'Description is required.'; }
+        else if (techGrid && techChecked === 0) {
+            valid = false;
+            msg = 'At least one technology must be selected.';
+        }
+        
+        // Show/hide validation
+        var titleInput = document.getElementById('project_title');
+        var categorySelect = document.getElementById('project_category');
+        var teamSelect = document.getElementById('team');
+        var descInput = document.getElementById('description');
+        
+        titleInput.classList.toggle('is-invalid', !title);
+        categorySelect.classList.toggle('is-invalid', !category);
+        teamSelect.classList.toggle('is-invalid', !team);
+        descInput.classList.toggle('is-invalid', !desc);
+        if (techGrid) techGrid.classList.toggle('is-invalid', techChecked === 0);
+        
+    } else if (step === 2) {
+        var githubUrl = document.getElementById('github_url').value.trim();
+        if (githubUrl) {
+            var pattern = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+/;
+            var gv = document.getElementById('githubValidation');
+            if (!pattern.test(githubUrl)) {
+                valid = false;
+                msg = 'Invalid GitHub URL format.';
+                gv.className = 'erp-github-status invalid';
+                gv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Invalid';
+            } else {
+                gv.className = 'erp-github-status valid';
+                gv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Valid';
+            }
+        }
+    } else if (step === 3) {
+        if (uploadedFiles.length === 0) {
+            valid = false;
+            msg = 'At least one document file is required.';
+        }
+        if (!referDocFile) {
+            if (valid) msg = 'Reference document is required.';
+            valid = false;
+        }
+        var fileInput = document.getElementById('fileInput');
+        var referInput = document.getElementById('referDocInput');
+        fileInput.classList.toggle('is-invalid', uploadedFiles.length === 0);
+        referInput.classList.toggle('is-invalid', !referDocFile);
+    }
+
+    if (!valid && msg) {
+        erpToast(msg, 'warning');
+    }
+    return valid;
+}
+
+// ============================
+// Drag and Drop Setup
+// ============================
+function setupDragDrop(dropZoneId, inputId) {
+    var dropZone = document.getElementById(dropZoneId);
+    var input = document.getElementById(inputId);
+    
+    if (!dropZone || !input) return;
+    
+    // Click to browse
+    dropZone.addEventListener('click', function() {
+        input.click();
+    });
+    
+    // Drag events
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+    
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        var files = e.dataTransfer.files;
+        if (files.length > 0) {
+            var newInput = document.getElementById(inputId);
+            var dataTransfer = new DataTransfer();
+            Array.from(files).forEach(function(file) {
+                dataTransfer.items.add(file);
+            });
+            newInput.files = dataTransfer.files;
+            newInput.dispatchEvent(new Event('change'));
+        }
+    });
+}
+
+setupDragDrop('fileDropZone', 'fileInput');
+setupDragDrop('referDocDropZone', 'referDocInput');
+
+
+
+// ============================
+// File Upload Handler
+// ============================
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    var files = Array.from(e.target.files);
+    files.forEach(function(file) {
+        uploadedFiles.push({ file: file, name: file.name });
+    });
+    renderFiles();
+    this.value = '';
+});
+
+function renderFiles() {
+    var container = document.getElementById('filePreview');
+    if (uploadedFiles.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    var html = '';
+    uploadedFiles.forEach(function(f, i) {
+        var ext = f.name.split('.').pop().toLowerCase();
+        var iconClass = 'doc';
+        if (ext === 'pdf') iconClass = 'pdf';
+        else if (ext === 'zip') iconClass = 'zip';
+        else if (['png', 'jpg', 'jpeg'].includes(ext)) iconClass = 'img';
+        
+        var icon = ext === 'pdf' ? '📄' : ext === 'docx' ? '📝' : ext === 'zip' ? '📦' : '📎';
+        
+        html += '<div class="erp-preview-item">' +
+            '<div class="erp-file-icon ' + iconClass + '">' + icon + '</div>' +
+            '<div class="erp-file-info">' +
+                '<div class="erp-file-name">' + escHtml(f.name) + '</div>' +
+            '</div>' +
+            '<button type="button" class="erp-preview-remove" onclick="removeFile(' + i + ')">' +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+            '</button>' +
+        '</div>';
+    });
+    container.innerHTML = html;
+    
+    // Remove invalid state
+    document.getElementById('fileInput').classList.remove('is-invalid');
+}
+
+function removeFile(index) {
+    uploadedFiles.splice(index, 1);
+    renderFiles();
+}
+
+// ============================
+// Refer Document Handler
+// ============================
+// Add click debug
+var referDocInputEl = document.getElementById('referDocInput');
+if (referDocInputEl) {
+    referDocInputEl.addEventListener('click', function(e) {
+        console.log('referDocInput CLICKED');
+    });
+    
+    referDocInputEl.addEventListener('change', function(e) {
+        console.log('referDocInput CHANGE event fired');
+        var file = e.target.files[0];
+        console.log('referDocInput changed, file:', file);
+        if (file) {
+            referDocFile = file;
+            console.log('referDocFile set to:', file.name);
+            var container = document.getElementById('referDocPreview');
+            var ext = file.name.split('.').pop().toLowerCase();
+            var icon = ext === 'pdf' ? '📄' : ext === 'docx' || ext === 'doc' ? '📝' : ext === 'md' ? '📑' : '📎';
+            var iconClass = 'doc';
+            if (ext === 'pdf') iconClass = 'pdf';
+            else if (ext === 'md') iconClass = 'pdf';
+            
+            container.innerHTML = '<div class="erp-preview-item mt-3">' +
+                '<div class="erp-file-icon ' + iconClass + '">' + icon + '</div>' +
+                '<div class="erp-file-info">' +
+                    '<div class="erp-file-name">' + escHtml(file.name) + '</div>' +
+                '</div>' +
+                '<button type="button" class="erp-preview-remove" onclick="removeReferDoc()">' +
+                    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                '</button>' +
+            '</div>';
+            this.classList.remove('is-invalid');
+        } else {
+            referDocFile = null;
+            console.log('referDocFile set to null (no file)');
+            document.getElementById('referDocPreview').innerHTML = '';
+        }
+    });
+    
+    console.log('referDocInput event listeners attached');
+} else {
+    console.log('referDocInput element NOT FOUND');
+}
+
+function removeReferDoc() {
+    referDocFile = null;
+    console.log('removeReferDoc called, referDocFile set to null');
+    document.getElementById('referDocInput').value = '';
+    document.getElementById('referDocPreview').innerHTML = '';
+}
+
+// ============================
+// Preview (Step 5)
+// ============================
+function refreshPreview() {
+    var title = document.getElementById('project_title').value || '(Not set)';
+    var category = document.getElementById('project_category').selectedOptions[0]?.text || '(Not set)';
+    var team = document.getElementById('team').selectedOptions[0]?.text || '(Not set)';
+    var priority = document.getElementById('priority').value;
+    var desc = document.getElementById('description').value || '(No description)';
+    var githubUrl = document.getElementById('github_url').value || '(Not provided)';
+    var githubBranch = document.getElementById('github_branch').value || 'main';
+    var techLabels = [];
+    document.querySelectorAll('input[name="technologies"]:checked').forEach(function(cb) {
+        techLabels.push(cb.nextElementSibling.textContent);
+    });
+
+    // Get priority class
+    var priorityClass = 'medium';
+    if (priority === 'Low') priorityClass = 'low';
+    else if (priority === 'High') priorityClass = 'high';
+    else if (priority === 'Urgent') priorityClass = 'urgent';
+
+    var html = '<div class="erp-preview-section">' +
+        '<div class="erp-preview-label">Project Title</div>' +
+        '<div class="erp-preview-value large">' + escHtml(title) + '</div>' +
+    '</div>' +
+    '<div class="row g-0">' +
+        '<div class="col-md-6">' +
+            '<div class="erp-preview-section">' +
+                '<div class="erp-preview-label">Team</div>' +
+                '<div class="erp-preview-value">' + escHtml(team) + '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="col-md-6">' +
+            '<div class="erp-preview-section">' +
+                '<div class="erp-preview-label">Category</div>' +
+                '<div class="erp-preview-value">' + escHtml(category) + '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="col-md-6">' +
+            '<div class="erp-preview-section">' +
+                '<div class="erp-preview-label">Priority</div>' +
+                '<div><span class="erp-priority-modern ' + priorityClass + '">' + escHtml(priority) + '</span></div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="col-md-6">' +
+            '<div class="erp-preview-section">' +
+                '<div class="erp-preview-label">Repository</div>' +
+                '<div class="erp-preview-value">' + escHtml(githubBranch) + '</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>' +
+    (techLabels.length ? '<div class="erp-preview-section">' +
+        '<div class="erp-preview-label">Technologies</div>' +
+        '<div class="erp-tech-tags">' + techLabels.map(function(t) { 
+            return '<span class="erp-tech-tag"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> ' + t + '</span>'; 
+        }).join('') + '</div>' +
+    '</div>' : '') +
+    '<div class="erp-preview-section">' +
+        '<div class="erp-preview-label">GitHub URL</div>' +
+        '<div class="erp-preview-value"><a href="' + escHtml(githubUrl) + '" target="_blank" style="color: var(--tut-primary);">' + escHtml(githubUrl) + '</a></div>' +
+    '</div>' +
+    '<div class="erp-preview-section">' +
+        '<div class="erp-preview-label">Description</div>' +
+        '<div class="erp-preview-desc-box">' + escHtml(desc) + '</div>' +
+    '</div>';
+    
+    
+    if (uploadedFiles.length > 0) {
+        html += '<div class="erp-preview-section">' +
+            '<div class="erp-preview-label">Documents (' + uploadedFiles.length + ')</div>' +
+            '<div class="erp-file-list">' + uploadedFiles.map(function(f) { 
+                var ext = f.name.split('.').pop().toLowerCase();
+                var icon = ext === 'pdf' ? '📄' : ext === 'docx' ? '📝' : ext === 'zip' ? '📦' : '📎';
+                return '<div class="erp-file-item"><span>' + icon + '</span> ' + escHtml(f.name) + '</div>'; 
+            }).join('') + '</div>' +
+        '</div>';
+    }
+    
+    if (referDocFile) {
+        var refExt = referDocFile.name.split('.').pop().toLowerCase();
+        var refIcon = refExt === 'pdf' ? '📄' : refExt === 'docx' || refExt === 'doc' ? '📝' : refExt === 'md' ? '📑' : '📎';
+        html += '<div class="erp-preview-section">' +
+            '<div class="erp-preview-label">Reference Document</div>' +
+            '<div class="erp-file-item"><span>' + refIcon + '</span> ' + escHtml(referDocFile.name) + '</div>' +
+        '</div>';
+    }
+
+    document.getElementById('previewContent').innerHTML = html;
+}
+
+// ============================
+// Form Submission
+// ============================
+document.getElementById('projectForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Validate all steps
+    for (var i = 1; i <= 3; i++) {
+        if (!validateStep(i)) { goToStep(i); return; }
+    }
+
+    var submitBtn = document.getElementById('submitBtn');
+    var msgEl = document.getElementById('formMessage');
+    var formData = new FormData(this);
+
+    // Get selected technologies
+    var techValues = [];
+    document.querySelectorAll('input[name="technologies"]:checked').forEach(function(cb) {
+        techValues.push(cb.value);
+    });
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Submitting...';
+    msgEl.style.display = 'none';
+
+    // Debug: Log referDocFile status
+    console.log('referDocFile status:', referDocFile);
+    console.log('uploadedFiles:', uploadedFiles);
+
+    try {
+        var projectResp = await fetch('/api/method/team_update_tool.api.projects.create_project', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': frappe.csrf_token },
+            body: JSON.stringify({
+                project_title: formData.get('project_title'),
+                team: formData.get('team'),
+                project_category: formData.get('project_category'),
+                priority: formData.get('priority'),
+                description: formData.get('description'),
+                start_date: formData.get('start_date') || null,
+                due_date: formData.get('due_date') || null,
+                technologies: techValues,
+                github_url: document.getElementById('github_url').value.trim() || null,
+                github_branch: document.getElementById('github_branch').value || 'main',
+            })
+        });
+        var projectResult = await projectResp.json();
+
+        if (!projectResult.message || !projectResult.message.name) {
+            if (projectResult.exc) {
+                var err = JSON.parse(projectResult.exc);
+                msgEl.className = 'erp-message error';
+                msgEl.innerHTML = '<svg class="erp-message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>' +
+                    '<div class="erp-message-content"><div class="erp-message-title">Error</div>' + (err[0] || 'An error occurred') + '</div>';
+                msgEl.style.display = 'flex';
+            }
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<svg class="erp-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit Project';
+            return;
+        }
+        
+        var projectName = projectResult.message.name;
+        var hasErrors = false;
+
+        // Helper to upload a single file and link to child table
+        async function uploadAndLink(file, linkApi, fieldname, extraParams) {
+            try {
+                var fileData = new FormData();
+                fileData.append('file', file);
+                fileData.append('doctype', 'Project');
+                fileData.append('docname', projectName);
+                fileData.append('fieldname', fieldname);
+                var resp = await fetch('/api/method/upload_file', {
+                    method: 'POST',
+                    headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token },
+                    body: fileData
+                });
+                var result = await resp.json();
+                
+                if (result.message && result.message.file_url) {
+                    // Build the API call body
+                    var apiBody = {
+                        project_name: projectName,
+                        file_url: result.message.file_url,
+                        file_name: file.name,
+                    };
+                    
+                    // Add extra parameters if provided
+                    if (extraParams) {
+                        Object.keys(extraParams).forEach(function(key) {
+                            apiBody[key] = extraParams[key];
+                        });
+                    }
+                    
+                    var linkResp = await fetch('/api/method/' + linkApi, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': frappe.csrf_token },
+                        body: JSON.stringify(apiBody)
+                    });
+                    var linkResult = await linkResp.json();
+                    
+                    // Check if there was an error
+                    if (linkResult.error) {
+                        console.error('Link API Error:', linkResult.error);
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            } catch(e) {
+                console.error('Upload error:', e);
+                return false;
+            }
+        }
+
+
+        // Upload files and link to child table
+        if (uploadedFiles.length > 0) {
+            for (var fi = 0; fi < uploadedFiles.length; fi++) {
+                try {
+                    var ok2 = await uploadAndLink(uploadedFiles[fi].file, 'team_update_tool.api.projects.add_project_file', 'project_files');
+                    if (!ok2) hasErrors = true;
+                } catch(e) {
+                    console.error('File upload error:', e);
+                    hasErrors = true;
+                }
+            }
+        }
+
+        // Upload refer document and create Project Readme
+        if (referDocFile) {
+            try {
+                // First upload the file to Frappe's file system
+                var fileData = new FormData();
+                fileData.append('file', referDocFile);
+                fileData.append('doctype', 'Project Readme');
+                fileData.append('docname', projectName);
+                fileData.append('fieldname', 'readme_file');
+                
+                var uploadResp = await fetch('/api/method/upload_file', {
+                    method: 'POST',
+                    headers: { 'X-Frappe-CSRF-Token': frappe.csrf_token },
+                    body: fileData
+                });
+                var uploadResult = await uploadResp.json();
+                console.log('File upload result:', uploadResult);
+                
+                if (uploadResult.message && uploadResult.message.file_url) {
+                    // File uploaded successfully, now create Project Readme with the real URL
+                    var readmeResp = await fetch('/api/method/team_update_tool.api.projects.create_project_readme', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': frappe.csrf_token },
+                        body: JSON.stringify({
+                            project_name: projectName,
+                            readme_file: uploadResult.message.file_url,
+                            readme_content: ''
+                        })
+                    });
+                    var readmeResult = await readmeResp.json();
+                    console.log('README create result:', readmeResult);
+                    if (readmeResult.error) {
+                        console.error('README create error:', readmeResult.error);
+                    }
+                } else {
+                    console.error('File upload failed:', uploadResult);
+                    hasErrors = true;
+                }
+            } catch(e) {
+                console.error('Refer document upload error:', e);
+                hasErrors = true;
+            }
+        }
+
+        var successMsg = 'Project Created Successfully!';
+        var subtitleMsg = 'Your project has been submitted and is now live.';
+        if (hasErrors) subtitleMsg = 'Project created with some files not uploaded.';
+
+        msgEl.className = 'erp-message success';
+        msgEl.innerHTML = 
+            '<svg class="erp-message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" stroke="#22c55e" stroke-width="2"/><path d="M9 12l2 2 4-4" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+            '<div class="erp-message-content" style="flex:none;text-align:center;">' +
+                '<div class="erp-message-title">' + successMsg + '</div>' +
+                '<div class="erp-message-subtitle">' + subtitleMsg + '</div>' +
+                '<div class="erp-message-actions">' +
+                    '<a href="/team_update_tool/project/' + projectName + '" class="erp-message-link">' +
+                        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' +
+                        'View Project' +
+                    '</a>' +
+                    '<a href="/team_update_tool/create-project" class="erp-message-secondary-link">' +
+                        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+                        'Create Another' +
+                    '</a>' +
+                '</div>' +
+            '</div>';
+        msgEl.style.display = 'block';
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<svg class="erp-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Submitted';
+        
+        // Hide the form and show only the success message
+        document.getElementById('projectForm').style.display = 'none';
+        document.querySelector('.erp-step-progress').style.display = 'none';
+        document.getElementById('stepIndicator').style.display = 'none';
+
+        // Scroll to message
+        msgEl.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+        msgEl.className = 'erp-message error';
+        msgEl.innerHTML = '<svg class="erp-message-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>' +
+            '<div class="erp-message-content"><div class="erp-message-title">Error</div>Network error: ' + err.message + '</div>';
+        msgEl.style.display = 'flex';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<svg class="erp-btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Submit Project';
+    }
+});
+
+// ============================
+// GitHub URL Real-time Validation
+// ============================
+document.getElementById('github_url').addEventListener('input', function() {
+    var url = this.value.trim();
+    var gv = document.getElementById('githubValidation');
+    if (!url) {
+        gv.style.display = 'none';
+        return;
+    }
+    var pattern = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+/;
+    gv.style.display = 'flex';
+    if (pattern.test(url)) {
+        gv.className = 'erp-github-status valid';
+        gv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Valid';
+    } else {
+        gv.className = 'erp-github-status invalid';
+        gv.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> Invalid';
+    }
+});
+
+// Add CSS for toast animation
+var style = document.createElement('style');
+style.textContent = '@keyframes erpToastSlideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }';
+document.head.appendChild(style);
+
+frappe.ready(function() {
+    // Init step 1
+    goToStep(1);
+});
+</script>
+{% endblock %}</parameter>

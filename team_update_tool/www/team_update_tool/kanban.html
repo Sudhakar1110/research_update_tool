@@ -1,0 +1,760 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Kanban Board - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =====================================
+   KANBAN BOARD — Royal Professional
+   ===================================== */
+:root {
+  --kanban-bg: #f8f5ff;
+  --kanban-card-bg: #ffffff;
+  --kanban-column-bg: #f3f0ff;
+  --kanban-border: rgba(0, 137, 255, 0.12);
+  --kanban-shadow: 0 4px 16px rgba(5, 19, 60, 0.08);
+  --kanban-radius: 0.75rem;
+  --kanban-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Page Header */
+.kanban-header {
+  background: linear-gradient(135deg, #0066CC 0%, #0073E6 50%, #0089FF 100%);
+  padding: 1.75rem 0 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.kanban-header::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -5%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(255, 140, 0, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: kanbanPulse 8s ease-in-out infinite;
+}
+@keyframes kanbanPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+.kanban-header .container { position: relative; z-index: 1; }
+.kanban-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.kanban-header p {
+  color: rgba(255,255,255,0.75);
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+/* Kanban Board Container */
+.kanban-board {
+  background: var(--kanban-bg);
+  min-height: calc(100vh - 120px);
+  padding: 1.5rem 0;
+  overflow-x: auto;
+}
+.kanban-board-wrapper {
+  display: flex;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  min-height: 70vh;
+}
+
+/* Kanban Column */
+.kanban-column {
+  min-width: 300px;
+  max-width: 340px;
+  flex-shrink: 0;
+  background: var(--kanban-column-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--kanban-border);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 200px);
+  transition: var(--kanban-transition);
+}
+.kanban-column.drag-over {
+  border-color: var(--tut-primary);
+  box-shadow: 0 0 0 2px rgba(0, 137, 255, 0.2);
+  background: rgba(0, 137, 255, 0.05);
+}
+
+/* Column Header */
+.kanban-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--kanban-border);
+  flex-shrink: 0;
+}
+.kanban-col-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #05133C;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.kanban-col-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.kanban-col-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tut-text-muted);
+  background: rgba(0,0,0,0.06);
+  padding: 2px 10px;
+  border-radius: 50rem;
+}
+
+/* Column Body (scrollable) */
+.kanban-col-body {
+  padding: 0.75rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 100px;
+}
+.kanban-col-body::-webkit-scrollbar {
+  width: 4px;
+}
+.kanban-col-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 137, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* Kanban Card */
+.kanban-card {
+  background: var(--kanban-card-bg);
+  border: 1px solid var(--kanban-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  cursor: grab;
+  transition: var(--kanban-transition);
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  animation: kanbanCardIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes kanbanCardIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kanban-card { animation: none; }
+}
+.kanban-card:hover {
+  border-color: rgba(0, 137, 255, 0.25);
+  box-shadow: 0 4px 12px rgba(5, 19, 60, 0.1);
+  transform: translateY(-2px);
+}
+.kanban-card.dragging {
+  opacity: 0.5;
+  transform: rotate(3deg) scale(0.95);
+  cursor: grabbing;
+}
+.kanban-card:active {
+  cursor: grabbing;
+}
+.kanban-card-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #05133C;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kanban-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--tut-text-muted);
+}
+.kanban-card-team {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.kanban-card-priority {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.kanban-card-priority.low { background: rgba(5, 150, 105, 0.1); color: #059669; }
+.kanban-card-priority.medium { background: rgba(255, 140, 0, 0.1); color: #FF8C00; }
+.kanban-card-priority.high { background: rgba(220, 38, 38, 0.1); color: #dc2626; }
+.kanban-card-priority.urgent { background: rgba(0, 137, 255, 0.15); color: #0089FF; }
+.kanban-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+.kanban-card-link {
+  color: var(--tut-primary);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: var(--kanban-transition);
+}
+.kanban-card-link:hover {
+  color: var(--tut-primary-dark);
+  gap: 5px;
+}
+
+/* Empty Column State */
+.kanban-empty-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--tut-text-muted);
+  font-size: 0.85rem;
+}
+.kanban-empty-col svg {
+  opacity: 0.3;
+  margin-bottom: 0.75rem;
+  width: 36px;
+  height: 36px;
+}
+
+/* Loading — Skeleton Shimmer Columns */
+.kanban-loading {
+  padding: 0;
+  min-height: 50vh;
+}
+.kanban-skeleton-row {
+  display: flex;
+  gap: 1.25rem;
+  overflow: hidden;
+}
+.kanban-skeleton-col {
+  min-width: 300px;
+  max-width: 340px;
+  flex-shrink: 0;
+  background: var(--kanban-column-bg);
+  border-radius: 1rem;
+  border: 1px solid var(--kanban-border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.kanban-skeleton-line {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #e8efff 25%, #f4f8ff 50%, #e8efff 75%);
+  background-size: 200% 100%;
+  animation: kanbanShimmer 1.4s ease-in-out infinite;
+}
+.kanban-skeleton-line.short { width: 45%; }
+.kanban-skeleton-line.medium { width: 75%; }
+.kanban-skeleton-card {
+  height: 92px;
+  border-radius: 0.75rem;
+  background: linear-gradient(90deg, #e8efff 25%, #f4f8ff 50%, #e8efff 75%);
+  background-size: 200% 100%;
+  animation: kanbanShimmer 1.4s ease-in-out infinite;
+}
+@keyframes kanbanShimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+.kanban-error {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+.kanban-error h3 { color: #dc2626; font-weight: 600; }
+
+/* Add column button (hidden by default, shown when there are no columns) */
+.kanban-empty-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  text-align: center;
+  width: 100%;
+}
+.kanban-empty-board h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #05133C;
+  margin-bottom: 0.5rem;
+}
+.kanban-empty-board p {
+  color: var(--tut-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+/* Toast */
+.kanban-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.kanban-toast {
+  background: #fff;
+  border-left: 4px solid #0089FF;
+  border-radius: 0.5rem;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  font-size: 0.85rem;
+  color: #1e293b;
+  max-width: 320px;
+  animation: toastIn 0.25s ease;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Controls Bar */
+.kanban-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.kanban-search {
+  position: relative;
+  flex: 1;
+  max-width: 320px;
+}
+.kanban-search input {
+  width: 100%;
+  padding: 0.55rem 1rem 0.55rem 2.25rem;
+  border: 1px solid var(--kanban-border);
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  background: #fff;
+  outline: none;
+  transition: var(--kanban-transition);
+}
+.kanban-search input:focus {
+  border-color: var(--tut-primary);
+  box-shadow: 0 0 0 3px rgba(0, 137, 255, 0.1);
+}
+.kanban-search svg {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--tut-text-muted);
+}
+.kanban-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.55rem 1.25rem;
+  background: #fff;
+  border: 1px solid var(--kanban-border);
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: var(--kanban-transition);
+}
+.kanban-refresh-btn:hover {
+  border-color: var(--tut-primary);
+  color: var(--tut-primary);
+  background: rgba(0, 137, 255, 0.04);
+}
+
+/* Scrollbar for the entire board */
+.kanban-board::-webkit-scrollbar {
+  height: 6px;
+}
+.kanban-board::-webkit-scrollbar-thumb {
+  background: rgba(0, 137, 255, 0.15);
+  border-radius: 3px;
+}
+.kanban-board::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .kanban-board-wrapper {
+    gap: 1rem;
+  }
+  .kanban-column {
+    min-width: 260px;
+    max-width: 280px;
+  }
+  .kanban-header {
+    padding: 1.25rem 0 1rem;
+  }
+  .kanban-header h1 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .kanban-header h1 {
+    font-size: 1.05rem;
+    gap: 0.5rem;
+  }
+  .kanban-header h1 svg {
+    width: 20px;
+    height: 20px;
+  }
+  .kanban-board {
+    padding: 1rem 0;
+  }
+  .kanban-board-wrapper {
+    gap: 0.85rem;
+  }
+  .kanban-column {
+    min-width: 230px;
+    max-width: 245px;
+  }
+  .kanban-col-header {
+    padding: 0.8rem 1rem;
+  }
+  .kanban-col-title {
+    font-size: 0.78rem;
+  }
+  .kanban-card {
+    padding: 0.8rem;
+  }
+  .kanban-card-title {
+    font-size: 0.82rem;
+  }
+  .kanban-controls {
+    gap: 0.6rem;
+  }
+  .kanban-search {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+  .kanban-refresh-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  .kanban-skeleton-col {
+    min-width: 230px;
+    max-width: 245px;
+  }
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="kanban-header">
+  <div class="container">
+    <h1>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+      Kanban Board
+    </h1>
+    <p>Drag and drop projects to update their status</p>
+  </div>
+</div>
+
+<div class="kanban-board" id="kanbanBoard">
+  <div class="container">
+    <!-- Controls -->
+    <div class="kanban-controls">
+      <div class="kanban-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="kanbanSearch" placeholder="Filter projects..." oninput="filterKanbanCards()">
+      </div>
+      <button class="kanban-refresh-btn" onclick="loadKanban()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+
+    <!-- Loading (skeleton shimmer) -->
+    <div class="kanban-loading" id="kanbanLoading">
+      <div class="kanban-skeleton-row">
+        <div class="kanban-skeleton-col">
+          <div class="kanban-skeleton-line short"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-line medium"></div>
+        </div>
+        <div class="kanban-skeleton-col">
+          <div class="kanban-skeleton-line short"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-line medium"></div>
+          <div class="kanban-skeleton-card"></div>
+        </div>
+        <div class="kanban-skeleton-col">
+          <div class="kanban-skeleton-line short"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-card"></div>
+          <div class="kanban-skeleton-card"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="kanban-error" id="kanbanError" style="display:none;">
+      <h3>Failed to load board</h3>
+      <p class="text-muted">Please try refreshing the page.</p>
+      <button class="btn btn-primary" onclick="loadKanban()">Retry</button>
+    </div>
+
+    <!-- Board -->
+    <div class="kanban-board-wrapper" id="kanbanColumns"></div>
+
+    <!-- Empty -->
+    <div class="kanban-empty-board" id="kanbanEmpty" style="display:none;">
+      <h3>No projects found</h3>
+      <p>Create a project to get started with the Kanban board.</p>
+      <a href="/team_update_tool/create_project" class="btn btn-primary">Create Project</a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="kanban-toast-container" id="kanbanToast"></div>
+{% endblock %}
+
+{% block script %}
+<script>
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;');
+}
+
+function kanbanToast(msg, type) {
+  var colors = { info: '#0089FF', success: '#059669', error: '#dc2626' };
+  var bg = colors[type] || colors.info;
+  var container = document.getElementById('kanbanToast');
+  var toast = document.createElement('div');
+  toast.className = 'kanban-toast';
+  toast.style.borderColor = bg;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(function() {
+    toast.style.transition = 'all 0.25s ease';
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(40px)';
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 3000);
+}
+
+frappe.ready(function() {
+  loadKanban();
+});
+
+function loadKanban() {
+  document.getElementById('kanbanLoading').style.display = 'flex';
+  document.getElementById('kanbanError').style.display = 'none';
+  document.getElementById('kanbanColumns').innerHTML = '';
+
+  frappe.call({
+    method: 'team_update_tool.api.projects.get_kanban_projects',
+    callback: function(r) {
+      document.getElementById('kanbanLoading').style.display = 'none';
+      if (r.message && r.message.length) {
+        renderKanban(r.message);
+      } else if (r.message && r.message.length === 0) {
+        document.getElementById('kanbanEmpty').style.display = 'flex';
+      } else {
+        document.getElementById('kanbanError').style.display = 'block';
+      }
+    },
+    error: function() {
+      document.getElementById('kanbanLoading').style.display = 'none';
+      document.getElementById('kanbanError').style.display = 'block';
+    }
+  });
+}
+
+function renderKanban(columns) {
+  var wrapper = document.getElementById('kanbanColumns');
+  wrapper.innerHTML = '';
+
+  columns.forEach(function(col) {
+    var colEl = document.createElement('div');
+    colEl.className = 'kanban-column';
+    colEl.setAttribute('data-status', col.name);
+    colEl.setAttribute('data-status-name', col.status_name);
+
+    // Column header
+    var header = document.createElement('div');
+    header.className = 'kanban-col-header';
+    header.innerHTML = '' +
+      '<div class="kanban-col-title">' +
+        '<span class="kanban-col-dot" style="background:' + col.color + '"></span>' +
+        escHtml(col.status_name) +
+      '</div>' +
+      '<span class="kanban-col-count">' + (col.projects ? col.projects.length : 0) + '</span>';
+    colEl.appendChild(header);
+
+    // Column body (drop zone)
+    var body = document.createElement('div');
+    body.className = 'kanban-col-body';
+    body.addEventListener('dragover', function(e) { e.preventDefault(); colEl.classList.add('drag-over'); });
+    body.addEventListener('dragleave', function() { colEl.classList.remove('drag-over'); });
+    body.addEventListener('drop', function(e) { e.preventDefault(); colEl.classList.remove('drag-over'); handleDrop(e, col.name); });
+
+    if (col.projects && col.projects.length) {
+      col.projects.forEach(function(p) {
+        var card = createKanbanCard(p, col.color);
+        body.appendChild(card);
+      });
+    } else {
+      // Empty state
+      var empty = document.createElement('div');
+      empty.className = 'kanban-empty-col';
+      empty.innerHTML = '' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>' +
+        '<p>No projects in this column</p>';
+      body.appendChild(empty);
+    }
+
+    colEl.appendChild(body);
+    wrapper.appendChild(colEl);
+  });
+}
+
+function createKanbanCard(project, colColor) {
+  var card = document.createElement('div');
+  card.className = 'kanban-card';
+  card.setAttribute('draggable', 'true');
+  card.setAttribute('data-project', project.name);
+
+  // Priority badge colors
+  var priorityClass = (project.priority || 'medium').toLowerCase();
+  var priorityLabel = project.priority || 'Medium';
+
+  // Due date indicator
+  var dueHtml = '';
+  if (project.due_date) {
+    var dueDate = new Date(project.due_date);
+    var now = new Date();
+    var isOverdue = dueDate < now;
+    dueHtml = '<span style="color:' + (isOverdue ? '#dc2626' : '#059669') + ';">' +
+      (isOverdue ? '⚠ Overdue' : 'Due ' + formatDate(project.due_date)) + '</span>';
+  }
+
+  card.innerHTML = '' +
+    '<div class="kanban-card-title">' + escHtml(project.project_title) + '</div>' +
+    '<div class="kanban-card-meta">' +
+      (project.team_name ? '<span class="kanban-card-team">👥 ' + escHtml(project.team_name) + '</span>' : '') +
+      '<span class="kanban-card-priority ' + priorityClass + '">' + priorityLabel + '</span>' +
+    '</div>' +
+    '<div class="kanban-card-footer">' +
+      '<a href="/team_update_tool/project/' + project.name + '" class="kanban-card-link" onclick="event.stopPropagation();">' +
+        'View Details →' +
+      '</a>' +
+      (project.due_date ? '<span style="font-size:0.7rem;">' + dueHtml + '</span>' : '') +
+    '</div>';
+
+  // Drag event handlers
+  card.addEventListener('dragstart', function(e) {
+    e.dataTransfer.setData('text/plain', project.name);
+    e.dataTransfer.effectAllowed = 'move';
+    card.classList.add('dragging');
+  });
+  card.addEventListener('dragend', function() {
+    card.classList.remove('dragging');
+    document.querySelectorAll('.kanban-column').forEach(function(c) {
+      c.classList.remove('drag-over');
+    });
+  });
+
+  return card;
+}
+
+function handleDrop(e, newStatusName) {
+  var projectName = e.dataTransfer.getData('text/plain');
+  if (!projectName) return;
+
+  frappe.call({
+    method: 'team_update_tool.api.projects.update_project_status',
+    args: {
+      project: projectName,
+      status: newStatusName
+    },
+    callback: function(r) {
+      if (r.message && r.message.success) {
+        kanbanToast('Project moved to ' + (r.message.status_name || newStatusName), 'success');
+        // Reload board to reflect changes
+        setTimeout(loadKanban, 500);
+      } else {
+        kanbanToast('Failed to update project status', 'error');
+        loadKanban();
+      }
+    },
+    error: function() {
+      kanbanToast('Error updating project status', 'error');
+      loadKanban();
+    }
+  });
+}
+
+function filterKanbanCards() {
+  var query = document.getElementById('kanbanSearch').value.toLowerCase().trim();
+  document.querySelectorAll('.kanban-card').forEach(function(card) {
+    var title = card.querySelector('.kanban-card-title').textContent.toLowerCase();
+    card.style.display = (!query || title.indexOf(query) !== -1) ? '' : 'none';
+  });
+  // Update counts
+  document.querySelectorAll('.kanban-column').forEach(function(col) {
+    var visible = col.querySelectorAll('.kanban-card[style*=\"display: block\"], .kanban-card:not([style*=\"display\"])').length;
+    var countEl = col.querySelector('.kanban-col-count');
+    if (countEl) countEl.textContent = visible;
+  });
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  var date = new Date(d);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+</script>
+{% endblock %}

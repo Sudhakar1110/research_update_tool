@@ -1,0 +1,382 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Team Update Tool - Premium Project Management{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block page_content %}
+<!-- Hero Section - Royal -->
+<div class="tut-home-hero">
+	<!-- Royal Floating Shapes -->
+	<div class="tut-hero-shape tut-hero-shape-1"></div>
+	<div class="tut-hero-shape tut-hero-shape-2"></div>
+	<div class="tut-hero-shape tut-hero-shape-3"></div>
+	<!-- Crown Decoration -->
+	<div class="tut-royal-crown-home">
+		<i class="fas fa-crown"></i>
+	</div>
+	
+	<div class="container">
+		<div class="row align-items-center min-vh-75">
+			<div class="col-lg-8 mx-auto text-center">
+				<div class="tut-hero-badge fade-in royal-badge">
+					<i class="fas fa-crown me-1"></i>
+					Next-Generation Project Management
+				</div>
+				<h1 class="tut-hero-title fade-in royal-title">
+					Team Update <span class="tut-highlight">Tool</span>
+				</h1>
+				<p class="tut-hero-desc fade-in">
+					Elevate your team's productivity with our cutting-edge project management platform. 
+					Featuring GitHub integration, project management, and intelligent role-based access.
+				</p>
+				<div class="d-flex flex-wrap gap-3 justify-content-center mt-5 fade-in">
+					<a href="/team_update_tool/projects" class="btn btn-lg px-4 shadow-lg royal-primary-btn">
+						<i class="fas fa-folder-open me-2"></i>
+						Browse Projects
+					</a>
+					{% if is_logged_in %}
+					<a href="/team_update_tool/dashboard" class="btn btn-outline-royal btn-lg px-4">
+						<i class="fas fa-chart-line me-2"></i>
+						Dashboard
+					</a>
+					{% else %}
+					<a href="/team_update_tool/login" class="btn btn-outline-royal btn-lg px-4">
+						<i class="fas fa-sign-in-alt me-2"></i>
+						Sign In
+					</a>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+/* Royal Home Hero */
+.tut-home-hero {
+	background: var(--tut-dark-gradient);
+	min-height: 85vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	overflow: hidden;
+}
+
+.tut-home-hero::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+	opacity: 0.5;
+}
+
+.tut-hero-shape-1 {
+	width: 500px;
+	height: 500px;
+	background: rgba(255, 140, 0, 0.12);
+	top: -150px;
+	right: -100px;
+}
+
+.tut-hero-shape-2 {
+	width: 400px;
+	height: 400px;
+	background: rgba(0, 137, 255, 0.15);
+	bottom: -100px;
+	left: -100px;
+}
+
+.tut-hero-shape-3 {
+	width: 300px;
+	height: 300px;
+	background: rgba(0, 61, 153, 0.1);
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.tut-royal-crown-home {
+	position: absolute;
+	top: 8%;
+	right: 10%;
+	font-size: 4rem;
+	color: var(--tut-gold);
+	opacity: 0.2;
+	animation: crownFloat 4s ease-in-out infinite;
+}
+
+.royal-badge {
+	background: linear-gradient(135deg, rgba(255, 140, 0, 0.2) 0%, rgba(255, 197, 61, 0.1) 100%);
+	border: 1px solid rgba(255, 140, 0, 0.3);
+	color: var(--tut-gold-light);
+	font-weight: 600;
+	padding: 8px 20px;
+	border-radius: 50rem;
+	font-size: 0.9rem;
+	display: inline-flex;
+	align-items: center;
+}
+
+.royal-title {
+	font-family: 'Playfair Display', serif;
+	font-size: clamp(2.5rem, 6vw, 4rem);
+	font-weight: 700;
+	color: #ffffff;
+	margin-bottom: 1.5rem;
+	letter-spacing: -0.03em;
+	text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tut-highlight {
+	background: linear-gradient(135deg, var(--tut-gold) 0%, var(--tut-gold-light) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.tut-hero-desc {
+	font-size: 1.2rem;
+	color: rgba(255, 255, 255, 0.8);
+	max-width: 600px;
+	margin: 0 auto 2rem;
+	line-height: 1.7;
+}
+
+.royal-primary-btn {
+	background: linear-gradient(135deg, var(--tut-primary) 0%, var(--tut-primary-dark) 100%) !important;
+	border: none !important;
+	color: #fff !important;
+	padding: 1rem 2rem !important;
+	border-radius: 50rem !important;
+	font-weight: 700 !important;
+	box-shadow: 0 10px 30px rgba(0, 137, 255, 0.4);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.royal-primary-btn:hover {
+	transform: translateY(-4px) scale(1.02);
+	box-shadow: 0 15px 40px rgba(0, 137, 255, 0.5);
+	color: #fff;
+}
+
+.btn-outline-royal {
+	background: transparent !important;
+	border: 2px solid var(--tut-primary) !important;
+	color: var(--tut-primary) !important;
+	padding: 1rem 2rem !important;
+	border-radius: 50rem !important;
+	font-weight: 700 !important;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-outline-royal:hover {
+	background: var(--tut-primary) !important;
+	color: #fff !important;
+	transform: translateY(-4px);
+	box-shadow: 0 10px 30px rgba(0, 137, 255, 0.3);
+}
+
+@keyframes crownFloat {
+	0%, 100% { transform: translateY(0) rotate(-5deg); }
+	50% { transform: translateY(-15px) rotate(5deg); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+	.tut-home-hero {
+		min-height: 72vh;
+	}
+	.tut-hero-title {
+		font-size: clamp(2rem, 8vw, 2.8rem);
+	}
+	.tut-hero-desc {
+		font-size: 1.05rem;
+	}
+	.tut-hero-shape-1 {
+		width: 300px;
+		height: 300px;
+		top: -100px;
+		right: -80px;
+	}
+	.tut-hero-shape-2 {
+		width: 250px;
+		height: 250px;
+		bottom: -80px;
+		left: -80px;
+	}
+	.tut-royal-crown-home {
+		font-size: 2.5rem;
+		top: 5%;
+		right: 6%;
+	}
+}
+
+@media (max-width: 480px) {
+	.tut-home-hero {
+		min-height: 68vh;
+	}
+	.tut-hero-title {
+		font-size: clamp(1.7rem, 7vw, 2.2rem);
+	}
+	.tut-hero-desc {
+		font-size: 0.95rem;
+	}
+	.tut-hero-badge {
+		font-size: 0.75rem;
+		padding: 6px 14px;
+	}
+	.tut-royal-crown-home {
+		display: none;
+	}
+	.tut-hero-shape-3 {
+		display: none;
+	}
+	.btn-lg {
+		padding: 0.8rem 1.25rem !important;
+		font-size: 0.9rem !important;
+	}
+	.tut-stat-box {
+		padding: 1rem !important;
+	}
+	.tut-stat-value {
+		font-size: 1.75rem !important;
+	}
+	.tut-pro-card-title {
+		font-size: 0.95rem !important;
+	}
+}
+</style>
+
+<!-- Stats Section -->
+<section class="tut-stats-section">
+	<div class="container">
+		<div class="row g-4 justify-content-center">
+			<div class="col-6 col-lg-3">
+				<div class="tut-stat-box">
+					<div class="tut-stat-icon-green">
+						<i class="fas fa-folder-open"></i>
+					</div>
+					<div>
+						<div class="tut-stat-value">{{ total_projects }}</div>
+						<div class="tut-stat-name">Projects</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-lg-3">
+				<div class="tut-stat-box">
+					<div class="tut-stat-icon" style="background: var(--tut-info-gradient); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">
+						<i class="fas fa-users"></i>
+					</div>
+					<div>
+						<div class="tut-stat-value">{{ total_teams }}</div>
+						<div class="tut-stat-name">Teams</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-lg-3">
+				<div class="tut-stat-box">
+					<div class="tut-stat-icon-purple">
+						<i class="fas fa-code"></i>
+					</div>
+					<div>
+						<div class="tut-stat-value">{{ total_technologies }}</div>
+						<div class="tut-stat-name">Technologies</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-6 col-lg-3">
+				<div class="tut-stat-box">
+					<div class="tut-stat-icon-orange">
+						<i class="fab fa-github"></i>
+					</div>
+					<div>
+						<div class="tut-stat-value">{{ total_projects }}</div>
+						<div class="tut-stat-name">Repositories</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Featured Projects -->
+{% if featured_projects %}
+<section class="tut-projects-section">
+	<div class="container">
+		<div class="text-center mb-5">
+			<h2 class="fw-bold" style="font-size: 2rem; background: var(--tut-dark-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Featured Projects</h2>
+			<p class="text-muted">Discover exceptional work from our talented teams</p>
+		</div>
+		<div class="row g-4">
+			{% for project in featured_projects[:6] %}
+			<div class="col-lg-4 col-md-6">
+				<a href="/team_update_tool/project/{{ project.name }}" class="text-decoration-none">
+					<div class="tut-pro-card">
+						<div class="tut-pro-card-body">
+							<div class="d-flex align-items-center justify-content-between mb-3">
+								<span class="tut-status-pill" style="background:{{ project.status_color or '#6b7280' }}15; color:{{ project.status_color or '#6b7280' }}; border: 1px solid {{ project.status_color or '#6b7280' }}30;">
+									<i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i>
+									{{ project.status_name or project.status }}
+								</span>
+								<i class="fas fa-arrow-right text-muted"></i>
+							</div>
+							<h5 class="tut-pro-card-title">{{ project.project_title }}</h5>
+							<div class="tut-pro-card-meta">
+								<span><i class="fas fa-users me-1"></i> {{ project.team }}</span>
+								{% if project.project_category %}
+								<span class="text-muted">·</span>
+								<span class="text-muted"><i class="fas fa-layer-group me-1"></i>{{ project.project_category }}</span>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+		{% if featured_projects|length > 6 %}
+		<div class="text-center mt-5">
+			<a href="/team_update_tool/projects" class="btn btn-outline-primary btn-lg px-5">
+				View All Projects <i class="fas fa-arrow-right ms-2"></i>
+			</a>
+		</div>
+		{% endif %}
+	</div>
+</section>
+{% endif %}
+
+<!-- Quick Links -->
+<section class="tut-quicklinks-section">
+	<div class="container">
+		<div class="row g-4 justify-content-center">
+			<div class="col-md-4">
+				<a href="/team_update_tool/projects" class="tut-quicklink-card">
+					<div class="tut-quicklink-icon tut-icon-green">
+						<i class="fas fa-folder-open"></i>
+					</div>
+					<h5>Projects</h5>
+					<p>Browse all team projects</p>
+					<span class="tut-quicklink-arrow">→</span>
+				</a>
+			</div>
+			<div class="col-md-4">
+				<a href="/team_update_tool/repositories" class="tut-quicklink-card">
+					<div class="tut-quicklink-icon tut-icon-dark">
+						<i class="fab fa-github"></i>
+					</div>
+					<h5>Repositories</h5>
+					<p>GitHub integrations</p>
+					<span class="tut-quicklink-arrow">→</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}

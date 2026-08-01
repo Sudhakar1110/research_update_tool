@@ -1,0 +1,140 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "MS-.YYYY.-.#####",
+ "creation": "2026-07-21 10:00:00",
+ "doctype": "DocType",
+ "module": "Transactions",
+ "engine": "InnoDB",
+ "field_order": [
+  "project",
+  "milestone_title",
+  "milestone_date",
+  "column_break_1",
+  "milestone_type",
+  "color",
+  "section_desc",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Project",
+   "options": "Project",
+   "reqd": 1
+  },
+  {
+   "fieldname": "milestone_title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Milestone Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "milestone_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Milestone Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "milestone_type",
+   "fieldtype": "Select",
+   "label": "Milestone Type",
+   "options": "Milestone\nReview\nDemo\nDeadline\nCheck-in\nOther"
+  },
+  {
+   "fieldname": "color",
+   "fieldtype": "Select",
+   "default": "#f59e0b",
+   "label": "Color",
+   "options": "#f59e0b\n#3b82f6\n#22c55e\n#ef4444\n#8b5cf6\n#ec4899\n#14b8a6"
+  },
+  {
+   "fieldname": "section_desc",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-21 10:00:00",
+ "modified_by": "Administrator",
+ "name": "Project Milestone",
+ "naming_rule": "By Naming Series",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Team Leader",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Team Member",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Viewer"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "project,milestone_title",
+ "sort_field": "milestone_date",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "milestone_title",
+ "track_changes": 1
+}

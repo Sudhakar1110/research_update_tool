@@ -1,0 +1,8 @@
+{
+	"css/team_update_tool.css": [
+		"public/css/team_update_tool.css"
+	],
+	"js/team_update_tool.js": [
+		"public/js/team_update_tool.js"
+	]
+}

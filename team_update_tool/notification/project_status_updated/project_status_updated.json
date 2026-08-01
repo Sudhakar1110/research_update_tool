@@ -1,0 +1,27 @@
+{
+ "channel": "Email",
+ "creation": "2026-07-08 10:00:00",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "module": "Transactions",
+ "document_type": "Project",
+ "enabled": 1,
+ "event": "Value Change",
+ "is_standard": 1,
+ "message": "<p>Project status has been updated:</p><p><b>{{ doc.project_title }}</b><br>New Status: {{ doc.status }}<br>Team: {{ doc.team }}</p>",
+ "method": "",
+ "modified": "2026-07-13 04:00:00",
+ "modified_by": "Administrator",
+ "name": "Project Status Updated",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "condition": "",
+   "receiver_by_document_field": "",
+   "receiver_by_role": "Team Update Admin"
+  }
+ ],
+ "send_system_notification": 1,
+ "subject": "Project Status Updated: {{ doc.project_title }}",
+ "value_changed": "status"
+}

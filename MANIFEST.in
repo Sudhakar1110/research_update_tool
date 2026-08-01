@@ -1,0 +1,19 @@
+include MANIFEST.in
+include LICENSE
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include team_update_tool *.css
+recursive-include team_update_tool *.csv
+recursive-include team_update_tool *.html
+recursive-include team_update_tool *.ico
+recursive-include team_update_tool *.js
+recursive-include team_update_tool *.json
+recursive-include team_update_tool *.md
+recursive-include team_update_tool *.png
+recursive-include team_update_tool *.py
+recursive-include team_update_tool *.svg
+recursive-include team_update_tool *.txt
+recursive-exclude team_update_tool *.pyc

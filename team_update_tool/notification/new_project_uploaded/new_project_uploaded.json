@@ -1,0 +1,26 @@
+{
+ "channel": "Email",
+ "creation": "2026-07-08 10:00:00",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "module": "Transactions",
+ "document_type": "Project",
+ "enabled": 1,
+ "event": "New",
+ "is_standard": 1,
+ "message": "<p>A new project has been uploaded:</p><p><b>{{ doc.project_title }}</b><br>Team: {{ doc.team }}<br>Status: {{ doc.status }}</p>",
+ "method": "",
+ "modified": "2026-07-13 04:00:00",
+ "modified_by": "Administrator",
+ "name": "New Project Uploaded",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "condition": "",
+   "receiver_by_document_field": "",
+   "receiver_by_role": "Team Update Admin"
+  }
+ ],
+ "send_system_notification": 1,
+ "subject": "New Project Uploaded: {{ doc.project_title }}"
+}

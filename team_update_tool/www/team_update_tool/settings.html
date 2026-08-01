@@ -1,0 +1,111 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Settings - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+{% endblock %}
+
+{% block page_content %}
+<div class="tut-page-header">
+	<div class="container">
+		<div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+			<div>
+				<h1 class="m-0">Settings</h1>
+				<p class="m-0">Manage your preferences</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="tut-main-area">
+	<div class="container py-4">
+		<div class="row justify-content-center">
+			<div class="col-md-8 col-lg-6">
+				<div class="card border-0 shadow-sm rounded-4">
+					<div class="card-body p-4">
+						<form id="settingsForm">
+							<h5 class="fw-bold mb-3">Profile Information</h5>
+							<div class="row g-3 mb-4">
+								<div class="col-sm-6">
+									<label class="form-label fw-semibold small" for="first_name">First Name</label>
+									<input type="text" id="first_name" name="first_name" class="form-control" value="{{ user_doc.first_name or '' }}">
+								</div>
+								<div class="col-sm-6">
+									<label class="form-label fw-semibold small" for="last_name">Last Name</label>
+									<input type="text" id="last_name" name="last_name" class="form-control" value="{{ user_doc.last_name or '' }}">
+								</div>
+							</div>
+
+							<h5 class="fw-bold mb-2">Notification Preferences</h5>
+							<div class="alert alert-light border rounded-3 mb-4">
+								<p class="small text-muted mb-0">Notification preferences will be available in a future update. You will receive email notifications for project status changes by default.</p>
+							</div>
+
+							<div class="d-flex gap-2 justify-content-end pt-3 border-top">
+								<button type="submit" class="btn btn-success rounded-pill px-4 fw-semibold" id="saveSettings">
+									<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+									Save Settings
+								</button>
+							</div>
+						</form>
+						<div id="settingsMessage" class="mt-3" style="display:none;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+frappe.ready(function() {
+	var form = document.getElementById('settingsForm');
+	if (!form) return;
+
+	form.addEventListener('submit', async function(e) {
+		e.preventDefault();
+		var btn = document.getElementById('saveSettings');
+		var msg = document.getElementById('settingsMessage');
+		var formData = new FormData(this);
+
+		btn.disabled = true;
+		btn.innerHTML = 'Saving...';
+		msg.style.display = 'none';
+
+		try {
+			var resp = await fetch('/api/method/frappe.client.set_value', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': frappe.csrf_token },
+				body: JSON.stringify({
+					doctype: 'User',
+					name: '{{ frappe.session.user }}',
+					fieldname: {
+						first_name: formData.get('first_name'),
+						last_name: formData.get('last_name')
+					}
+				})
+			});
+			var result = await resp.json();
+			if (result.message) {
+				msg.className = 'alert alert-success border-0 rounded-3';
+				msg.innerHTML = '<p class="mb-0 fw-semibold">Settings saved successfully!</p>';
+				msg.style.display = 'block';
+			} else if (result.exc) {
+				var err = JSON.parse(result.exc);
+				msg.className = 'alert alert-danger border-0 rounded-3';
+				msg.innerHTML = '<p class="mb-0">' + (err[0] || 'An error occurred') + '</p>';
+				msg.style.display = 'block';
+			}
+		} catch(err) {
+			msg.className = 'alert alert-danger border-0 rounded-3';
+			msg.innerHTML = '<p class="mb-0">Network error. Please try again.</p>';
+			msg.style.display = 'block';
+		}
+		btn.disabled = false;
+		btn.innerHTML = 'Save Settings';
+	});
+});
+</script>
+{% endblock %}

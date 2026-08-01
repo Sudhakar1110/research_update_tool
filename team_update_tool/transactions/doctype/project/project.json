@@ -1,0 +1,277 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "naming_series:PRJ-.#####",
+ "creation": "2026-07-08 10:00:00",
+ "doctype": "DocType",
+ "module": "Transactions",
+ "engine": "InnoDB",
+ "field_order": [
+  "project_title",
+  "project_category",
+  "team",
+  "column_break_1",
+  "status",
+  "priority",
+  "section_tech",
+  "technologies",
+  "section_github",
+  "github_repository",
+  "section_dates",
+  "start_date",
+  "due_date",
+  "column_break_dates",
+  "completion_date",
+  "section_desc",
+  "description",
+  "tags",
+  "section_files",
+  "project_files",
+  "section_screenshots",
+  "screenshots",
+  "section_updates",
+  "project_updates",
+  "section_approval",
+  "approved_by",
+  "approval_date",
+  "column_break_approval",
+  "review_remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "PRJ-.#####",
+   "default": "PRJ-.#####",
+   "hidden": 1
+  },
+  {
+   "fieldname": "project_title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "in_global_search": 1,
+   "label": "Project Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "project_category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Project Category",
+   "options": "Project Category"
+  },
+  {
+   "fieldname": "team",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Team",
+   "options": "Team",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Project Status",
+   "reqd": 1
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "default": "Medium",
+   "in_list_view": 1,
+   "label": "Priority",
+   "options": "Low\nMedium\nHigh\nUrgent"
+  },
+  {
+   "fieldname": "section_tech",
+   "fieldtype": "Section Break",
+   "label": "Technologies Used"
+  },
+  {
+   "fieldname": "technologies",
+   "fieldtype": "Table MultiSelect",
+   "label": "Technologies",
+   "options": "Project Technology"
+  },
+  {
+   "fieldname": "section_github",
+   "fieldtype": "Section Break",
+   "label": "GitHub Repository"
+  },
+  {
+   "fieldname": "github_repository",
+   "fieldtype": "Link",
+   "label": "GitHub Repository",
+   "options": "GitHub Repository"
+  },
+  {
+   "fieldname": "section_dates",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "column_break_dates",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "completion_date",
+   "fieldtype": "Date",
+   "label": "Completion Date"
+  },
+  {
+   "fieldname": "section_desc",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  },
+  {
+   "fieldname": "tags",
+   "fieldtype": "Data",
+   "label": "Tags (comma separated)"
+  },
+  {
+   "fieldname": "section_files",
+   "fieldtype": "Section Break",
+   "label": "Project Files"
+  },
+  {
+   "fieldname": "project_files",
+   "fieldtype": "Table",
+   "label": "Files",
+   "options": "Project Files"
+  },
+  {
+   "fieldname": "section_screenshots",
+   "fieldtype": "Section Break",
+   "label": "Screenshots"
+  },
+  {
+   "fieldname": "screenshots",
+   "fieldtype": "Table",
+   "label": "Screenshots",
+   "options": "Project Screenshots"
+  },
+  {
+   "fieldname": "section_updates",
+   "fieldtype": "Section Break",
+   "label": "Project Updates"
+  },
+  {
+   "fieldname": "project_updates",
+   "fieldtype": "Table",
+   "label": "Updates",
+   "options": "Project Update"
+  },
+  {
+   "fieldname": "section_approval",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Date",
+   "label": "Approval Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_approval",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "review_remarks",
+   "fieldtype": "Small Text",
+   "label": "Review Remarks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-08 10:00:00",
+ "modified_by": "Administrator",
+ "name": "Project",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Team Member",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Viewer"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "project_title,team,status",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "project_title",
+ "track_changes": 1
+}

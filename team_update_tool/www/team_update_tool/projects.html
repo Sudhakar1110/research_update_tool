@@ -1,0 +1,906 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Projects - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Royal Projects Page Styles */
+.tut-projects-hero {
+    background: var(--tut-dark-gradient);
+    padding: 3.5rem 0 4.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.tut-projects-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+.tut-projects-hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: royalPulse 8s ease-in-out infinite;
+}
+.tut-projects-hero .container {
+    position: relative;
+    z-index: 2;
+}
+.tut-projects-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.tut-projects-hero h1::before {
+    content: '';
+    width: 8px;
+    height: 45px;
+    background: linear-gradient(180deg, var(--tut-gold) 0%, var(--tut-gold-light) 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(255, 140, 0, 0.4);
+}
+.tut-projects-hero p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.75);
+    max-width: 600px;
+}
+.tut-projects-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+.tut-projects-stats-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgba(255,255,255,0.9);
+}
+.tut-projects-stats-item .count {
+    font-size: 1.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--tut-gold) 0%, var(--tut-gold-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.tut-projects-stats-item .label {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+}
+.tut-new-project-btn {
+    background: linear-gradient(135deg, var(--tut-gold) 0%, #b45309 100%);
+    border: none;
+    color: #fff;
+    padding: 0.875rem 1.75rem;
+    border-radius: 50rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(255, 140, 0, 0.35);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.tut-new-project-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(255, 140, 0, 0.45);
+    color: #fff;
+}
+
+/* Royal Filter Section */
+.tut-filter-section {
+    background: var(--tut-glass);
+    backdrop-filter: blur(20px);
+    border-radius: 1.25rem;
+    box-shadow: var(--tut-royal-shadow);
+    padding: 1.75rem;
+    margin-top: -2.5rem;
+    position: relative;
+    z-index: 10;
+    border: 1px solid var(--tut-royal-border);
+}
+.tut-filter-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--tut-primary-gradient);
+    border-radius: 1.25rem 1.25rem 0 0;
+}
+.tut-filter-section .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+.tut-filter-section .filter-group {
+    flex: 1;
+    min-width: 180px;
+}
+.tut-filter-section .form-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--tut-primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+}
+.tut-filter-section .form-control,
+.tut-filter-section .form-select {
+    border: 2px solid var(--tut-border-light);
+    border-radius: 0.75rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+.tut-filter-section .form-control:focus,
+.tut-filter-section .form-select:focus {
+    border-color: var(--tut-primary);
+    box-shadow: 0 0 0 4px rgba(0, 137, 255, 0.1);
+    background: #fff;
+}
+.tut-clear-filters-btn {
+    background: transparent;
+    border: 2px solid var(--tut-royal-border);
+    color: var(--tut-primary);
+    padding: 0.7rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.tut-clear-filters-btn:hover {
+    background: rgba(0, 137, 255, 0.05);
+    border-color: var(--tut-primary);
+    color: var(--tut-primary-dark);
+}
+
+/* Royal Results Info */
+.tut-results-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0 1rem;
+    border-bottom: 1px solid var(--tut-border-light);
+    margin-bottom: 1.5rem;
+}
+.tut-results-count {
+    font-size: 0.95rem;
+    color: var(--tut-text-muted);
+}
+.tut-results-count strong {
+    color: var(--tut-primary-dark);
+    font-weight: 700;
+}
+
+/* Royal Project Cards Grid */
+.tut-projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.75rem;
+}
+.tut-pro-project-card {
+    background: var(--tut-glass);
+    backdrop-filter: blur(10px);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--tut-royal-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+}
+.tut-pro-project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--tut-primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+.tut-pro-project-card:hover::before {
+    transform: scaleX(1);
+}
+.tut-pro-project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--tut-royal-shadow), var(--tut-royal-glow);
+    border-color: rgba(0, 137, 255, 0.3);
+    color: inherit;
+    text-decoration: none;
+}
+.tut-pro-card-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%);
+}
+.tut-pro-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.tut-pro-project-card:hover .tut-pro-card-image img {
+    transform: scale(1.1);
+}
+.tut-pro-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #9ca3af;
+}
+.tut-pro-card-placeholder i {
+    font-size: 2.5rem;
+    opacity: 0.5;
+    color: var(--tut-primary);
+}
+.tut-pro-card-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.tut-pro-card-badge .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.tut-pro-card-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.tut-pro-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+.tut-pro-card-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+}
+.tut-pro-card-meta span i {
+    color: var(--tut-primary);
+}
+.tut-pro-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #05133C;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.tut-pro-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--tut-border-light);
+    margin-top: auto;
+}
+.tut-pro-card-date {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.tut-pro-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--tut-primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.tut-pro-project-card:hover .tut-pro-card-link {
+    color: var(--tut-primary-dark);
+    gap: 0.6rem;
+}
+
+/* Royal Empty State */
+.tut-pro-empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: var(--tut-glass);
+    backdrop-filter: blur(10px);
+    border-radius: 1.25rem;
+    border: 2px dashed var(--tut-royal-border);
+}
+.tut-pro-empty-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--tut-primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.75rem;
+    box-shadow: 0 10px 30px rgba(0, 137, 255, 0.3);
+}
+.tut-pro-empty-icon i {
+    font-size: 2.5rem;
+    color: #fff;
+}
+.tut-pro-empty-state h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #05133C;
+    margin-bottom: 0.5rem;
+}
+.tut-pro-empty-state p {
+    font-size: 0.95rem;
+    color: var(--tut-text-muted);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Royal Pagination */
+.tut-pro-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2rem 0;
+}
+.tut-pro-pagination button {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    padding: 0.6rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #334155;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+.tut-pro-pagination button:hover:not(:disabled) {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #fff;
+}
+.tut-pro-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+.tut-pro-pagination .page-info {
+    font-size: 0.9rem;
+    color: #64748b;
+    padding: 0 1rem;
+}
+
+/* Loading State — Skeleton Shimmer */
+@keyframes proShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.tut-pro-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+.pro-skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: proShimmer 1.4s infinite ease-in-out;
+    border-radius: 0.75rem;
+}
+.pro-skeleton--card {
+    height: 380px;
+    border-radius: 1.25rem;
+}
+
+/* Card Entrance Animation */
+@keyframes proCardIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.pro-animate-in {
+    animation: proCardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+
+/* Priority Badge */
+.tut-priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.tut-priority-badge.high {
+    background: #fef2f2;
+    color: #dc2626;
+}
+.tut-priority-badge.medium {
+    background: #fffbeb;
+    color: #FF8C00;
+}
+.tut-priority-badge.low {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .tut-projects-hero {
+        padding: 2rem 0 3rem;
+    }
+    .tut-projects-hero h1 {
+        font-size: 1.75rem;
+    }
+    .tut-projects-stats {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .tut-filter-section {
+        margin-top: -1.5rem;
+        padding: 1rem;
+    }
+    .tut-filter-section .filter-group {
+        min-width: 100%;
+    }
+    .tut-projects-grid {
+        grid-template-columns: 1fr;
+    }
+    .tut-pro-card-image {
+        height: 160px;
+    }
+    .tut-pro-card-badge {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.65rem;
+    }
+    .tut-pro-card-body {
+        padding: 1.25rem;
+    }
+    .tut-pro-card-title {
+        font-size: 1rem;
+    }
+    .tut-clear-filters-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+@media (max-width: 480px) {
+    .tut-projects-hero {
+        padding: 1.5rem 0 2.5rem;
+    }
+    .tut-projects-hero h1 {
+        font-size: 1.35rem;
+    }
+    .tut-projects-hero h1::before {
+        height: 30px;
+    }
+    .tut-projects-stats-item .count {
+        font-size: 1.3rem;
+    }
+    .tut-projects-stats-item .label {
+        font-size: 0.75rem;
+    }
+    .tut-new-project-btn {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.8rem;
+    }
+    .tut-filter-section {
+        margin-top: -1rem;
+        padding: 0.85rem;
+    }
+    .tut-filter-section .form-control,
+    .tut-filter-section .form-select {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.82rem;
+    }
+    .tut-pro-card-image {
+        height: 140px;
+    }
+    .tut-pro-card-body {
+        padding: 1rem;
+    }
+    .tut-pro-card-title {
+        font-size: 0.95rem;
+    }
+    .tut-pro-card-meta span {
+        font-size: 0.72rem;
+    }
+    .tut-results-info {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    .tut-pro-pagination button {
+        padding: 0.45rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<!-- Projects Hero Section -->
+<div class="tut-projects-hero">
+<div class="container">
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+<div>
+<h1><i class="fas fa-folder-open me-2" style="color: #22c55e;"></i>Projects</h1>
+<p id="projectsTotal">Browse and discover all team projects</p>
+<div class="tut-projects-stats" id="projectsStats">
+<div class="tut-projects-stats-item">
+<span class="count" id="totalCount">0</span>
+<span class="label">Total Projects</span>
+</div>
+<div class="tut-projects-stats-item">
+<span class="count" id="teamCount">0</span>
+<span class="label">Teams</span>
+</div>
+</div>
+</div>
+<div>
+<a href="/team_update_tool/create_project" class="tut-new-project-btn" id="newProjectBtn" style="display:none;">
+<i class="fas fa-plus"></i>
+New Project
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<div class="tut-main-area" style="margin-left:0;">
+<div class="container">
+<!-- Filter Section -->
+<div class="tut-filter-section" id="filterSection">
+<div class="filter-row">
+<div class="filter-group">
+<label class="form-label"><i class="fas fa-search me-1"></i> Search</label>
+<input type="text" id="searchInput" class="form-control" placeholder="Search by title, team, or category...">
+</div>
+<div class="filter-group">
+<label class="form-label"><i class="fas fa-signal me-1"></i> Status</label>
+<select id="statusFilter" class="form-select"><option value="">All Status</option></select>
+</div>
+<div class="filter-group">
+<label class="form-label"><i class="fas fa-layer-group me-1"></i> Category</label>
+<select id="categoryFilter" class="form-select"><option value="">All Categories</option></select>
+</div>
+<div class="filter-group">
+<label class="form-label"><i class="fas fa-users me-1"></i> Team</label>
+<select id="teamFilter" class="form-select"><option value="">All Teams</option></select>
+</div>
+<div class="filter-group" style="flex: 0;">
+<label class="form-label">&nbsp;</label>
+<button class="tut-clear-filters-btn" id="clearFilters">
+<i class="fas fa-rotate-left me-1"></i> Clear
+</button>
+</div>
+</div>
+</div>
+
+<!-- Results Info -->
+<div class="tut-results-info" id="resultsInfo" style="display:none;">
+<div class="tut-results-count">
+Showing <strong id="showingCount">0</strong> of <strong id="totalResults">0</strong> projects
+</div>
+</div>
+
+<!-- Loading State — Smimmer -->
+<div class="tut-pro-loading" id="projectsLoading">
+    <div class="row g-4 w-100">
+        <div class="col-md-6 col-lg-4"><div class="pro-skeleton pro-skeleton--card"></div></div>
+        <div class="col-md-6 col-lg-4"><div class="pro-skeleton pro-skeleton--card"></div></div>
+        <div class="col-md-6 col-lg-4"><div class="pro-skeleton pro-skeleton--card"></div></div>
+    </div>
+</div>
+
+<!-- Projects Content -->
+<div id="projectsContent" style="display:none;">
+<div class="tut-projects-grid" id="projectsGrid"></div>
+
+<!-- Empty State -->
+<div class="tut-pro-empty-state" id="projectsEmpty" style="display:none;">
+<div class="tut-pro-empty-icon">
+<i class="fas fa-folder-open"></i>
+</div>
+<h4>No Projects Found</h4>
+<p id="projectsEmptyMsg">No projects match your current filters. Try adjusting your search criteria.</p>
+</div>
+
+<!-- Pagination -->
+<div class="tut-pro-pagination" id="projectsPagination" style="display:none;"></div>
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  var date = new Date(d);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function getRelativeTime(d) {
+  if (!d) return '';
+  var date = new Date(d);
+  var now = new Date();
+  var diff = now - date;
+  var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return days + ' days ago';
+  if (days < 30) return Math.floor(days / 7) + ' weeks ago';
+  return formatDate(d);
+}
+
+frappe.ready(function() {
+  var currentOffset = 0;
+  var currentLimit = 12;
+  var searchTimeout;
+  var totalProjects = 0;
+  var totalTeams = 0;
+
+  loadFilterOptions();
+  loadProjects(0);
+
+  document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() { loadProjects(0); }, 300);
+  });
+  document.getElementById('statusFilter').addEventListener('change', function() { loadProjects(0); });
+  document.getElementById('categoryFilter').addEventListener('change', function() { loadProjects(0); });
+  document.getElementById('teamFilter').addEventListener('change', function() { loadProjects(0); });
+  document.getElementById('clearFilters').addEventListener('click', function() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('teamFilter').value = '';
+    loadProjects(0);
+  });
+
+  fetch('/api/method/team_update_tool.api.auth.get_current_user')
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.message && !d.message.guest && !d.message.is_viewer) {
+      document.getElementById('newProjectBtn').style.display = 'inline-flex';
+    }
+  })
+  .catch(function() {});
+
+  function loadFilterOptions() {
+    fetch('/api/method/team_update_tool.api.projects.get_all_public_stats')
+    .then(function(r) {
+      if (!r.ok) throw new Error('Failed to load filters');
+      return r.json();
+    })
+    .then(function(data) {
+      if (!data.message) return;
+      var d = data.message;
+
+      // Update stats
+      totalProjects = d.total_projects || 0;
+      totalTeams = (d.teams || []).length;
+      document.getElementById('totalCount').textContent = totalProjects;
+      document.getElementById('teamCount').textContent = totalTeams;
+
+      var statusSelect = document.getElementById('statusFilter');
+      (d.statuses || []).forEach(function(s) {
+        var opt = document.createElement('option');
+        opt.value = s.name; opt.textContent = s.status_name;
+        statusSelect.appendChild(opt);
+      });
+
+      var catSelect = document.getElementById('categoryFilter');
+      (d.categories || []).forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c.name; opt.textContent = c.category_name;
+        catSelect.appendChild(opt);
+      });
+
+      var teamSelect = document.getElementById('teamFilter');
+      (d.teams || []).forEach(function(t) {
+        var opt = document.createElement('option');
+        opt.value = t.name; opt.textContent = t.team_name;
+        teamSelect.appendChild(opt);
+      });
+    })
+    .catch(function(err) {
+      console.error('Failed to load filter options:', err);
+    });
+  }
+
+  function loadProjects(offset) {
+    currentOffset = offset;
+    document.getElementById('projectsLoading').style.display = 'flex';
+    document.getElementById('projectsContent').style.display = 'none';
+    document.getElementById('projectsEmpty').style.display = 'none';
+    document.getElementById('resultsInfo').style.display = 'none';
+
+    var search = document.getElementById('searchInput').value;
+    var status = document.getElementById('statusFilter').value;
+    var category = document.getElementById('categoryFilter').value;
+    var team = document.getElementById('teamFilter').value;
+
+    var params = 'limit=' + currentLimit + '&offset=' + offset;
+    if (search) params += '&search=' + encodeURIComponent(search);
+    if (status) params += '&status=' + encodeURIComponent(status);
+    if (category) params += '&category=' + encodeURIComponent(category);
+    if (team) params += '&team=' + encodeURIComponent(team);
+
+    fetch('/api/method/team_update_tool.api.projects.get_projects?' + params)
+    .then(function(r) {
+      if (!r.ok) throw new Error('API request failed');
+      return r.json();
+    })
+    .then(function(data) {
+      document.getElementById('projectsLoading').style.display = 'none';
+      document.getElementById('projectsContent').style.display = 'block';
+
+      if (data.error) {
+        console.error('API Error:', data.error);
+        showEmpty('Unable to load projects. ' + (data.error || 'Please try again.'));
+        return;
+      }
+
+      if (!data.message) { showEmpty('No data received from server.'); return; }
+      var d = data.message;
+      var projects = d.projects || [];
+
+      // Update results info
+      document.getElementById('resultsInfo').style.display = 'flex';
+      var showingEnd = projects.length > 0 ? Math.min(d.offset + currentLimit, d.total) : 0;
+      document.getElementById('showingCount').textContent = showingEnd;
+      document.getElementById('totalResults').textContent = d.total;                    if (projects.length === 0) { showEmpty(); return; }
+                    document.getElementById('projectsEmpty').style.display = 'none';
+
+                    var html = '';
+                    projects.forEach(function(p, idx) {
+                        var animDelay = (0.05 * (idx + 1)).toFixed(2) + 's';
+        var color = p.status_color || '#6b7280';
+        var sname = p.status_name || p.status || 'Open';
+        var priorityClass = '';
+        if (p.priority) {
+          var pLower = p.priority.toLowerCase();
+          if (pLower === 'high' || pLower === 'critical') priorityClass = 'high';
+          else if (pLower === 'medium') priorityClass = 'medium';
+          else priorityClass = 'low';
+        }
+        
+        var imgHtml = p.screenshot_preview 
+          ? '<div class="tut-pro-card-image"><img src="' + p.screenshot_preview + '" alt="" loading="lazy"><span class="tut-pro-card-badge"><span class="status-dot" style="background:' + color + '"></span>' + escHtml(sname) + '</span></div>'
+          : '<div class="tut-pro-card-image"><div class="tut-pro-card-placeholder"><i class="fas fa-folder-tree"></i><span style="font-size:0.75rem;">No Preview</span></div><span class="tut-pro-card-badge"><span class="status-dot" style="background:' + color + '"></span>' + escHtml(sname) + '</span></div>';
+
+        html += '<a href="/team_update_tool/project/' + p.name + '" class="tut-pro-project-card pro-animate-in" style="animation-delay:' + animDelay + '">' +
+          imgHtml +
+          '<div class="tut-pro-card-body">' +
+          '<div class="tut-pro-card-meta">' +
+          '<span><i class="fas fa-users"></i> ' + escHtml(p.team || 'No Team') + '</span>';
+        
+        if (p.category_name) {
+          html += '<span><i class="fas fa-layer-group"></i> ' + escHtml(p.category_name) + '</span>';
+        }
+        
+        if (p.priority) {
+          html += '<span class="tut-priority-badge ' + priorityClass + '"><i class="fas fa-flag"></i> ' + escHtml(p.priority) + '</span>';
+        }
+        
+        html += '</div>' +
+          '<h3 class="tut-pro-card-title">' + escHtml(p.project_title) + '</h3>' +
+          '<div class="tut-pro-card-footer" style="border-top-color: ' + color + '25;">' +
+          '<span class="tut-pro-card-date"><i class="fas fa-clock"></i> ' + getRelativeTime(p.modified || p.creation) + '</span>' +
+          '<span class="tut-pro-card-link">View Details <i class="fas fa-arrow-right"></i></span>' +
+          '</div>' +
+          '</div></a>';
+      });
+      document.getElementById('projectsGrid').innerHTML = html;
+
+      // Update pagination
+      if (d.has_more || offset > 0) {
+        var currentPage = Math.floor(offset / currentLimit) + 1;
+        var totalPages = Math.ceil(d.total / currentLimit);
+        var pagHtml = '<button ' + (offset > 0 ? 'onclick="window.loadProjects(' + (offset - currentLimit) + ')"' : 'disabled') + '><i class="fas fa-chevron-left"></i> Previous</button>';
+        pagHtml += '<span class="page-info">Page ' + currentPage + ' of ' + totalPages + '</span>';
+        pagHtml += '<button ' + (d.has_more ? 'onclick="window.loadProjects(' + (offset + currentLimit) + ')"' : 'disabled') + '>Next <i class="fas fa-chevron-right"></i></button>';
+        document.getElementById('projectsPagination').innerHTML = pagHtml;
+        document.getElementById('projectsPagination').style.display = 'flex';
+      } else {
+        document.getElementById('projectsPagination').style.display = 'none';
+      }
+      window.loadProjects = loadProjects;
+    })
+    .catch(function(err) {
+      console.error('Failed to load projects:', err);
+      document.getElementById('projectsLoading').innerHTML = '<div class="tut-pro-empty-state"><div class="tut-pro-empty-icon"><i class="fas fa-exclamation-triangle"></i></div><h4>Failed to Load</h4><p>' + err.message + '</p><button class="btn btn-outline-secondary" onclick="loadProjects(0)"><i class="fas fa-rotate me-1"></i> Try Again</button></div>';
+    });
+  }
+
+  function showEmpty(msg) {
+    document.getElementById('projectsGrid').innerHTML = '';
+    document.getElementById('resultsInfo').style.display = 'none';
+    if (msg) {
+      document.getElementById('projectsEmptyMsg').textContent = msg;
+    } else {
+      document.getElementById('projectsEmptyMsg').textContent = 'No projects match your current filters. Try adjusting your search criteria.';
+    }
+    document.getElementById('projectsEmpty').style.display = 'block';
+    document.getElementById('projectsPagination').style.display = 'none';
+  }
+
+  window.loadProjects = loadProjects;
+});
+</script>
+{% endblock %}

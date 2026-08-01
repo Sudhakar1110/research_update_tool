@@ -1,0 +1,2570 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ title }} - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================
+   Royal Professional Project Detail UI
+   ===================================== */
+
+/* Toast Container */
+.erp-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Page Header - Royal Style */
+.erp-page-header {
+    background: var(--tut-dark-gradient);
+    border-bottom: none;
+    padding: 2.5rem 0 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.erp-page-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.erp-page-header::after {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: royalPulse 8s ease-in-out infinite;
+}
+
+.erp-page-header .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Royal Breadcrumb */
+.erp-breadcrumb {
+    margin-bottom: 1rem;
+}
+
+.erp-breadcrumb ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.erp-breadcrumb li {
+    display: flex;
+    align-items: center;
+}
+
+.erp-breadcrumb li:not(:last-child)::after {
+    content: '/';
+    margin-left: 0.5rem;
+    color: rgba(255,255,255,0.4);
+}
+
+.erp-breadcrumb a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.erp-breadcrumb a:hover {
+    color: var(--tut-gold-light);
+}
+
+.erp-breadcrumb li.active {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Main Content Area - Royal */
+.erp-project-content {
+    background: var(--tut-bg);
+    min-height: calc(100vh - var(--tut-navbar-height));
+    padding: 2rem 0;
+}
+
+/* Loading State - Royal */
+.erp-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+}
+
+.erp-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(0, 137, 255, 0.2);
+    border-top-color: var(--tut-primary);
+    border-radius: 50%;
+    animation: erp-spin 0.8s linear infinite;
+}
+
+@keyframes erp-spin {
+    to { transform: rotate(360deg); }
+}
+
+.erp-loading p {
+    color: var(--tut-text-muted);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Error State - Royal */
+.erp-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.erp-error-icon {
+    width: 100px;
+    height: 100px;
+    background: var(--tut-primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 137, 255, 0.3);
+}
+
+.erp-error-state h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #05133C;
+    margin: 0 0 0.5rem;
+}
+
+.erp-error-state p {
+    color: var(--tut-text-muted);
+    margin: 0 0 1.5rem;
+}
+
+/* Project Hero Section - Royal */
+.erp-project-hero {
+    background: var(--tut-dark-gradient);
+    border-radius: 1.25rem;
+    padding: 2.5rem;
+    margin-bottom: 1.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.erp-project-hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -5%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 140, 0, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: royalPulse 8s ease-in-out infinite;
+}
+
+.erp-project-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: 5%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(0, 137, 255, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.erp-project-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.erp-project-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Status Badge - Royal */
+.erp-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+}
+
+.erp-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Status Change Dropdown */
+.erp-status-select-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.erp-status-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 6px 28px 6px 14px;
+    border-radius: 50rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 2px solid rgba(255,255,255,0.3);
+    color: #ffffff;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffffff'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 6px;
+    min-width: 110px;
+}
+.erp-status-select:hover {
+    border-color: rgba(255,255,255,0.6);
+}
+.erp-status-select option {
+    color: #1e293b;
+    background: #ffffff;
+    text-transform: none;
+    font-weight: 500;
+    font-size: 0.82rem;
+}
+.erp-status-select:focus {
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.25);
+}
+.erp-status-select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.erp-status-dot-inline {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+.erp-status-select-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Priority Badge - Royal */
+.erp-priority-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 50rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.erp-priority-badge.high { background: rgba(220, 38, 38, 0.2); color: #ff6b6b; }
+.erp-priority-badge.medium { background: rgba(255, 140, 0, 0.2); color: var(--tut-gold-light); }
+.erp-priority-badge.low { background: rgba(5, 150, 105, 0.2); color: #34d399; }
+.erp-priority-badge.urgent { background: #dc2626; color: #ffffff; }
+.erp-priority-badge.critical { background: #991b1b; color: #ffffff; }
+
+.erp-project-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem;
+    line-height: 1.3;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.erp-project-info-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.erp-project-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+.erp-project-info-item svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
+    color: var(--tut-gold);
+}
+
+/* Main Grid Layout */
+.erp-project-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.75rem;
+}
+
+@media (max-width: 992px) {
+    .erp-project-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Content Cards - Royal */
+.erp-card {
+    background: var(--tut-glass);
+    backdrop-filter: blur(20px);
+    border-radius: 1.25rem;
+    box-shadow: var(--tut-shadow);
+    border: 1px solid var(--tut-royal-border);
+    overflow: hidden;
+    margin-bottom: 1.75rem;
+    transition: all 0.3s ease;
+}
+
+.erp-card:hover {
+    box-shadow: var(--tut-royal-shadow);
+    border-color: rgba(0, 137, 255, 0.3);
+}
+
+.erp-card-header {
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid var(--tut-border-light);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(to bottom, rgba(0, 137, 255, 0.03), transparent);
+}
+
+.erp-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.erp-card-icon.blue { background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(59, 130, 246, 0.1)); color: #3b82f6; }
+.erp-card-icon.green { background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(16, 185, 129, 0.1)); color: #059669; }
+.erp-card-icon.purple { background: linear-gradient(135deg, rgba(0, 137, 255, 0.15), rgba(0, 137, 255, 0.1)); color: var(--tut-primary); }
+.erp-card-icon.orange { background: linear-gradient(135deg, rgba(255, 140, 0, 0.15), rgba(245, 158, 11, 0.1)); color: var(--tut-gold); }
+.erp-card-icon.cyan { background: linear-gradient(135deg, rgba(8, 145, 178, 0.15), rgba(34, 211, 238, 0.1)); color: #0891b2; }
+
+.erp-card-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.erp-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #05133C;
+    margin: 0;
+}
+
+.erp-card-subtitle {
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+    margin: 0.15rem 0 0;
+}
+
+.erp-card-body {
+    padding: 1.75rem;
+}
+
+/* Description Text - Royal */
+.erp-description-text {
+    color: var(--tut-text);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* Technologies Grid - Royal */
+.erp-tech-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.erp-tech-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.1), rgba(0, 137, 255, 0.05));
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 50rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--tut-primary);
+    transition: all 0.3s ease;
+}
+.erp-tech-badge:hover {
+    background: var(--tut-primary);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.erp-screenshot-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.erp-screenshot-item {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    aspect-ratio: 16/10;
+    border: 1px solid var(--tut-royal-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.erp-screenshot-item:hover {
+    border-color: var(--tut-primary);
+    box-shadow: var(--tut-royal-shadow);
+    transform: translateY(-4px);
+}
+
+.erp-screenshot-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.erp-screenshot-item:hover img {
+    transform: scale(1.08);
+}
+
+.erp-screenshot-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem 1rem;
+    background: rgba(30, 27, 75, 0.85);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* File List - Royal */
+.erp-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.erp-file-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.03), transparent);
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.erp-file-card:hover {
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.08), rgba(0, 137, 255, 0.04));
+    border-color: var(--tut-primary);
+    transform: translateX(6px);
+}
+
+.erp-file-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.1), rgba(0, 137, 255, 0.05));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--tut-primary);
+    flex-shrink: 0;
+}
+
+.erp-file-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.erp-file-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #05133C;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.erp-file-desc {
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+    margin-top: 0.15rem;
+}
+
+.erp-file-action {
+    color: var(--tut-primary);
+    transition: all 0.2s ease;
+}
+
+.erp-file-card:hover .erp-file-action {
+    color: var(--tut-primary-dark);
+    transform: translateX(4px);
+}
+
+/* Empty Section Style */
+.erp-empty-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: var(--tut-text-muted);
+}
+
+.erp-empty-section svg {
+    opacity: 0.4;
+    margin-bottom: 1rem;
+    color: var(--tut-primary);
+}
+
+.erp-empty-section p {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* README Content - Royal */
+.erp-readme-content {
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.05), rgba(0, 137, 255, 0.02));
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: var(--tut-text);
+}
+
+/* Timeline - Royal Premium */
+.erp-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.erp-timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--tut-primary) 0%, rgba(0, 137, 255, 0.1) 100%);
+    border-radius: 1px;
+}
+
+.erp-timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.erp-timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.erp-timeline-marker {
+    position: absolute;
+    left: -2rem;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--tut-primary);
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 2px var(--tut-primary);
+}
+
+.erp-timeline-content {
+    background: var(--tut-glass);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--tut-royal-border);
+}
+
+.erp-timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.erp-timeline-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #05133C;
+    margin: 0;
+}
+
+.erp-timeline-date {
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+    white-space: nowrap;
+}
+
+.erp-timeline-desc {
+    font-size: 0.875rem;
+    color: var(--tut-text);
+    line-height: 1.6;
+    margin: 0 0 0.5rem;
+}
+
+.erp-timeline-author {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+}
+
+/* Sidebar - Royal */
+.erp-project-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Sidebar Card - Royal */
+.erp-sidebar-card {
+    background: var(--tut-glass);
+    backdrop-filter: blur(20px);
+    border-radius: 1.25rem;
+    box-shadow: var(--tut-shadow);
+    border: 1px solid var(--tut-royal-border);
+    overflow: hidden;
+}
+
+.erp-sidebar-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(to bottom, rgba(0, 137, 255, 0.03), transparent);
+    border-bottom: 1px solid var(--tut-border-light);
+}
+
+.erp-sidebar-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #05133C;
+    margin: 0;
+}
+
+.erp-sidebar-card-body {
+    padding: 1.5rem;
+}
+
+/* Detail List - Royal */
+.erp-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.erp-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.erp-detail-label {
+    font-size: 0.85rem;
+    color: var(--tut-text-muted);
+}
+
+.erp-detail-value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #05133C;
+    text-align: right;
+}
+
+/* GitHub Card - Royal */
+.erp-github-card .erp-sidebar-card-header {
+    gap: 0.75rem;
+}
+
+.erp-github-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.erp-github-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    background: var(--tut-dark-gradient);
+    color: #ffffff;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(30, 27, 75, 0.3);
+}
+
+.erp-github-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 27, 75, 0.4);
+    background: linear-gradient(135deg, #0066CC 0%, #003D99 100%);
+    color: #ffffff;
+}
+
+.erp-github-info {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.erp-github-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--tut-text-muted);
+}
+
+.erp-github-languages {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+}
+
+/* Tag List - Royal */
+.erp-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.erp-tag-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.08), rgba(0, 137, 255, 0.04));
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--tut-primary);
+}
+
+/* Back Button - Royal */
+.erp-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--tut-glass);
+    backdrop-filter: blur(10px);
+    color: var(--tut-primary);
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.erp-back-btn:hover {
+    background: var(--tut-primary);
+    color: #ffffff;
+    border-color: var(--tut-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 137, 255, 0.3);
+}
+
+/* Card Actions */
+.erp-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+/* Download Button - Royal */
+.erp-download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.25rem;
+    background: var(--tut-primary-gradient);
+    color: #ffffff;
+    border: none;
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 137, 255, 0.3);
+}
+
+.erp-download-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 137, 255, 0.4);
+}
+
+.erp-download-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Royal Animation */
+@keyframes royalPulse {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+/* =====================================
+   Activity Feed Styles
+   ===================================== */
+
+.erp-activity-composer {
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.03), rgba(0, 137, 255, 0.02));
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+
+.erp-activity-input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: none;
+    background: transparent;
+    font-size: 0.9rem;
+    color: var(--tut-text);
+    resize: vertical;
+    outline: none;
+    font-family: inherit;
+    min-height: 60px;
+}
+
+.erp-activity-input::placeholder {
+    color: var(--tut-text-light);
+}
+
+.erp-activity-composer-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem 0.75rem;
+    border-top: 1px solid var(--tut-royal-border);
+}
+
+.erp-activity-user {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--tut-text-muted);
+}
+
+.erp-activity-user svg {
+    width: 14px;
+    height: 14px;
+    color: var(--tut-primary);
+}
+
+.erp-activity-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.45rem 1rem;
+    background: var(--tut-primary-gradient);
+    color: #fff;
+    border: none;
+    border-radius: 50rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 137, 255, 0.25);
+}
+
+.erp-activity-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 137, 255, 0.35);
+}
+
+/* Activity Feed Items */
+.erp-activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.erp-activity-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.02), transparent);
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.erp-activity-item:hover {
+    background: linear-gradient(135deg, rgba(0, 137, 255, 0.05), rgba(0, 137, 255, 0.02));
+    border-color: rgba(0, 137, 255, 0.25);
+}
+
+.erp-activity-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.erp-activity-avatar svg {
+    width: 16px;
+    height: 16px;
+}
+
+.erp-activity-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.erp-activity-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+    font-size: 0.82rem;
+    color: var(--tut-text);
+}
+
+.erp-activity-subtype {
+    font-size: 0.7rem;
+    padding: 1px 8px;
+    border-radius: 50rem;
+    background: rgba(0, 137, 255, 0.08);
+    color: var(--tut-primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.erp-activity-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #05133C;
+    margin-bottom: 0.15rem;
+}
+
+.erp-activity-content {
+    font-size: 0.85rem;
+    color: #475569;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.erp-activity-time {
+    font-size: 0.72rem;
+    color: var(--tut-text-light);
+    margin-top: 0.25rem;
+}
+
+/* =====================================
+   Time Tracking Styles
+   ===================================== */
+
+.erp-time-summary {
+    text-align: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--tut-royal-border);
+}
+
+.erp-time-total-hours {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0891b2;
+    line-height: 1.1;
+}
+
+.erp-time-total-label {
+    font-size: 0.75rem;
+    color: var(--tut-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.erp-time-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.erp-time-form-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.erp-time-input {
+    padding: 0.5rem 0.65rem;
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--tut-text);
+    background: #fff;
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.erp-time-input:focus {
+    border-color: var(--tut-primary);
+    box-shadow: 0 0 0 2px rgba(0, 137, 255, 0.1);
+}
+
+.erp-time-input[type="number"] {
+    width: 80px;
+}
+
+.erp-time-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0.55rem;
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(8, 145, 178, 0.25);
+}
+
+.erp-time-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(8, 145, 178, 0.35);
+}
+
+.erp-time-logs {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.erp-time-logs::-webkit-scrollbar {
+    width: 3px;
+}
+
+.erp-time-logs::-webkit-scrollbar-thumb {
+    background: rgba(0, 137, 255, 0.2);
+    border-radius: 2px;
+}
+
+.erp-time-log-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.65rem;
+    background: rgba(8, 145, 178, 0.04);
+    border: 1px solid rgba(8, 145, 178, 0.1);
+    border-radius: 0.5rem;
+    margin-bottom: 0.4rem;
+    transition: all 0.15s ease;
+}
+
+.erp-time-log-item:hover {
+    background: rgba(8, 145, 178, 0.08);
+    border-color: rgba(8, 145, 178, 0.2);
+}
+
+.erp-time-log-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.erp-time-log-hours {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0891b2;
+    white-space: nowrap;
+}
+
+.erp-time-log-desc {
+    font-size: 0.78rem;
+    color: var(--tut-text);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.erp-time-log-date {
+    font-size: 0.7rem;
+    color: var(--tut-text-light);
+    white-space: nowrap;
+}
+
+.erp-time-log-delete {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--tut-text-light);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.erp-time-log-delete:hover {
+    background: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+}
+
+/* =====================================
+   Mini Gantt Chart (Project Detail Sidebar)
+   ===================================== */
+
+.erp-mini-gantt {
+    margin-top: 0.25rem;
+}
+.erp-mini-gantt-svg {
+    width: 100%;
+    display: block;
+    border-radius: 0.5rem;
+}
+.erp-mini-gantt-current {
+    filter: drop-shadow(0 0 3px rgba(0, 137, 255, 0.5));
+}
+.erp-mini-gantt-count {
+    font-size: 0.72rem;
+    color: var(--tut-text-muted);
+    margin-top: 0.5rem;
+    text-align: center;
+}
+.erp-mini-gantt-count strong {
+    color: #05133C;
+}
+.erp-mini-gantt-link {
+    display: block;
+    text-align: center;
+    margin-top: 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--tut-primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.erp-mini-gantt-link:hover {
+    color: #0066CC;
+    text-decoration: underline;
+}
+.erp-mini-gantt-link svg {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    margin-left: 3px;
+}
+
+/* Loading Smimmer */
+@keyframes projShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.erp-skeleton {
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: projShimmer 1.4s infinite ease-in-out;
+    border-radius: 1rem;
+}
+
+/* Card Entrance */
+@keyframes erpCardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.erp-card, .erp-sidebar-card {
+    animation: erpCardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+.erp-card:nth-child(1) { animation-delay: 0.05s; }
+.erp-card:nth-child(2) { animation-delay: 0.1s; }
+.erp-card:nth-child(3) { animation-delay: 0.15s; }
+.erp-card:nth-child(4) { animation-delay: 0.2s; }
+.erp-card:nth-child(5) { animation-delay: 0.25s; }
+
+/* Smooth Scroll */
+html { scroll-behavior: smooth; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .erp-page-header {
+        padding: 1.5rem 0 1.25rem;
+    }
+    
+    .erp-project-content {
+        padding: 1.5rem 0;
+    }
+    
+    .erp-project-hero {
+        padding: 1.5rem;
+    }
+    
+    .erp-project-title {
+        font-size: 1.5rem;
+    }
+    
+    .erp-card-header {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .erp-card-body {
+        padding: 1rem;
+    }
+    
+    .erp-project-info-row {
+        gap: 1rem;
+    }
+    
+    .erp-project-info-item {
+        font-size: 0.82rem;
+    }
+    
+    .erp-project-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .erp-back-btn {
+        padding: 0.55rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .erp-status-select {
+        min-width: 90px;
+        font-size: 0.7rem;
+    }
+    
+    .erp-tech-badge {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.75rem;
+    }
+    
+}
+@media (max-width: 480px) {
+    .erp-page-header {
+        padding: 1rem 0 1rem;
+    }
+    .erp-breadcrumb ol {
+        font-size: 0.78rem;
+        flex-wrap: wrap;
+    }
+    .erp-project-hero {
+        padding: 1.25rem;
+        border-radius: 1rem;
+    }
+    .erp-project-title {
+        font-size: 1.25rem;
+    }
+    .erp-project-meta {
+        gap: 0.5rem;
+    }
+    .erp-project-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    .erp-card-header {
+        padding: 0.85rem 1rem;
+    }
+    .erp-card-body {
+        padding: 0.85rem 1rem;
+    }
+    .erp-card-title {
+        font-size: 0.9rem;
+    }
+    .erp-description-text {
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+    .erp-timeline {
+        padding-left: 1.5rem;
+    }
+    .erp-timeline-content {
+        padding: 1rem;
+    }
+    .erp-timeline-header {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .erp-timeline-title {
+        font-size: 0.85rem;
+    }
+    .erp-sidebar-card-body {
+        padding: 1rem;
+    }
+    .erp-github-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.82rem;
+    }
+    .erp-detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
+    .erp-detail-value {
+        text-align: left;
+    }
+    .erp-back-btn {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.75rem;
+    }
+    .erp-back-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+    .erp-screenshot-gallery {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    .erp-activity-composer {
+        padding: 0.5rem;
+    }
+    .erp-activity-submit {
+        padding: 0.35rem 0.75rem;
+        font-size: 0.72rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+{% if project %}
+{% if is_admin or is_team_leader %}
+<script>
+window._canChangeStatus = true;
+window._currentProjectName = '{{ project.name }}';
+</script>
+{% else %}
+<script>
+window._canChangeStatus = false;
+window._currentProjectName = '{{ project.name }}';
+</script>
+{% endif %}
+{% else %}
+<script>
+window._canChangeStatus = false;
+window._currentProjectName = '';
+</script>
+{% endif %}
+<!-- Toast Container -->
+<div class="erp-toast-container" id="toastContainer"></div>
+
+<!-- Page Header with Breadcrumb -->
+<div class="erp-page-header">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <nav class="erp-breadcrumb">
+                <ol>
+                    <li><a href="/team_update_tool">Home</a></li>
+                    <li><a href="/team_update_tool/projects">Projects</a></li>
+                    <li class="active" id="breadcrumbTitle">Loading...</li>
+                </ol>
+            </nav>
+            <a href="/team_update_tool/projects" class="erp-back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5"/>
+                    <path d="M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Projects
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="erp-project-content">
+    <div class="container">
+        <!-- Loading State — Smimmer -->
+        <div class="erp-loading" id="projectLoading">
+            <div class="erp-skeleton" style="height:200px;margin-bottom:1.5rem;"></div>
+            <div class="erp-skeleton" style="height:140px;margin-bottom:1rem;"></div>
+            <div class="erp-skeleton" style="height:180px;"></div>
+        </div>
+
+        <!-- Error State -->
+        <div class="erp-error-state" id="projectError" style="display:none;">
+            <div class="erp-error-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+            </div>
+            <h3 id="errorMsg">Project not found</h3>
+            <p>The project you're looking for doesn't exist or has been removed.</p>
+            <a href="/team_update_tool/projects" class="erp-back-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5"/>
+                    <path d="M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Projects
+            </a>
+        </div>
+
+        <!-- Project Detail -->
+        <div id="projectDetail" style="display:none;"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '-';
+    var d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function getFileIcon(filename) {
+    var ext = filename.split('.').pop().toLowerCase();
+    var icons = {
+        'pdf': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+        'doc': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+        'docx': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+        'zip': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>'
+    };
+    return icons[ext] || '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>';
+}
+
+frappe.ready(function() {
+    var pathParts = window.location.pathname.split('/');
+    var projectName = pathParts[pathParts.length - 1];
+    if (projectName && projectName !== 'project' && projectName !== '') {
+        loadProject(projectName);
+    } else {
+        document.getElementById('projectLoading').style.display = 'none';
+        document.getElementById('projectError').style.display = 'flex';
+        document.getElementById('errorMsg').textContent = 'No project specified.';
+    }
+});
+
+function loadProject(name) {
+    console.log('Loading project:', name);
+    frappe.call({
+        method: 'team_update_tool.api.projects.get_project_detail',
+        args: { name: name },
+        callback: function(data) {
+            console.log('API Response:', data);
+            if (data.message) {
+                console.log('Project data:', data.message);
+                console.log('Files:', data.message.files);
+                console.log('GitHub:', data.message.github_repository);
+                try {
+                    renderProject(data.message);
+                } catch (e) {
+                    console.error('RENDER ERROR:', e, e.stack);
+                    document.getElementById('projectLoading').style.display = 'none';
+                    document.getElementById('projectError').style.display = 'flex';
+                    document.getElementById('errorMsg').textContent = 'Error rendering project: ' + (e.message || 'Unknown error') + '. Check console for details.';
+                }
+            } else if (data.exc) {
+                document.getElementById('projectLoading').style.display = 'none';
+                document.getElementById('projectError').style.display = 'flex';
+                var errMsg = 'Error loading project.';
+                try {
+                    var exc = JSON.parse(data.exc);
+                    if (exc && exc[0] && exc[0].indexOf) {
+                        errMsg = exc[0].indexOf('Error loading project') !== -1 ? exc[0].split(':').slice(1).join(':').trim() : exc[0];
+                    }
+                } catch(e) {}
+                document.getElementById('errorMsg').textContent = errMsg;
+            } else {
+                document.getElementById('projectLoading').style.display = 'none';
+                document.getElementById('projectError').style.display = 'flex';
+                document.getElementById('errorMsg').textContent = 'Project not found.';
+            }
+        },
+        error: function(err) {
+            console.error('API Error:', err);
+            document.getElementById('projectLoading').style.display = 'none';
+            document.getElementById('projectError').style.display = 'flex';
+            document.getElementById('errorMsg').textContent = 'Failed to load project. Please check console for details.';
+        }
+    });
+}
+
+function renderProject(p) {
+    var color = p.status && p.status.color ? p.status.color : '#16a34a';
+    var sname = p.status && p.status.status_name ? p.status.status_name : 'Active';
+    var html = '';
+
+    // Store project data for download functions
+    window.currentProjectData = p;
+
+    // Hero Section
+    html += '<div class="erp-project-hero">' +
+        '<div class="erp-project-hero-content">' +
+            '<div class="erp-project-meta">' +
+                '<div class="erp-status-select-wrapper" id="statusWrapper">' +
+                    (window._canChangeStatus ? 
+                        '<select class="erp-status-select" id="statusSelect" onchange="updateProjectStatus(this.value)" style="background-color:' + color + ';border-color:' + color + ';">' +
+                            '<option value="" selected disabled>' + sname + '</option>' +
+                        '</select>' :
+                        '<span class="erp-status-badge" style="background:rgba(255,255,255,0.2);color:#ffffff;">' +
+                            '<span class="erp-status-dot" style="background:#ffffff;"></span>' + sname +
+                        '</span>'
+                    ) +
+                '</div>' +
+                (p.priority ? '<span class="erp-priority-badge ' + p.priority.toLowerCase() + '">' + p.priority + '</span>' : '') +
+            '</div>' +
+            '<h1 class="erp-project-title">' + escHtml(p.project_title) + '</h1>' +
+            '<div class="erp-project-info-row">' +
+                '<div class="erp-project-info-item">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+                    '<span>' + escHtml(p.team_name || p.team || 'No Team') + '</span>' +
+                '</div>';
+    if (p.project_category) {
+        html += '<div class="erp-project-info-item">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>' +
+                    '<span>' + escHtml(p.project_category) + '</span>' +
+                '</div>';
+    }
+    html += '</div></div>';
+
+    // Main Grid Layout
+    html += '<div class="erp-project-grid">';
+
+    // Main Content Area
+    html += '<div class="erp-project-main">';
+
+    // Description Section
+    if (p.description) {
+        html += '<div class="erp-card">' +
+            '<div class="erp-card-header">' +
+                '<div class="erp-card-icon blue">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>' +
+                '</div>' +
+                '<div>' +
+                    '<h3 class="erp-card-title">Description</h3>' +
+                    '<p class="erp-card-subtitle">Project overview and details</p>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-card-body">' +
+                '<p class="erp-description-text">' + escHtml(p.description) + '</p>' +
+            '</div>' +
+        '</div>';
+    }
+
+    // Technologies
+    if (p.technologies && p.technologies.length > 0) {
+        html += '<div class="erp-card">' +
+            '<div class="erp-card-header">' +
+                '<div class="erp-card-icon purple">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>' +
+                '</div>' +
+                '<div>' +
+                    '<h3 class="erp-card-title">Technologies</h3>' +
+                    '<p class="erp-card-subtitle">' + p.technologies.length + ' technology stack</p>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-card-body">' +
+                '<div class="erp-tech-grid">';
+        p.technologies.forEach(function(t) {
+            html += '<span class="erp-tech-badge">' + escHtml(t) + '</span>';
+        });
+        html += '</div></div></div>';
+    }
+
+    // Reference Document Section - Show ONLY the README/Reference file
+    var hasReadmeFile = p.readme && p.readme.readme_file;
+    
+    if (hasReadmeFile) {
+        var readmeFileUrl = p.readme.readme_file || '';
+        // Only construct URL if it's a relative path (not starting with http:// or https://)
+        if (readmeFileUrl && !readmeFileUrl.startsWith('http://') && !readmeFileUrl.startsWith('https://')) {
+            // Use the site's base URL to construct the full path
+            var baseUrl = window.location.origin;
+            readmeFileUrl = baseUrl + (readmeFileUrl.startsWith('/') ? '' : '/') + readmeFileUrl;
+        }
+        var readmeFileName = readmeFileUrl.split('/').pop() || 'Reference Document';
+        
+        html += '<div class="erp-card">' +
+            '<div class="erp-card-header">' +
+                '<div class="erp-card-icon orange">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                '</div>' +
+                '<div>' +
+                    '<h3 class="erp-card-title">Reference Document</h3>' +
+                    '<p class="erp-card-subtitle">1 document attached</p>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-card-body">' +
+                '<div class="erp-file-list">' +
+                    '<a href="' + escHtml(readmeFileUrl) + '" class="erp-file-card" target="_blank" download>' +
+                        '<div class="erp-file-icon">' + getFileIcon(readmeFileName) + '</div>' +
+                        '<div class="erp-file-info">' +
+                            '<div class="erp-file-name">' + escHtml(readmeFileName) + '</div>' +
+                            '<div class="erp-file-desc">Reference Document</div>' +
+                        '</div>' +
+                        '<div class="erp-file-action">' +
+                            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+                        '</div>' +
+                    '</a>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    } else {
+        // Show empty state for Reference Documents
+        html += '<div class="erp-card">' +
+            '<div class="erp-card-header">' +
+                '<div class="erp-card-icon orange">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                '</div>' +
+                '<div>' +
+                    '<h3 class="erp-card-title">Reference Document</h3>' +
+                    '<p class="erp-card-subtitle">No reference document attached</p>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-card-body">' +
+                '<div class="erp-empty-section">' +
+                    '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+                    '<p>No reference document has been attached to this project yet.</p>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    // README Content Section
+    if (p.readme && p.readme.readme_content) {
+        var readmeContent = p.readme.readme_content || '';
+        var projectTitle = p.project_title || 'README';
+        html += '<div class="erp-card">' +
+            '<div class="erp-card-header">' +
+                '<div class="erp-card-icon green">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>' +
+                '</div>' +
+                '<div>' +
+                    '<h3 class="erp-card-title">README</h3>' +
+                    '<p class="erp-card-subtitle">Project documentation</p>' +
+                '</div>' +
+                '<div class="erp-card-actions" style="margin-left:auto;">' +
+                    '<button class="erp-download-btn" onclick="downloadReadme(\'' + encodeURIComponent(projectTitle) + '\', \'' + encodeURIComponent(readmeContent) + '\')" title="Download README">' +
+                        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>' +
+                        'Download' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-card-body">' +
+                '<pre class="erp-readme-content">' + escHtml(p.readme.readme_content) + '</pre>' +
+            '</div>' +
+        '</div>';
+    }
+
+    // Project Updates (Timeline)
+    if (p.updates && p.updates.length > 0) {
+        html += '<div class="erp-card">' +
+            '<div class="erp-card-header">' +
+                '<div class="erp-card-icon green">' +
+                    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>' +
+                '</div>' +
+                '<div>' +
+                    '<h3 class="erp-card-title">Updates</h3>' +
+                    '<p class="erp-card-subtitle">Project progress and changes</p>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-card-body">' +
+                '<div class="erp-timeline">';
+        p.updates.forEach(function(u) {
+            html += '<div class="erp-timeline-item">' +
+                '<div class="erp-timeline-marker"></div>' +
+                '<div class="erp-timeline-content">' +
+                    '<div class="erp-timeline-header">' +
+                        '<h4 class="erp-timeline-title">' + escHtml(u.update_title) + '</h4>' +
+                        '<span class="erp-timeline-date">' + (u.update_date ? formatDate(u.update_date) : '') + '</span>' +
+                    '</div>' +
+                    (u.update_description ? '<p class="erp-timeline-desc">' + escHtml(u.update_description) + '</p>' : '') +
+                    (u.updated_by ? '<div class="erp-timeline-author">' +
+                        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
+                        escHtml(u.updated_by) + '</div>' : '') +
+                '</div>' +
+            '</div>';
+        });
+        html += '</div></div></div>';
+    }
+
+    html += '</div>';
+
+    // Sidebar
+    html += '<div class="erp-project-sidebar">';
+
+    // Project Info Card
+    html += '<div class="erp-sidebar-card">' +
+        '<div class="erp-sidebar-card-header">' +
+            '<h4 class="erp-sidebar-card-title">Project Details</h4>' +
+        '</div>' +
+        '<div class="erp-sidebar-card-body">' +
+            '<div class="erp-detail-list">';
+
+    if (p.creation) {
+        html += '<div class="erp-detail-item">' +
+            '<div class="erp-detail-label">Created</div>' +
+            '<div class="erp-detail-value">' + formatDate(p.creation) + '</div>' +
+        '</div>';
+    }
+    if (p.start_date) {
+        html += '<div class="erp-detail-item">' +
+            '<div class="erp-detail-label">Start Date</div>' +
+            '<div class="erp-detail-value">' + formatDate(p.start_date) + '</div>' +
+        '</div>';
+    }
+    if (p.due_date) {
+        html += '<div class="erp-detail-item">' +
+            '<div class="erp-detail-label">Due Date</div>' +
+            '<div class="erp-detail-value">' + formatDate(p.due_date) + '</div>' +
+        '</div>';
+    }
+    if (p.completion_date) {
+        html += '<div class="erp-detail-item">' +
+            '<div class="erp-detail-label">Completed</div>' +
+            '<div class="erp-detail-value">' + formatDate(p.completion_date) + '</div>' +
+        '</div>';
+    }
+    if (p.approved_by) {
+        html += '<div class="erp-detail-item">' +
+            '<div class="erp-detail-label">Approved By</div>' +
+            '<div class="erp-detail-value">' + escHtml(p.approved_by) + '</div>' +
+        '</div>';
+    }
+
+    html += '</div></div></div>';
+
+    // Mini Gantt Chart Card - Team Timeline
+    html += '<div class="erp-sidebar-card">' +
+        '<div class="erp-sidebar-card-header">' +
+            '<div class="erp-card-icon cyan" style="width:36px;height:36px;border-radius:10px;">' +
+                '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="M15 21V9"/></svg>' +
+            '</div>' +
+            '<div>' +
+                '<h4 class="erp-sidebar-card-title">Team Timeline</h4>' +
+                '<p class="erp-card-subtitle">Projects in same team</p>' +
+            '</div>' +
+        '</div>' +
+        '<div class="erp-sidebar-card-body" style="padding-top:0.75rem;">' +
+            '<div class="erp-mini-gantt" id="miniGanttContainer"></div>' +
+        '</div>' +
+    '</div>';
+
+    // GitHub Repository Card
+    if (p.github_repository) {
+        var g = p.github_info || {};
+        // Use github_repository as URL if repository_url is not available
+        var repoUrl = (g && g.repository_url) ? g.repository_url : p.github_repository;
+        
+        html += '<div class="erp-sidebar-card erp-github-card">' +
+            '<div class="erp-sidebar-card-header">' +
+                '<div class="erp-github-icon">' +
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="#24292e"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>' +
+                '</div>' +
+                '<h4 class="erp-sidebar-card-title">Repository</h4>' +
+            '</div>' +
+            '<div class="erp-sidebar-card-body">' +
+                '<a href="' + escHtml(repoUrl) + '" target="_blank" class="erp-github-btn">' +
+                    '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>' +
+                    'Open Repository' +
+                '</a>';
+        
+        if (g.default_branch) {
+            html += '<div class="erp-github-info">' +
+                '<div class="erp-github-info-item">' +
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>' +
+                    '<span>Branch: <strong>' + escHtml(g.default_branch) + '</strong></span>' +
+                '</div>';
+            if (g.commit_hash) {
+                html += '<div class="erp-github-info-item">' +
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="1.05" y1="12" x2="7" y2="12"/><line x1="17.01" y1="12" x2="22.96" y2="12"/></svg>' +
+                    '<span>' + escHtml(g.commit_hash.substring(0,7)) + '...</span>' +
+                '</div>';
+            }
+            html += '</div>';
+        }
+        
+        if (g.languages) {
+            html += '<div class="erp-github-languages">' + escHtml(g.languages) + '</div>';
+        }
+        
+        html += '</div></div>';
+    }
+
+    // Tags Card
+    if (p.tags) {
+        html += '<div class="erp-sidebar-card">' +
+            '<div class="erp-sidebar-card-header">' +
+                '<h4 class="erp-sidebar-card-title">Tags</h4>' +
+            '</div>' +
+            '<div class="erp-sidebar-card-body">' +
+                '<div class="erp-tag-list">';
+        p.tags.split(',').forEach(function(t) {
+            t = t.trim();
+            if (t) html += '<span class="erp-tag-item">' + escHtml(t) + '</span>';
+        });
+        html += '</div></div></div>';
+    }
+
+    html += '</div></div>';
+
+    // =============================================
+    // Activity Feed Section
+    // =============================================
+    html += '<div class="erp-card" id="activityFeedSection">' +
+        '<div class="erp-card-header">' +
+            '<div class="erp-card-icon cyan">' +
+                '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' +
+            '</div>' +
+            '<div>' +
+                '<h3 class="erp-card-title">Activity Feed</h3>' +
+                '<p class="erp-card-subtitle">Comments, updates &amp; changes</p>' +
+            '</div>' +
+            '<div class="erp-card-actions" style="margin-left:auto;">' +
+                '<button class="erp-download-btn" onclick="showAddUpdateModal()" style="background:var(--tut-info-gradient);font-size:0.75rem;padding:0.5rem 1rem;">' +
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+                    'Add Update' +
+                '</button>' +
+            '</div>' +
+        '</div>' +
+        '<div class="erp-card-body">' +
+            '<div class="erp-activity-composer">' +
+                '<textarea class="erp-activity-input" id="commentInput" placeholder="Write a comment..." rows="2"></textarea>' +
+                '<div class="erp-activity-composer-footer">' +
+                    '<div class="erp-activity-user">' +
+                        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
+                        '<span>Commenting as you</span>' +
+                    '</div>' +
+                    '<button class="erp-activity-submit" onclick="submitComment()">' +
+                        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>' +
+                        'Send' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-activity-feed" id="activityFeed">' +
+                '<div class="erp-empty-section">' +
+                    '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' +
+                    '<p>Loading activity...</p>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    // =============================================
+    // Time Tracking Section
+    // =============================================
+
+    // Time Tracking Card
+    html += '<div class="erp-card" id="timeTrackingSection">' +
+        '<div class="erp-card-header">' +
+            '<div class="erp-card-icon cyan">' +
+                '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+            '</div>' +
+            '<div>' +
+                '<h3 class="erp-card-title">Time Tracking</h3>' +
+                '<p class="erp-card-subtitle">Log hours worked on this project</p>' +
+            '</div>' +
+        '</div>' +
+        '<div class="erp-card-body">' +
+            '<div class="erp-time-summary">' +
+                '<div class="erp-time-total">' +
+                    '<span class="erp-time-total-hours" id="totalHoursDisplay">' + (p.total_hours_logged || '0') + '</span>' +
+                    '<span class="erp-time-total-label">Total Hours Logged</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="erp-time-form">' +
+                '<div class="erp-time-form-row">' +
+                    '<input type="number" class="erp-time-input" id="timeHoursInput" placeholder="Hours" min="0.5" max="24" step="0.5">' +
+                    '<input type="date" class="erp-time-input" id="timeDateInput" style="flex:1;">' +
+                '</div>' +
+                '<input type="text" class="erp-time-input" id="timeDescInput" placeholder="What did you work on?" style="width:100%;">' +
+                '<button class="erp-time-btn" onclick="logTime()">' +
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+                    'Log Time' +
+                '</button>' +
+            '</div>' +
+            '<div class="erp-time-logs" id="timeLogsList">' +
+                '<p class="text-muted" style="font-size:0.8rem;text-align:center;padding:1rem 0;">Loading time logs...</p>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    html += '</div>';  // close the full-width container
+
+    // Update breadcrumb
+    document.getElementById('breadcrumbTitle').textContent = p.project_title;
+    document.title = p.project_title + ' - Team Update Tool';
+
+    var loading = document.getElementById('projectLoading');
+    if (loading) loading.remove();
+    document.getElementById('projectDetail').innerHTML = html;
+    document.getElementById('projectDetail').style.display = 'block';
+
+    // Post-render initializations (wrapped in try-catch for resilience)
+    try {
+        if (p.team_projects) {
+            renderMiniGantt(p.team_projects, p.name);
+        }
+        if (window._canChangeStatus) {
+            loadStatusOptions(sname);
+        }
+        loadActivity(p.name);
+        loadTimeLogs(p.name);
+    } catch (e) {
+        console.error('Post-render error:', e, e.stack);
+    }
+    // Set today's date on time input
+    var dateInput = document.getElementById('timeDateInput');
+    if (dateInput) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+}
+
+// =============================================
+// Activity Feed Functions
+// =============================================
+
+var currentProjectName = '';
+
+function loadActivity(projectName) {
+  currentProjectName = projectName;
+  frappe.call({
+    method: 'team_update_tool.api.projects.get_project_activity',
+    args: { project: projectName },
+    callback: function(r) {
+      var feed = document.getElementById('activityFeed');
+      if (!feed) return;
+      if (r.message && r.message.length) {
+        feed.innerHTML = '';
+        r.message.forEach(function(a) {
+          feed.appendChild(createActivityItem(a));
+        });
+      } else {
+        feed.innerHTML = '' +
+          '<div class="erp-empty-section">' +
+            '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>' +
+            '<p>No activity yet. Be the first to comment!</p>' +
+          '</div>';
+      }
+    },
+    error: function() {
+      var feed = document.getElementById('activityFeed');
+      if (feed) {
+        feed.innerHTML = '<div class="erp-empty-section"><p>Failed to load activity.</p></div>';
+      }
+    }
+  });
+}
+
+function createActivityItem(a) {
+  var el = document.createElement('div');
+  el.className = 'erp-activity-item';
+
+  var icon = '';
+  var iconBg = '';
+  if (a.type === 'comment') {
+    icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+    iconBg = 'background:rgba(0,137,255,0.1);color:#0089FF;';
+  } else if (a.type === 'update') {
+    icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+    iconBg = 'background:rgba(5,150,105,0.1);color:#059669;';
+  } else {
+    icon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    iconBg = 'background:rgba(255,140,0,0.1);color:#FF8C00;';
+  }
+
+  var timeAgo = getTimeAgo(a.date);
+  var author = escHtml(a.author || 'System');
+  var content = '';
+
+  if (a.type === 'update' && a.title) {
+    content = '<div class="erp-activity-title">' + escHtml(a.title) + '</div>';
+  }
+  if (a.content) {
+    content += '<div class="erp-activity-content">' + escHtml(a.content) + '</div>';
+  }
+
+  el.innerHTML = '' +
+    '<div class="erp-activity-avatar" style="' + iconBg + '">' + icon + '</div>' +
+    '<div class="erp-activity-body">' +
+      '<div class="erp-activity-header">' +
+        '<strong>' + author + '</strong>' +
+        '<span class="erp-activity-subtype">' + escHtml(a.subtype || a.type) + '</span>' +
+      '</div>' +
+      content +
+      '<div class="erp-activity-time">' + timeAgo + '</div>' +
+    '</div>';
+
+  return el;
+}
+
+function getTimeAgo(dateStr) {
+  if (!dateStr) return '';
+  var now = new Date();
+  var d = new Date(dateStr);
+  var diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function submitComment() {
+  var input = document.getElementById('commentInput');
+  if (!input || !input.value.trim()) return;
+  var comment = input.value.trim();
+  input.disabled = true;
+
+  frappe.call({
+    method: 'team_update_tool.api.projects.add_activity_comment',
+    args: {
+      project: currentProjectName,
+      comment: comment
+    },
+    callback: function(r) {
+      input.value = '';
+      input.disabled = false;
+      input.focus();
+      if (r.message && r.message.success) {
+        loadActivity(currentProjectName);
+      }
+    },
+    error: function() {
+      input.disabled = false;
+      tutToast('Failed to post comment', 'error');
+    }
+  });
+}
+
+// Allow Ctrl+Enter to submit comment
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    var active = document.activeElement;
+    if (active && active.id === 'commentInput') {
+      e.preventDefault();
+      submitComment();
+    }
+  }
+});
+
+function showAddUpdateModal() {
+  var overlay = document.createElement('div');
+  overlay.className = 'tut-modal-overlay';
+  overlay.innerHTML = '' +
+    '<div style="background:#fff;border-radius:1rem;padding:1.5rem;max-width:480px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.15);animation:tutModalSlide 0.25s ease;">' +
+      '<h5 class="fw-bold mb-1">Add Progress Update</h5>' +
+      '<p class="text-muted" style="font-size:0.85rem;margin-bottom:1rem;">Post a structured update about this project</p>' +
+      '<div class="mb-3">' +
+        '<label class="form-label small fw-semibold">Title *</label>' +
+        '<input type="text" class="form-control" id="updateTitleInput" placeholder="e.g. Completed frontend implementation">' +
+      '</div>' +
+      '<div class="mb-3">' +
+        '<label class="form-label small fw-semibold">Description</label>' +
+        '<textarea class="form-control" id="updateDescInput" rows="3" placeholder="Describe what was done..."></textarea>' +
+      '</div>' +
+      '<div class="d-flex gap-2 justify-content-end">' +
+        '<button class="btn btn-outline-secondary btn-sm" onclick="this.closest(\'.tut-modal-overlay\').remove()">Cancel</button>' +
+        '<button class="btn btn-primary btn-sm" id="submitUpdateBtn" onclick="submitUpdate()">Post Update</button>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  setTimeout(function() {
+    document.getElementById('updateTitleInput').focus();
+  }, 100);
+}
+
+function submitUpdate() {
+  var title = document.getElementById('updateTitleInput').value.trim();
+  var desc = document.getElementById('updateDescInput').value.trim();
+  if (!title) {
+    tutToast('Please enter a title for the update.', 'warning');
+    return;
+  }
+  var btn = document.getElementById('submitUpdateBtn');
+  btn.disabled = true;
+  btn.textContent = 'Posting...';
+
+  frappe.call({
+    method: 'team_update_tool.api.projects.add_activity_update',
+    args: {
+      project: currentProjectName,
+      title: title,
+      description: desc
+    },
+    callback: function(r) {
+      var modal = btn.closest('.tut-modal-overlay');
+      if (modal) modal.remove();
+      if (r.message && r.message.success) {
+        tutToast('Update posted successfully!', 'success');
+        loadActivity(currentProjectName);
+      }
+    },
+    error: function() {
+      btn.disabled = false;
+      btn.textContent = 'Post Update';
+      tutToast('Failed to post update', 'error');
+    }
+  });
+}
+
+// =============================================
+// Time Tracking Functions
+// =============================================
+
+function loadTimeLogs(projectName) {
+  frappe.call({
+    method: 'team_update_tool.api.projects.get_time_logs',
+    args: { project: projectName },
+    callback: function(r) {
+      var list = document.getElementById('timeLogsList');
+      var totalDisplay = document.getElementById('totalHoursDisplay');
+      if (!list) return;
+
+      if (r.message) {
+        if (totalDisplay) {
+          totalDisplay.textContent = r.message.total_hours || '0';
+        }
+        if (r.message.logs && r.message.logs.length) {
+          var html = '';
+          r.message.logs.forEach(function(log) {
+            html += '' +
+              '<div class="erp-time-log-item">' +
+                '<div class="erp-time-log-info">' +
+                  '<span class="erp-time-log-hours">' + log.hours + 'h</span>' +
+                  '<span class="erp-time-log-desc">' + escHtml(log.description || 'No description') + '</span>' +
+                  '<span class="erp-time-log-date">' + formatDate(log.log_date) + '</span>' +
+                '</div>' +
+                '<button class="erp-time-log-delete" onclick="deleteTimeLog(\'' + log.name + '\')" title="Delete">' +
+                  '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+                '</button>' +
+              '</div>';
+          });
+          list.innerHTML = html;
+        } else {
+          list.innerHTML = '<p class="text-muted" style="font-size:0.8rem;text-align:center;padding:1rem 0;">No time logged yet</p>';
+        }
+      }
+    },
+    error: function() {
+      var list = document.getElementById('timeLogsList');
+      if (list) {
+        list.innerHTML = '<p class="text-muted" style="font-size:0.8rem;text-align:center;padding:1rem 0;">Failed to load time logs</p>';
+      }
+    }
+  });
+}
+
+function logTime() {
+  var hours = document.getElementById('timeHoursInput').value;
+  var desc = document.getElementById('timeDescInput').value.trim();
+  var logDate = document.getElementById('timeDateInput').value;
+
+  if (!hours || parseFloat(hours) <= 0) {
+    tutToast('Please enter valid hours.', 'warning');
+    return;
+  }
+  if (parseFloat(hours) > 24) {
+    tutToast('Hours cannot exceed 24.', 'warning');
+    return;
+  }
+
+  frappe.call({
+    method: 'team_update_tool.api.projects.add_time_log',
+    args: {
+      project: currentProjectName,
+      hours: parseFloat(hours),
+      description: desc,
+      log_date: logDate || undefined
+    },
+    callback: function(r) {
+      if (r.message && r.message.success) {
+        document.getElementById('timeHoursInput').value = '';
+        document.getElementById('timeDescInput').value = '';
+        tutToast('Time logged successfully!', 'success');
+        loadTimeLogs(currentProjectName);
+        // Also reload to update total on sidebar
+        setTimeout(function() {
+          loadProject(currentProjectName);
+        }, 1000);
+      }
+    },
+    error: function() {
+      tutToast('Failed to log time', 'error');
+    }
+  });
+}
+
+function deleteTimeLog(name) {
+  if (!confirm('Delete this time log entry?')) return;
+  frappe.call({
+    method: 'team_update_tool.api.projects.delete_time_log',
+    args: { name: name },
+    callback: function(r) {
+      if (r.message && r.message.success) {
+        tutToast('Time log deleted', 'success');
+        loadTimeLogs(currentProjectName);
+      }
+    },
+    error: function() {
+      tutToast('Failed to delete time log', 'error');
+    }
+  });
+}
+
+// Download README function
+function downloadReadme(projectTitle, readmeContent) {
+    try {
+        // Decode URI components
+        var title = decodeURIComponent(projectTitle) || 'README';
+        var content = decodeURIComponent(readmeContent) || '';
+        
+        // Create filename
+        var filename = title.replace(/[^a-z0-9]/gi, '_') + '_README.md';
+        
+        // Create blob and download
+        var blob = new Blob([content], { type: 'text/markdown' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        console.error('Error downloading README:', e);
+        alert('Unable to download README file.');
+    }
+}
+
+// ==============================
+// Mini Gantt Chart (Team Timeline)
+// ==============================
+function renderMiniGantt(projects, currentName) {
+    const container = document.getElementById('miniGanttContainer');
+    if (!container) return;
+
+    if (!projects || projects.length < 2) {
+        container.innerHTML = '<div class="erp-empty-section" style="padding:0.75rem;">' +
+            '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>' +
+            '<p style="font-size:0.78rem;">Not enough team projects to show a timeline</p></div>';
+        return;
+    }
+
+    // Calculate date range (with validation)
+    let minDate = null, maxDate = null;
+    projects.forEach(p => {
+        if (p.start_date && (!minDate || p.start_date < minDate)) minDate = p.start_date;
+        if (p.due_date && (!maxDate || p.due_date > maxDate)) maxDate = p.due_date;
+    });
+
+    if (!minDate || !maxDate) {
+        container.innerHTML = '<div class="erp-empty-section" style="padding:0.75rem;">' +
+            '<p style="font-size:0.78rem;">Projects need start and due dates for the timeline</p></div>';
+        return;
+    }
+
+    // Add padding
+    const padStart = new Date(minDate);
+    if (isNaN(padStart.getTime())) return;
+    padStart.setDate(padStart.getDate() - 14);
+    const padEnd = new Date(maxDate);
+    if (isNaN(padEnd.getTime())) return;
+    padEnd.setDate(padEnd.getDate() + 14);
+
+    const totalDays = Math.max(1, Math.round((padEnd - padStart) / (1000 * 60 * 60 * 24)));
+    const width = Math.max(200, container.clientWidth || 280);
+    const rowHeight = 22;
+    const barHeight = 10;
+    const headerHeight = 18;
+    const height = headerHeight + 8 + projects.length * rowHeight;
+
+    let svg = '<svg class="erp-mini-gantt-svg" width="100%" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg">';
+
+    // Background
+    svg += '<rect width="' + width + '" height="' + height + '" fill="#f8f5ff" rx="6"/>';
+
+    // Today line
+    const today = new Date();
+    const todayOffset = Math.round((today - padStart) / (1000 * 60 * 60 * 24));
+    if (todayOffset >= 0 && todayOffset <= totalDays) {
+        const tx = (todayOffset / totalDays) * width;
+        svg += '<line x1="' + tx + '" y1="0" x2="' + tx + '" y2="' + height + '" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,2"/>';
+        svg += '<rect x="' + (tx - 14) + '" y="2" width="28" height="12" rx="6" fill="#ef4444"/>';
+        svg += '<text x="' + tx + '" y="11" fill="#fff" font-size="7" font-weight="700" text-anchor="middle" font-family="Inter,sans-serif">TODAY</text>';
+    }
+
+    // Month markers
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    for (let d = new Date(padStart); d <= padEnd; d.setDate(d.getDate() + 1)) {
+        if (d.getDate() === 1) {
+            const offset = Math.round((d - padStart) / (1000 * 60 * 60 * 24));
+            const x = (offset / totalDays) * width;
+            svg += '<line x1="' + x + '" y1="' + (headerHeight + 4) + '" x2="' + x + '" y2="' + height + '" stroke="rgba(124,58,237,0.08)" stroke-width="1"/>';
+            svg += '<text x="' + x + '" y="' + (headerHeight - 4) + '" fill="#0066CC" font-size="7" font-weight="700" font-family="Inter,sans-serif">' + months[d.getMonth()] + '</text>';
+        }
+    }
+
+    // Draw projects
+    let hasDates = false;
+    projects.forEach((p, idx) => {
+        const y = headerHeight + 8 + idx * rowHeight;
+        const isCurrent = p.name === currentName;
+
+        // Project name
+        svg += '<text x="6" y="' + (y + rowHeight - 6) + '" fill="' + (isCurrent ? '#0089FF' : '#64748b') + '" font-size="7" font-weight="' + (isCurrent ? '700' : '500') + '" font-family="Inter,sans-serif">' + truncateText(p.title || '', 20) + '</text>';
+
+        if (p.start_date && p.due_date) {
+            hasDates = true;
+            const pStart = new Date(p.start_date);
+            const pEnd = new Date(p.due_date);
+            const barStart = Math.max(0, Math.round((pStart - padStart) / (1000 * 60 * 60 * 24)));
+            const barDuration = Math.max(1, Math.round((pEnd - pStart) / (1000 * 60 * 60 * 24)) + 1);
+
+            const bx = (barStart / totalDays) * width;
+            const bw = Math.max(6, (barDuration / totalDays) * width);
+            const by = y + 3;
+
+            const color = p.status_color || '#6b7280';
+
+            // Bar
+            const gClass = isCurrent ? 'erp-mini-gantt-current' : '';
+            svg += '<g class="' + gClass + '">';
+            svg += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + barHeight + '" rx="3" fill="' + color + '" opacity="' + (isCurrent ? '0.9' : '0.6') + '"/>';
+
+            // Completion check
+            if (p.completion_date) {
+                svg += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + barHeight + '" rx="3" fill="#22c55e" opacity="0.35"/>';
+            }
+
+            // Overdue indicator
+            if (p.is_overdue && !p.completion_date) {
+                svg += '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + barHeight + '" rx="3" fill="none" stroke="#ef4444" stroke-width="1" stroke-dasharray="2,2"/>';
+            }
+
+            svg += '</g>';
+
+            // Overdue badge
+            if (p.is_overdue && isCurrent) {
+                svg += '<text x="' + (width - 4) + '" y="' + (y + rowHeight - 6) + '" fill="#ef4444" font-size="6" font-weight="700" text-anchor="end" font-family="Inter,sans-serif">OVERDUE</text>';
+            }
+        }
+    });
+
+    if (!hasDates) {
+        svg += '<text x="' + (width / 2) + '" y="' + (height / 2 + 4) + '" fill="#94a3b8" font-size="8" text-anchor="middle" font-family="Inter,sans-serif" font-style="italic">Set start/due dates to see timeline</text>';
+    }
+
+    svg += '</svg>';
+
+    // Footer count & link
+    const teamCount = projects.length;
+    svg += '<div class="erp-mini-gantt-count"><strong>' + teamCount + '</strong> project' + (teamCount > 1 ? 's' : '') + ' in team</div>';
+    svg += '<a href="/team_update_tool/gantt" class="erp-mini-gantt-link">Open full Gantt chart<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>';
+
+    container.innerHTML = svg;
+}
+
+function truncateText(text, maxLen) {
+    if (!text) return '';
+    if (text.length <= maxLen) return text;
+    return text.substring(0, maxLen - 2) + '..';
+}
+
+// ==============================
+// Status Change (Admin/Team Leader)
+// ==============================
+
+function loadStatusOptions(currentName) {
+    var sel = document.getElementById('statusSelect');
+    if (!sel) return;
+
+    frappe.call({
+        method: 'team_update_tool.api.projects.get_all_public_stats',
+        callback: function(r) {
+            if (r.message && r.message.statuses) {
+                // Clear existing options
+                sel.innerHTML = '';
+                
+                var selectedIdx = 0;
+                r.message.statuses.forEach(function(s, idx) {
+                    var opt = document.createElement('option');
+                    opt.value = s.name;
+                    opt.textContent = s.status_name;
+                    sel.appendChild(opt);
+                    
+                    // Check if this is the current status
+                    if (s.status_name === currentName) {
+                        selectedIdx = idx;
+                    }
+                });
+                
+                // Pre-select the current status
+                if (sel.options.length > 0) {
+                    sel.selectedIndex = selectedIdx;
+                }
+            }
+        },
+        error: function() {
+            console.error('Failed to load status options');
+        }
+    });
+}
+
+function updateProjectStatus(newStatus) {
+    var sel = document.getElementById('statusSelect');
+    if (!newStatus || !window._currentProjectName) return;
+
+    sel.classList.add('erp-status-select-loading');
+
+    frappe.call({
+        method: 'team_update_tool.api.projects.update_project_status',
+        args: {
+            project: window._currentProjectName,
+            status: newStatus
+        },
+        callback: function(r) {
+            sel.classList.remove('erp-status-select-loading');
+            if (r.message && r.message.success) {
+                // Update the select style with new color
+                var newColor = r.message.color || '#6b7280';
+                sel.style.backgroundColor = newColor;
+                sel.style.borderColor = newColor;
+
+                // Set selected option text to match
+                for (var i = 0; i < sel.options.length; i++) {
+                    if (sel.options[i].value === newStatus) {
+                        sel.options[i].selected = true;
+                        break;
+                    }
+                }
+
+                tutToast('Status updated to ' + r.message.status_name, 'success');
+            } else {
+                tutToast('Failed to update status', 'error');
+                // Reset selection
+                sel.value = '';
+                sel.selectedIndex = 0;
+            }
+        },
+        error: function() {
+            sel.classList.remove('erp-status-select-loading');
+            tutToast('Failed to update status', 'error');
+            sel.selectedIndex = 0;
+        }
+    });
+}
+
+// Trigger mini Gantt chart after renderProject
+// (Called from renderProject after the details are set)
+</script>
+{% endblock %}

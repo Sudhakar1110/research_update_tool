@@ -1,0 +1,33 @@
+{
+ "channel": "Email",
+ "creation": "2026-07-08 10:00:00",
+ "docstatus": 0,
+ "doctype": "Notification",
+ "module": "Transactions",
+ "document_type": "Project",
+ "enabled": 1,
+ "event": "Value Change",
+ "is_standard": 1,
+ "message": "<p>Project has been approved:</p><p><b>{{ doc.project_title }}</b><br>Team: {{ doc.team }}<br>Approved by: {{ doc.approved_by }}</p>",
+ "method": "",
+ "modified": "2026-07-13 04:00:00",
+ "modified_by": "Administrator",
+ "name": "Project Approved",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "condition": "",
+   "receiver_by_document_field": "",
+   "receiver_by_role": "Team Update Admin"
+  },
+  {
+   "condition": "",
+   "receiver_by_document_field": "",
+   "receiver_by_role": "Team Update Viewer"
+  }
+ ],
+ "send_system_notification": 1,
+ "subject": "Project Approved: {{ doc.project_title }}",
+ "value_changed": "status",
+ "condition": "frappe.db.get_value('Project Status', doc.status, 'status_name') == 'Approved'"
+}

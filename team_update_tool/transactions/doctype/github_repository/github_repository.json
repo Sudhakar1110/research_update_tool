@@ -1,0 +1,140 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "GR-.YYYY.-.#####",
+ "creation": "2026-07-08 10:00:00",
+ "doctype": "DocType",
+ "module": "Transactions",
+ "engine": "InnoDB",
+ "field_order": [
+  "repository_url",
+  "repository_name",
+  "column_break_1",
+  "commit_hash",
+  "default_branch",
+  "section_languages",
+  "languages",
+  "section_desc",
+  "readme_summary"
+ ],
+ "fields": [
+  {
+   "fieldname": "repository_url",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Repository URL",
+   "options": "URL",
+   "reqd": 1
+  },
+  {
+   "fieldname": "repository_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Repository Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "commit_hash",
+   "fieldtype": "Data",
+   "label": "Last Commit SHA",
+   "read_only": 1
+  },
+  {
+   "fieldname": "default_branch",
+   "fieldtype": "Data",
+   "label": "Default Branch",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_languages",
+   "fieldtype": "Section Break",
+   "label": "Languages"
+  },
+  {
+   "fieldname": "languages",
+   "fieldtype": "Small Text",
+   "label": "Languages",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_desc",
+   "fieldtype": "Section Break",
+   "label": "README"
+  },
+  {
+   "fieldname": "readme_summary",
+   "fieldtype": "Text",
+   "label": "README Summary",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Project",
+   "link_fieldname": "github_repository",
+   "group": "Projects"
+  }
+ ],
+ "modified": "2026-07-08 10:00:00",
+ "modified_by": "Administrator",
+ "name": "GitHub Repository",
+ "naming_rule": "By Naming Series",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Team Member",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Team Update Viewer"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "repository_url,repository_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "repository_name",
+ "track_changes": 1
+}

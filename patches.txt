@@ -1,0 +1,2 @@
+[pre_model_sync]
+team_update_tool.patches.fix_child_tables.execute

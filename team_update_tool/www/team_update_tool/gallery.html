@@ -1,0 +1,465 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Gallery - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Gallery Hero */
+.gallery-hero {
+    background: var(--tut-dark-gradient);
+    padding: 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+.gallery-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+.gallery-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.gallery-hero h1::before {
+    content: '';
+    width: 6px;
+    height: 35px;
+    background: linear-gradient(180deg, var(--tut-gold) 0%, var(--tut-gold-light) 100%);
+    border-radius: 3px;
+}
+.gallery-hero p {
+    color: rgba(255,255,255,0.75);
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+}
+
+/* Gallery Grid */
+.gallery-grid {
+    column-count: 3;
+    column-gap: 1.25rem;
+}
+@media (max-width: 992px) { .gallery-grid { column-count: 2; } }
+@media (max-width: 576px) { .gallery-grid { column-count: 1; } }
+
+.gallery-item {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+    background: #fff;
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: galleryCardIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.gallery-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--tut-royal-shadow), var(--tut-royal-glow);
+    border-color: rgba(0, 137, 255, 0.3);
+}
+@keyframes galleryCardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .gallery-item { animation: none; }
+}
+
+.gallery-item:nth-child(1) { animation-delay: 0.04s; }
+.gallery-item:nth-child(2) { animation-delay: 0.08s; }
+.gallery-item:nth-child(3) { animation-delay: 0.12s; }
+.gallery-item:nth-child(4) { animation-delay: 0.16s; }
+.gallery-item:nth-child(5) { animation-delay: 0.20s; }
+.gallery-item:nth-child(6) { animation-delay: 0.24s; }
+
+.gallery-item img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease;
+}
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+.gallery-item-body {
+    padding: 1rem 1.25rem;
+}
+.gallery-item-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #05133C;
+    margin: 0 0 0.35rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.gallery-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--tut-text-muted);
+}
+.gallery-item-meta svg {
+    width: 14px;
+    height: 14px;
+    color: var(--tut-primary);
+    flex-shrink: 0;
+}
+
+/* Lightbox */
+.gallery-lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+.gallery-lightbox.visible { opacity: 1; }
+.gallery-lightbox img {
+    max-width: 90vw;
+    max-height: 85vh;
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.gallery-lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+.gallery-lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+/* Skeleton */
+.gallery-skeleton {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+.gallery-skeleton-img {
+    height: 180px;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: galleryShimmer 1.4s ease-in-out infinite;
+}
+.gallery-skeleton-text {
+    height: 14px;
+    margin: 1rem 1.25rem 0.5rem;
+    width: 70%;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: galleryShimmer 1.4s ease-in-out infinite;
+    border-radius: 6px;
+}
+.gallery-skeleton-sub {
+    height: 10px;
+    margin: 0 1.25rem 1rem;
+    width: 50%;
+    background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+    background-size: 200% 100%;
+    animation: galleryShimmer 1.4s ease-in-out infinite;
+    border-radius: 6px;
+}
+@keyframes galleryShimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+/* Filter bar */
+.gallery-filter-bar {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.gallery-search {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 360px;
+}
+.gallery-search input {
+    width: 100%;
+    padding: 0.6rem 1rem 0.6rem 2.25rem;
+    border: 1px solid var(--tut-royal-border);
+    border-radius: 0.6rem;
+    font-size: 0.85rem;
+    background: #fff;
+    outline: none;
+    transition: all 0.2s ease;
+}
+.gallery-search input:focus {
+    border-color: var(--tut-primary);
+    box-shadow: 0 0 0 3px rgba(0, 137, 255, 0.1);
+}
+.gallery-search svg {
+    position: absolute;
+    left: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--tut-text-muted);
+}
+
+/* Stats */
+.gallery-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.gallery-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--tut-text-muted);
+}
+.gallery-stat strong {
+    color: var(--tut-primary);
+    font-weight: 700;
+}
+
+/* Empty state */
+.gallery-empty {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 1.25rem;
+    border: 2px dashed var(--tut-royal-border);
+}
+.gallery-empty-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--tut-primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    box-shadow: 0 10px 30px rgba(0, 137, 255, 0.25);
+}
+.gallery-empty-icon svg {
+    width: 34px;
+    height: 34px;
+    color: #fff;
+}
+.gallery-empty h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #05133C;
+    margin: 0 0 0.4rem;
+}
+.gallery-empty p {
+    font-size: 0.88rem;
+    color: var(--tut-text-muted);
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .gallery-hero { padding: 1.75rem 0; }
+    .gallery-hero h1 { font-size: 1.5rem; }
+    .gallery-filter-bar { flex-direction: column; }
+    .gallery-search { max-width: 100%; }
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<!-- Hero -->
+<div class="gallery-hero">
+    <div class="container">
+        <h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--tut-gold);">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+            </svg>
+            Project Gallery
+        </h1>
+        <p>Browse screenshots and visuals from all team projects</p>
+    </div>
+</div>
+
+<div class="tut-main-area" style="margin-left:0;">
+    <div class="container py-4">
+        <!-- Filters -->
+        <div class="gallery-filter-bar">
+            <div class="gallery-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" id="gallerySearch" placeholder="Search by project name..." oninput="filterGallery()">
+            </div>
+            <div class="gallery-stats" id="galleryStats"></div>
+        </div>
+
+        <!-- Loading Skeleton -->
+        <div id="galleryLoading" class="gallery-grid" style="display:block;">
+            <div class="gallery-skeleton"><div class="gallery-skeleton-img"></div><div class="gallery-skeleton-text"></div><div class="gallery-skeleton-sub"></div></div>
+            <div class="gallery-skeleton"><div class="gallery-skeleton-img" style="height:220px;"></div><div class="gallery-skeleton-text"></div><div class="gallery-skeleton-sub"></div></div>
+            <div class="gallery-skeleton"><div class="gallery-skeleton-img" style="height:160px;"></div><div class="gallery-skeleton-text"></div><div class="gallery-skeleton-sub"></div></div>
+            <div class="gallery-skeleton"><div class="gallery-skeleton-img" style="height:200px;"></div><div class="gallery-skeleton-text"></div><div class="gallery-skeleton-sub"></div></div>
+            <div class="gallery-skeleton"><div class="gallery-skeleton-img" style="height:240px;"></div><div class="gallery-skeleton-text"></div><div class="gallery-skeleton-sub"></div></div>
+            <div class="gallery-skeleton"><div class="gallery-skeleton-img" style="height:180px;"></div><div class="gallery-skeleton-text"></div><div class="gallery-skeleton-sub"></div></div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="galleryContent" class="gallery-grid" style="display:none;"></div>
+
+        <!-- Empty State -->
+        <div id="galleryEmpty" class="gallery-empty" style="display:none;">
+            <div class="gallery-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </div>
+            <h4>No Screenshots Found</h4>
+            <p>No project screenshots have been uploaded yet. They will appear here once projects are created with images.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Lightbox -->
+<div class="gallery-lightbox" id="galleryLightbox" onclick="closeLightbox(event)">
+    <button class="gallery-lightbox-close" onclick="closeLightbox(event)">&times;</button>
+    <img id="lightboxImg" src="" alt="">
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var allScreenshots = [];
+
+frappe.ready(function() {
+    loadGallery();
+});
+
+function loadGallery() {
+    document.getElementById('galleryLoading').style.display = 'block';
+    document.getElementById('galleryContent').style.display = 'none';
+    document.getElementById('galleryEmpty').style.display = 'none';
+
+    fetch('/api/method/team_update_tool.api.projects.get_gallery_screenshots')
+    .then(function(r) {
+        if (!r.ok) throw new Error('API request failed');
+        return r.json();
+    })
+    .then(function(data) {
+        document.getElementById('galleryLoading').style.display = 'none';
+
+        if (!data.message || !data.message.screenshots || !data.message.screenshots.length) {
+            document.getElementById('galleryEmpty').style.display = 'block';
+            return;
+        }
+
+        allScreenshots = data.message.screenshots;
+        var totalImages = data.message.total_images || allScreenshots.length;
+
+        // Update stats
+        document.getElementById('galleryStats').innerHTML =
+            '<div class="gallery-stat"><strong>' + allScreenshots.length + '</strong> Projects</div>' +
+            '<div class="gallery-stat"><strong>' + totalImages + '</strong> Images</div>';
+
+        renderGallery(allScreenshots);
+        document.getElementById('galleryContent').style.display = 'block';
+    })
+    .catch(function(err) {
+        console.error('Gallery load error:', err);
+        document.getElementById('galleryLoading').innerHTML =
+            '<div class="gallery-empty"><div class="gallery-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div><h4>Failed to Load</h4><p>' + escHtml(err.message) + '</p><button class="btn btn-outline-secondary" onclick="loadGallery()">Try Again</button></div>';
+    });
+}
+
+function renderGallery(screenshots) {
+    var html = '';
+    screenshots.forEach(function(item, idx) {
+        html += '<div class="gallery-item" data-title="' + escHtml(item.project_title || '').toLowerCase() + '">' +
+            '<img src="' + escHtml(item.screenshot_url) + '" alt="' + escHtml(item.project_title || 'Screenshot') + '" loading="lazy" onclick="openLightbox(\'' + escHtml(item.screenshot_url) + '\')">' +
+            '<div class="gallery-item-body">' +
+            '<div class="gallery-item-title">' + escHtml(item.project_title) + '</div>' +
+            '<div class="gallery-item-meta">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>' +
+            '<span>' + escHtml(item.team || 'Unknown Team') + '</span>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+    });
+    document.getElementById('galleryContent').innerHTML = html;
+}
+
+function filterGallery() {
+    var query = document.getElementById('gallerySearch').value.toLowerCase().trim();
+    document.querySelectorAll('.gallery-item').forEach(function(item) {
+        var title = (item.getAttribute('data-title') || '');
+        item.style.display = (!query || title.indexOf(query) !== -1) ? '' : 'none';
+    });
+}
+
+function openLightbox(url) {
+    var lb = document.getElementById('galleryLightbox');
+    document.getElementById('lightboxImg').src = url;
+    lb.style.display = 'flex';
+    requestAnimationFrame(function() { lb.classList.add('visible'); });
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+    if (e.target === document.getElementById('galleryLightbox') || e.target.classList.contains('gallery-lightbox-close')) {
+        var lb = document.getElementById('galleryLightbox');
+        lb.classList.remove('visible');
+        setTimeout(function() { lb.style.display = 'none'; }, 250);
+        document.body.style.overflow = '';
+    }
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        var lb = document.getElementById('galleryLightbox');
+        if (lb.style.display === 'flex') {
+            lb.classList.remove('visible');
+            setTimeout(function() { lb.style.display = 'none'; }, 250);
+            document.body.style.overflow = '';
+        }
+    }
+});
+</script>
+{% endblock %}

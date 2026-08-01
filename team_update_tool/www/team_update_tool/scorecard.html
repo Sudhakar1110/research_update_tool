@@ -1,0 +1,1452 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Team Scorecard - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================
+   SCORECARD 2.0 — Premium KPI Dashboard
+   Royal Purple, Gold & Glass Design
+   ===================================== */
+
+/* ─── Page Root Variables (applied globally inside the scorecard namespace) ─── */
+:root {
+  --sc-radius-sm: 0.625rem;
+  --sc-radius: 0.875rem;
+  --sc-radius-lg: 1.25rem;
+  --sc-radius-xl: 1.5rem;
+  --sc-transition: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Hero Header ─── */
+.sc-hero {
+  background: var(--tut-dark-gradient);
+  padding: 2.75rem 0 4.5rem;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.sc-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 80% 30%, rgba(217,119,6,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 400px at 10% 70%, rgba(124,58,237,0.15) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230089FF' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  z-index: 0;
+  pointer-events: none;
+}
+.sc-hero-accent {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, var(--tut-gold) 30%, var(--tut-gold-light) 60%, transparent 100%);
+  z-index: 1;
+}
+.sc-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.sc-hero-orb--1 {
+  width: 350px; height: 350px;
+  background: rgba(217,119,6,0.12);
+  top: -120px; right: -40px;
+  animation: scOrbFloat 10s ease-in-out infinite;
+}
+.sc-hero-orb--2 {
+  width: 280px; height: 280px;
+  background: rgba(124,58,237,0.10);
+  bottom: -100px; left: -60px;
+  animation: scOrbFloat 14s ease-in-out infinite reverse;
+}
+@keyframes scOrbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(20px, -30px) scale(1.05); }
+  66% { transform: translate(-15px, 20px) scale(0.95); }
+}
+.sc-hero .container { position: relative; z-index: 2; }
+.sc-hero-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(251,191,36,0.25), rgba(217,119,6,0.15));
+  color: var(--tut-gold-light);
+  margin-bottom: 0.75rem;
+  box-shadow: 0 8px 24px rgba(217,119,6,0.2);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(251,191,36,0.2);
+}
+.sc-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.35rem;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  letter-spacing: -0.01em;
+}
+.sc-hero p {
+  color: rgba(255,255,255,0.8);
+  font-size: 1.05rem;
+  margin: 0;
+  font-weight: 400;
+}
+.sc-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.3rem 0.85rem;
+  border-radius: 50rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 1rem;
+}
+
+/* ─── Period Navigation ─── */
+.sc-nav-wrap {
+  margin-top: -2.5rem;
+  position: relative;
+  z-index: 10;
+}
+.sc-nav {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--tut-royal-border);
+  border-radius: var(--sc-radius-lg);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  box-shadow: 0 20px 50px -12px rgba(76,29,149,0.18);
+  position: relative;
+  overflow: hidden;
+}
+.sc-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--tut-primary-gradient);
+}
+.sc-nav-tabs {
+  display: flex;
+  gap: 2px;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 0.75rem;
+  position: relative;
+}
+.sc-nav-tab {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s var(--sc-transition);
+  font-family: inherit;
+  position: relative;
+  z-index: 1;
+}
+.sc-nav-tab:hover { color: #334155; background: rgba(255,255,255,0.5); }
+.sc-nav-tab.active {
+  background: #fff;
+  color: var(--tut-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.sc-nav-center {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.sc-nav-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--tut-royal-border);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #64748b;
+}
+.sc-nav-arrow:hover {
+  background: var(--tut-primary-light);
+  border-color: var(--tut-primary);
+  color: var(--tut-primary);
+  transform: scale(1.05);
+}
+.sc-nav-arrow:active { transform: scale(0.92); }
+.sc-nav-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #05133C;
+  min-width: 160px;
+  text-align: center;
+}
+.sc-nav-select {
+  border: 2px solid var(--tut-royal-border);
+  border-radius: 0.65rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #05133C;
+  background: #fafafa;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  font-family: inherit;
+  min-width: 140px;
+}
+.sc-nav-select:focus {
+  border-color: var(--tut-primary);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+  background: #fff;
+  outline: none;
+}
+
+/* ─── Content Section ─── */
+.sc-content {
+  background: var(--tut-bg);
+  padding: 1.75rem 0 3rem;
+  min-height: 60vh;
+}
+
+/* ─── Summary Bar ─── */
+.sc-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.sc-summary-item {
+  background: #fff;
+  border: 1px solid var(--tut-royal-border);
+  border-radius: var(--sc-radius);
+  padding: 1.25rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s var(--sc-transition);
+  position: relative;
+  overflow: hidden;
+}
+.sc-summary-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.35s ease;
+}
+.sc-summary-item:hover::before { transform: scaleY(1); }
+.sc-summary-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(76,29,149,0.08);
+  border-color: rgba(139,92,246,0.25);
+}
+.sc-summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  position: relative;
+}
+.sc-summary-icon::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 17px;
+  background: inherit;
+  opacity: 0.15;
+  filter: blur(8px);
+  z-index: -1;
+}
+.sc-summary-icon--blue {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #fff;
+}
+.sc-summary-item:nth-child(1)::before { background: #3b82f6; }
+.sc-summary-icon--green {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+}
+.sc-summary-item:nth-child(2)::before { background: #10b981; }
+.sc-summary-icon--gold {
+  background: linear-gradient(135deg, #FF8C00, #FFC53D);
+  color: #fff;
+}
+.sc-summary-item:nth-child(3)::before { background: #FFC53D; }
+.sc-summary-icon--purple {
+  background: linear-gradient(135deg, #0089FF, #4DA6FF);
+  color: #fff;
+}
+.sc-summary-item:nth-child(4)::before { background: #a78bfa; }
+.sc-summary-num {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #05133C;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.sc-summary-lbl {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+/* ─── Team Summary Section ─── */
+.sc-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 2rem;
+}
+.sc-team-card {
+  background: #fff;
+  border: 1px solid var(--tut-royal-border);
+  border-radius: var(--sc-radius);
+  padding: 1rem 1.15rem;
+  transition: all 0.3s var(--sc-transition);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+.sc-team-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--tut-primary-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.sc-team-card:hover::after { transform: scaleX(1); }
+.sc-team-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(76,29,149,0.08);
+  border-color: rgba(139,92,246,0.25);
+}
+.sc-team-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.sc-team-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--tut-primary);
+}
+.sc-team-head h4 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #05133C;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sc-team-body {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.sc-team-count {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #05133C;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.sc-team-meta {
+  font-size: 0.72rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+.sc-team-trend {
+  margin-top: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #059669;
+}
+.sc-team-trend svg { width: 12px; height: 12px; }
+
+/* ─── Member Scorecard Grid ─── */
+.sc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ─── Member Card ─── */
+.sc-member {
+  background: #fff;
+  border: 1px solid var(--tut-royal-border);
+  border-radius: var(--sc-radius-lg);
+  overflow: hidden;
+  transition: all 0.4s var(--sc-transition);
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: scCardIn 0.5s var(--sc-transition) forwards;
+}
+.sc-member:nth-child(1) { animation-delay: 0.04s; }
+.sc-member:nth-child(2) { animation-delay: 0.08s; }
+.sc-member:nth-child(3) { animation-delay: 0.12s; }
+.sc-member:nth-child(4) { animation-delay: 0.16s; }
+.sc-member:nth-child(5) { animation-delay: 0.20s; }
+.sc-member:nth-child(6) { animation-delay: 0.24s; }
+.sc-member:nth-child(7) { animation-delay: 0.28s; }
+.sc-member:nth-child(8) { animation-delay: 0.32s; }
+.sc-member:nth-child(9) { animation-delay: 0.36s; }
+.sc-member:nth-child(10) { animation-delay: 0.40s; }
+@keyframes scCardIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+.sc-member:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--tut-royal-shadow), var(--tut-royal-glow);
+  border-color: rgba(139,92,246,0.3);
+}
+.sc-member--top {
+  border-color: rgba(217,119,6,0.3);
+  box-shadow: 0 4px 24px rgba(217,119,6,0.12);
+}
+.sc-member--top:hover {
+  border-color: rgba(217,119,6,0.5);
+  box-shadow: 0 20px 50px rgba(217,119,6,0.15), 0 0 60px rgba(217,119,6,0.05);
+}
+.sc-member--top .sc-member-accent { background: var(--tut-gold-gradient); }
+
+.sc-member-accent {
+  height: 3px;
+  background: var(--tut-primary-gradient);
+}
+
+/* ─── Member Header ─── */
+.sc-member-head {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.sc-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+}
+.sc-member--top .sc-avatar {
+  box-shadow: 0 4px 14px rgba(217,119,6,0.35);
+}
+.sc-avatar-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2.5px solid transparent;
+  transition: all 0.35s ease;
+}
+.sc-member:hover .sc-avatar-ring {
+  transform: rotate(180deg);
+}
+.sc-member--top .sc-avatar-ring {
+  border-color: var(--tut-gold);
+}
+.sc-avatar-rank {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.sc-avatar-rank--1 { background: linear-gradient(135deg, #FF8C00, #FFC53D); }
+.sc-avatar-rank--2 { background: linear-gradient(135deg, #64748b, #94a3b8); }
+.sc-avatar-rank--3 { background: linear-gradient(135deg, #CC6600, #FF8C00); }
+.sc-avatar-rank--other { background: var(--tut-primary); }
+.sc-member-info { flex: 1; min-width: 0; }
+.sc-member-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #05133C;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+.sc-member-name .crown {
+  font-size: 1rem;
+  animation: scCrown 2s ease-in-out infinite;
+}
+@keyframes scCrown {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-3px) rotate(-5deg); }
+}
+.sc-member-team {
+  font-size: 0.8rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sc-member-team svg { width: 14px; height: 14px; color: var(--tut-primary); flex-shrink: 0; }
+.sc-role-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.6rem;
+  background: var(--tut-primary-light);
+  color: var(--tut-primary);
+  border-radius: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ─── KPI Metrics ─── */
+.sc-kpi {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  gap: 1rem;
+  border-top: 1px solid rgba(139,92,246,0.06);
+  border-bottom: 1px solid rgba(139,92,246,0.06);
+  background: linear-gradient(135deg, rgba(139,92,246,0.02), transparent);
+}
+/* Radial Ring */
+.sc-radial {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+.sc-radial svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.sc-radial-bg { fill: none; stroke: #f1f5f9; stroke-width: 5; }
+.sc-radial-fill {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s var(--sc-transition);
+}
+.sc-radial-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.sc-radial-num {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #05133C;
+  line-height: 1;
+}
+.sc-radial-text {
+  font-size: 0.55rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* KPI Stat Rows */
+.sc-kpi-stats {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem 1rem;
+}
+.sc-kpi-stat { text-align: left; }
+.sc-kpi-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #05133C;
+  line-height: 1.2;
+}
+.sc-kpi-val--gold {
+  background: var(--tut-gold-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sc-kpi-lbl {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Progress Bar ─── */
+.sc-progress-wrap {
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba(139,92,246,0.06);
+}
+.sc-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+.sc-progress-lbl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.sc-progress-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #05133C;
+}
+.sc-progress-track {
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.sc-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s var(--sc-transition);
+  background: var(--tut-primary-gradient);
+}
+.sc-progress-fill--high { background: linear-gradient(135deg, #059669, #10b981); }
+.sc-progress-fill--med { background: linear-gradient(135deg, #FF8C00, #f59e0b); }
+.sc-progress-fill--low { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+/* ─── Completed Projects List ─── */
+.sc-projects {
+  padding: 0.85rem 1.5rem 1.15rem;
+}
+.sc-projects-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.sc-projects-title svg { width: 12px; height: 12px; color: #059669; }
+.sc-proj-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #334155;
+  text-decoration: none;
+  margin: 0 0.3rem 0.3rem 0;
+  transition: all 0.2s ease;
+}
+.sc-proj-chip:hover {
+  background: var(--tut-primary-light);
+  border-color: var(--tut-primary);
+  color: var(--tut-primary);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+.sc-proj-chip svg { width: 10px; height: 10px; color: #059669; flex-shrink: 0; }
+.sc-proj-chip-more {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+  cursor: default;
+}
+.sc-proj-empty {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* ─── Loading Skeleton ─── */
+.sc-skeleton { display: block; }
+.sc-skeleton-bar {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: scShimmer 1.4s infinite ease-in-out;
+  border-radius: 0.5rem;
+}
+.sc-skeleton--nav {
+  padding: 1.75rem 1.5rem;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--tut-royal-border);
+  border-radius: var(--sc-radius-lg);
+}
+.sc-skeleton--summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+.sc-skeleton--summary .sc-skeleton-bar { height: 70px; }
+.sc-skeleton--team {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.75rem;
+}
+.sc-skeleton--team .sc-skeleton-bar { height: 80px; }
+.sc-skeleton--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+.sc-skeleton--card {
+  background: #fff;
+  border: 1px solid var(--tut-royal-border);
+  border-radius: var(--sc-radius-lg);
+  overflow: hidden;
+}
+.sc-skeleton--card .sc-skeleton-bar { margin: 0.75rem; border-radius: 0.4rem; }
+.sc-skeleton--card .sc-skeleton-bar:first-child { height: 54px; margin-top: 1rem; }
+.sc-skeleton--card .sc-skeleton-bar:nth-child(2) { height: 40px; }
+.sc-skeleton--card .sc-skeleton-bar:nth-child(3) { height: 24px; }
+.sc-skeleton--card .sc-skeleton-bar:nth-child(4) { height: 60px; }
+@keyframes scShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Empty & Error States ─── */
+.sc-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  border-radius: var(--sc-radius-lg);
+  border: 2px dashed var(--tut-royal-border);
+}
+.sc-empty-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--tut-primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  box-shadow: 0 10px 30px rgba(124,58,237,0.25);
+}
+.sc-empty-icon svg { width: 34px; height: 34px; color: #fff; }
+.sc-empty h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #05133C;
+  margin: 0 0 0.4rem;
+}
+.sc-empty p {
+  font-size: 0.88rem;
+  color: #6b7280;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+/* ─── Error State ─── */
+.sc-error {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+.sc-error-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  box-shadow: 0 8px 24px rgba(220,38,38,0.25);
+}
+.sc-error h4 { font-size: 1.1rem; font-weight: 700; color: #05133C; margin: 0 0 0.35rem; }
+.sc-error p { font-size: 0.85rem; color: #6b7280; margin: 0 0 1rem; }
+.sc-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border: 2px solid var(--tut-royal-border);
+  border-radius: 0.75rem;
+  background: #fff;
+  color: var(--tut-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.sc-retry-btn:hover {
+  border-color: var(--tut-primary);
+  color: var(--tut-primary);
+  background: var(--tut-primary-light);
+  transform: translateY(-2px);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 992px) {
+  .sc-summary { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .sc-hero h1 { font-size: 1.6rem; }
+  .sc-nav { flex-direction: column; align-items: stretch; gap: 0.75rem; padding: 1rem; }
+  .sc-nav-tabs { justify-content: center; }
+  .sc-nav-center { justify-content: center; }
+  .sc-nav-label { min-width: 120px; font-size: 0.85rem; }
+  .sc-nav-select { width: 100%; }
+  .sc-grid { grid-template-columns: 1fr; }
+  .sc-kpi { flex-direction: column; align-items: stretch; }
+  .sc-radial { align-self: center; }
+  .sc-summary { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+  .sc-summary-item { padding: 1rem; }
+  .sc-summary-num { font-size: 1.3rem; }
+  .sc-team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .sc-hero { padding: 1.75rem 0 3rem; }
+  .sc-hero h1 { font-size: 1.35rem; }
+  .sc-nav-wrap { margin-top: -1.75rem; }
+  .sc-nav { padding: 0.85rem; }
+  .sc-nav-tabs { gap: 1px; }
+  .sc-nav-tab { padding: 0.35rem 0.75rem; font-size: 0.72rem; }
+  .sc-summary { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .sc-team-grid { grid-template-columns: 1fr; }
+  .sc-member-head { flex-direction: column; align-items: flex-start; }
+  .sc-kpi-stats { grid-template-columns: 1fr 1fr; }
+  .sc-projects-title { font-size: 0.65rem; }
+}
+
+/* ─── Trophy Animation ─── */
+@keyframes scTrophy {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+/* ─── Section Divider ─── */
+.sc-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+}
+.sc-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--tut-royal-border), transparent);
+}
+.sc-divider-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #05133C;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+</style>
+{% endblock %}
+
+{% block page_content %}
+<!-- ═══ HERO HEADER ═══ -->
+<div class="sc-hero">
+  <div class="sc-hero-orb sc-hero-orb--1"></div>
+  <div class="sc-hero-orb sc-hero-orb--2"></div>
+  <div class="sc-hero-accent"></div>
+  <div class="container">
+    <div class="sc-hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Performance Analytics
+    </div>
+    <div class="sc-hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <h1>Team Scorecard</h1>
+    <p>Track member KPIs — project completion rates across every period</p>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="sc-content">
+  <div class="container">
+
+    <!-- ─── Period Navigation ─── -->
+    <div class="sc-nav-wrap" id="navWrap">
+      <div class="sc-nav">
+        <div class="sc-nav-tabs">
+          <button class="sc-nav-tab" data-period="week">Weekly</button>
+          <button class="sc-nav-tab active" data-period="month">Monthly</button>
+          <button class="sc-nav-tab" data-period="year">Yearly</button>
+        </div>
+        <div class="sc-nav-center">
+          <button class="sc-nav-arrow" id="prevPeriod" title="Previous period">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="sc-nav-label" id="periodLabel">Loading…</span>
+          <button class="sc-nav-arrow" id="nextPeriod" title="Next period">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <select class="sc-nav-select" id="teamFilter">
+          <option value="">All Teams</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ─── Loading / Skeleton ─── -->
+    <div id="scLoading">
+      <div style="height:1.5rem;"></div>
+      <div class="sc-skeleton--summary">
+        <div class="sc-skeleton-bar"></div>
+        <div class="sc-skeleton-bar"></div>
+        <div class="sc-skeleton-bar"></div>
+        <div class="sc-skeleton-bar"></div>
+      </div>
+      <div class="sc-skeleton--team">
+        <div class="sc-skeleton-bar"></div>
+        <div class="sc-skeleton-bar"></div>
+        <div class="sc-skeleton-bar"></div>
+      </div>
+      <div class="sc-skeleton--grid">
+        <div class="sc-skeleton--card">
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+        </div>
+        <div class="sc-skeleton--card">
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+        </div>
+        <div class="sc-skeleton--card">
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+          <div class="sc-skeleton-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Content ─── -->
+    <div id="scContent" style="display:none;">
+
+      <!-- Summary Bar -->
+      <div class="sc-summary" id="summaryBar">
+        <div class="sc-summary-item">
+          <div class="sc-summary-icon sc-summary-icon--blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="sc-summary-num sc-count" id="totalMembers">0</div>
+            <div class="sc-summary-lbl">Team Members</div>
+          </div>
+        </div>
+        <div class="sc-summary-item">
+          <div class="sc-summary-icon sc-summary-icon--green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div>
+            <div class="sc-summary-num sc-count" id="totalCompleted">0</div>
+            <div class="sc-summary-lbl">Projects Completed</div>
+          </div>
+        </div>
+        <div class="sc-summary-item">
+          <div class="sc-summary-icon sc-summary-icon--gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div>
+            <div class="sc-summary-num" id="topPerformer">—</div>
+            <div class="sc-summary-lbl">Top Performer</div>
+          </div>
+        </div>
+        <div class="sc-summary-item">
+          <div class="sc-summary-icon sc-summary-icon--purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="sc-summary-num sc-count" id="scTeamCount">0</div>
+            <div class="sc-summary-lbl">Teams Active</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Summary -->
+      <div class="sc-divider">
+        <span class="sc-divider-line"></span>
+        <span class="sc-divider-label">Teams at a Glance</span>
+        <span class="sc-divider-line"></span>
+      </div>
+      <div class="sc-team-grid" id="teamSummary"></div>
+
+      <!-- Scorecard Grid -->
+      <div class="sc-divider">
+        <span class="sc-divider-line"></span>
+        <span class="sc-divider-label">Member Performance</span>
+        <span class="sc-divider-line"></span>
+      </div>
+      <div class="sc-grid" id="scorecardGrid"></div>
+
+      <!-- Empty State -->
+      <div class="sc-empty" id="scorecardEmpty" style="display:none;">
+        <div class="sc-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h4>No Scorecard Data</h4>
+        <p>No completed projects found for the selected period. Try a different time range or check back after projects are completed.</p>
+      </div>
+    </div>
+
+    <!-- Error placeholder -->
+    <div id="scError" style="display:none;"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+frappe.ready(function() { initScorecard(); });
+
+/* ─── State ─── */
+var scPeriod   = 'month';
+var scOffset   = 0;
+var scTeam     = '';
+var scData     = null;
+
+/* ─── Init ─── */
+function initScorecard() {
+  // Period tabs
+  document.querySelectorAll('.sc-nav-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.sc-nav-tab').forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      scPeriod = this.getAttribute('data-period');
+      scOffset = 0;
+      loadScorecard();
+    });
+  });
+
+  // Arrows
+  document.getElementById('prevPeriod').addEventListener('click', function() {
+    scOffset -= 1;
+    loadScorecard();
+  });
+  document.getElementById('nextPeriod').addEventListener('click', function() {
+    scOffset += 1;
+    loadScorecard();
+  });
+
+  // Team filter
+  document.getElementById('teamFilter').addEventListener('change', function() {
+    scTeam = this.value;
+    scOffset = 0;
+    loadScorecard();
+  });
+
+  // Initial load
+  loadScorecard();
+}
+
+/* ─── Load API ─── */
+function loadScorecard() {
+  document.getElementById('scLoading').style.display = 'block';
+  document.getElementById('scContent').style.display = 'none';
+  document.getElementById('scError').style.display = 'none';
+
+  var params = 'period=' + scPeriod + '&offset=' + scOffset;
+  if (scTeam) params += '&team=' + encodeURIComponent(scTeam);
+
+  fetch('/api/method/team_update_tool.api.projects.get_member_scorecard?' + params)
+    .then(function(r) {
+      if (!r.ok) throw new Error('API request failed (' + r.status + ')');
+      return r.json();
+    })
+    .then(function(data) {
+      document.getElementById('scLoading').style.display = 'none';
+
+      if (!data.message || !data.message.scorecard) {
+        document.getElementById('scContent').style.display = 'block';
+        document.getElementById('scorecardGrid').innerHTML = '';
+        document.getElementById('scorecardEmpty').style.display = 'block';
+        return;
+      }
+
+      scData = data.message;
+      renderAll(scData);
+    })
+    .catch(function(err) {
+      console.error('Scorecard error:', err);
+      document.getElementById('scLoading').style.display = 'none';
+      document.getElementById('scError').style.display = 'block';
+      document.getElementById('scError').innerHTML =
+        '<div class="sc-error">' +
+        '<div class="sc-error-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="28" height="28"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>' +
+        '<h4>Failed to load scorecard</h4>' +
+        '<p>' + escHtml(err.message) + '</p>' +
+        '<button class="sc-retry-btn" onclick="loadScorecard()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg> Try Again</button>' +
+        '</div>';
+    });
+}
+
+/* ─── Render All ─── */
+function renderAll(d) {
+  var scorecard = d.scorecard || [];
+  var totalCompleted = d.total_completed || 0;
+
+  document.getElementById('scContent').style.display = 'block';
+  document.getElementById('periodLabel').textContent = d.period_label || '—';
+
+  // Populate team filter on first load
+  if (d.teams && d.teams.length && document.getElementById('teamFilter').options.length <= 1) {
+    var sel = document.getElementById('teamFilter');
+    d.teams.forEach(function(t) {
+      var opt = document.createElement('option');
+      opt.value = t.name;
+      opt.textContent = t.team_name;
+      sel.appendChild(opt);
+    });
+  }
+
+  // ── Summary ──
+  animateCount('totalMembers', scorecard.length);
+  animateCount('totalCompleted', totalCompleted);
+
+  if (scorecard.length > 0) {
+    var top = scorecard[0];
+    document.getElementById('topPerformer').textContent = top.completed > 0 ? (top.full_name || '—').split(' ')[0] : '—';
+  } else {
+    document.getElementById('topPerformer').textContent = '—';
+  }
+
+  var teamSet = {};
+  scorecard.forEach(function(s) {
+    (s.teams || '').split(', ').forEach(function(t) { if (t) teamSet[t] = true; });
+  });
+  animateCount('scTeamCount', Object.keys(teamSet).length);
+
+  // ── Team Summary ──
+  renderTeamSummary(d.team_summary);
+
+  // ── Grid ──
+  if (scorecard.length === 0) {
+    document.getElementById('scorecardGrid').innerHTML = '';
+    document.getElementById('scorecardEmpty').style.display = 'block';
+    return;
+  }
+  document.getElementById('scorecardEmpty').style.display = 'none';
+  renderScorecardGrid(scorecard);
+}
+
+/* ─── Team Summary ─── */
+function renderTeamSummary(teamSummary) {
+  var container = document.getElementById('teamSummary');
+  if (!teamSummary || Object.keys(teamSummary).length === 0) {
+    container.innerHTML = '';
+    container.style.display = 'none';
+    return;
+  }
+  container.style.display = 'grid';
+
+  var maxCompleted = 0;
+  var names = Object.keys(teamSummary);
+  names.forEach(function(n) {
+    if (teamSummary[n].completed > maxCompleted) maxCompleted = teamSummary[n].completed;
+  });
+
+  var html = '';
+  names.forEach(function(teamName) {
+    var ts = teamSummary[teamName];
+    var pct = maxCompleted > 0 ? Math.round((ts.completed / maxCompleted) * 100) : 0;
+
+    // Deterministic dot color
+    var hash = 0;
+    for (var i = 0; i < teamName.length; i++) hash = teamName.charCodeAt(i) + ((hash << 5) - hash);
+    var colors = ['#0089FF','#2563eb','#0ea5e9','#059669','#FF8C00','#dc2626','#db2777','#0891b2'];
+    var dotColor = colors[Math.abs(hash) % colors.length];
+
+    html += '<div class="sc-team-card">';
+    html += '<div class="sc-team-head">';
+    html += '<span class="sc-team-dot" style="background:' + dotColor + ';"></span>';
+    html += '<h4>' + escHtml(teamName) + '</h4>';
+    html += '</div>';
+    html += '<div class="sc-team-body">';
+    html += '<span class="sc-team-count">' + ts.completed + '</span>';
+    html += '<span class="sc-team-meta">project' + (ts.completed !== 1 ? 's' : '') + ' by ' + (ts.member_count || 0) + ' member' + (ts.member_count !== 1 ? 's' : '') + '</span>';
+    html += '</div>';
+    html += '<div class="sc-progress-track" style="margin-top:0.5rem; height:4px;">';
+    html += '<div class="sc-progress-fill" style="width:' + pct + '%; background:' + dotColor + ';"></div>';
+    html += '</div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+/* ─── Scorecard Grid ─── */
+function renderScorecardGrid(scorecard) {
+  var container = document.getElementById('scorecardGrid');
+  var html = '';
+
+  scorecard.forEach(function(m, idx) {
+    var initials = getInitials(m.full_name);
+    var avatarColor = getAvatarColor(m.user);
+    var isTop = idx === 0 && m.completed > 0;
+    var completed = m.completed || 0;
+    var projects = m.completed_projects || [];
+
+    // Compute rank label
+    var rankClass = 'sc-avatar-rank--other';
+    var rankLabel = '' + (idx + 1);
+    if (idx === 0) rankClass = 'sc-avatar-rank--1';
+    else if (idx === 1) rankClass = 'sc-avatar-rank--2';
+    else if (idx === 2) rankClass = 'sc-avatar-rank--3';
+
+    // Radial progress: use weeks completion, percentage of max
+    var maxCompleted = scorecard[0].completed || 1;
+    var pct = Math.min(100, Math.round((completed / maxCompleted) * 100));
+    var circumference = 2 * Math.PI * 28; // r=28
+    var offset = circumference - (pct / 100) * circumference;
+
+    // Progress bar color
+    var barClass = 'sc-progress-fill--high';
+    if (pct < 50) barClass = 'sc-progress-fill--low';
+    else if (pct < 80) barClass = 'sc-progress-fill--med';
+
+    html += '<div class="sc-member' + (isTop ? ' sc-member--top' : '') + '" data-index="' + idx + '">';
+    html += '<div class="sc-member-accent"></div>';
+
+    // Header
+    html += '<div class="sc-member-head">';
+    html += '<div class="sc-avatar" style="background:' + avatarColor + ';">';
+    html += '<div class="sc-avatar-ring"></div>';
+    html += '<span class="sc-avatar-rank ' + rankClass + '">' + rankLabel + '</span>';
+    html += initials;
+    html += '</div>';
+    html += '<div class="sc-member-info">';
+    html += '<div class="sc-member-name">';
+    html += escHtml(m.full_name);
+    if (isTop && completed > 0) {
+      html += ' <span class="crown" title="Top Performer">👑</span>';
+    }
+    html += '</div>';
+    html += '<div class="sc-member-team">';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>';
+    html += escHtml(m.teams || 'No Team');
+    html += ' · <span class="sc-role-pill">' + escHtml(m.role || 'Member') + '</span>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // KPI Radial + Stats
+    html += '<div class="sc-kpi">';
+    html += '<div class="sc-radial">';
+    html += '<svg viewBox="0 0 64 64">';
+    html += '<circle class="sc-radial-bg" cx="32" cy="32" r="28"/>';
+    html += '<circle class="sc-radial-fill" cx="32" cy="32" r="28" stroke="' + (isTop ? '#FF8C00' : '#0089FF') + '" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + offset + '"/>';
+    html += '</svg>';
+    html += '<div class="sc-radial-label">';
+    html += '<span class="sc-radial-num" style="' + (isTop ? 'background:var(--tut-gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;' : '') + '">' + pct + '%</span>';
+    html += '<span class="sc-radial-text">Rating</span>';
+    html += '</div>';
+    html += '</div>';
+
+    html += '<div class="sc-kpi-stats">';
+    html += '<div class="sc-kpi-stat">';
+    html += '<div class="sc-kpi-val' + (isTop ? ' sc-kpi-val--gold' : '') + '">' + completed + '</div>';
+    html += '<div class="sc-kpi-lbl">Projects</div>';
+    html += '</div>';
+    html += '<div class="sc-kpi-stat">';
+    html += '<div class="sc-kpi-val">' + (projects.length > 0 ? projects[0].completion_date || '✓' : '—') + '</div>';
+    html += '<div class="sc-kpi-lbl">Last Done</div>';
+    html += '</div>';
+    html += '<div class="sc-kpi-stat">';
+    html += '<div class="sc-kpi-val">' + pct + '%</div>';
+    html += '<div class="sc-kpi-lbl">Velocity</div>';
+    html += '</div>';
+    html += '<div class="sc-kpi-stat">';
+    html += '<div class="sc-kpi-val">#' + (idx + 1) + '</div>';
+    html += '<div class="sc-kpi-lbl">Rank</div>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Progress Bar
+    html += '<div class="sc-progress-wrap">';
+    html += '<div class="sc-progress-head">';
+    html += '<span class="sc-progress-lbl">Completion Rate</span>';
+    html += '<span class="sc-progress-pct">' + pct + '%</span>';
+    html += '</div>';
+    html += '<div class="sc-progress-track">';
+    html += '<div class="sc-progress-fill ' + barClass + '" style="width:' + pct + '%"></div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Completed Projects
+    html += '<div class="sc-projects">';
+    html += '<div class="sc-projects-title">';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>';
+    html += completed + ' Project' + (completed !== 1 ? 's' : '') + ' Completed</div>';
+    if (projects.length > 0) {
+      projects.slice(0, 5).forEach(function(p) {
+        html += '<a href="/team_update_tool/project/' + encodeURIComponent(p.name) + '" class="sc-proj-chip" title="' + escHtml(p.title) + '">';
+        html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>';
+        html += escHtml(p.title && p.title.length > 32 ? p.title.substring(0, 32) + '…' : p.title || 'Untitled');
+        html += '</a>';
+      });
+      if (projects.length > 5) {
+        html += '<span class="sc-proj-chip-more">+' + (projects.length - 5) + ' more</span>';
+      }
+    } else {
+      html += '<span class="sc-proj-empty">No projects completed this period</span>';
+    }
+    html += '</div>';
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+
+  // Trigger radial animation after render
+  setTimeout(function() {
+    container.querySelectorAll('.sc-radial-fill').forEach(function(el) {
+      // stroke-dashoffset is already set, but we trigger the CSS transition
+    });
+  }, 100);
+}
+
+/* ─── Animated Counter ─── */
+function animateCount(id, target) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var current = parseInt(el.textContent, 10) || 0;
+  if (current === target) return;
+
+  el.textContent = '0';
+  var startTime = null;
+  var duration = 800;
+
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var progress = Math.min((timestamp - startTime) / duration, 1);
+    // Ease out cubic
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var value = Math.round(eased * target);
+    el.textContent = value;
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = target;
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+/* ─── Helpers ─── */
+function getInitials(name) {
+  if (!name) return '?';
+  var parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+}
+
+function getAvatarColor(str) {
+  if (!str) return '#6b7280';
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }    var colors = [
+    '#0089FF','#2563eb','#0ea5e9','#059669','#FF8C00',
+    '#dc2626','#db2777','#0891b2','#65a30d','#3b82f6'
+  ];
+  return colors[Math.abs(hash) % colors.length];
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Page Not Found - Team Update Tool{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="/assets/team_update_tool/css/team_update_tool.css">
+{% endblock %}
+
+{% block page_content %}
+<div class="tut-auth-page">
+	<div class="text-center" style="max-width:480px;">
+		<div class="tut-stat-icon tut-stat-icon-orange mx-auto mb-3" style="width:72px;height:72px;border-radius:1rem;">
+			<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+		</div>
+		<h1 class="display-4 fw-bold mb-2" style="color:#05133C;">404</h1>
+		<h4 class="fw-semibold mb-2">Page Not Found</h4>
+		<p class="text-muted mb-4" style="max-width:360px;margin:0 auto 1.5rem;">
+			The page you're looking for doesn't exist or has been moved.
+			Check the URL or navigate back to a known page.
+		</p>
+		<div class="d-flex flex-wrap gap-2 justify-content-center">
+			<a href="/team_update_tool" class="btn btn-success rounded-pill px-4 fw-semibold">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="me-1"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+				Go Home
+			</a>
+			<a href="/team_update_tool/projects" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+				Browse Projects
+			</a>
+		</div>
+	</div>
+</div>
+{% endblock %}
