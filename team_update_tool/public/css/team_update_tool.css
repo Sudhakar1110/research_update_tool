@@ -91,8 +91,25 @@
 /* --- Base --- */
 body {
   background: var(--tut-bg);
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--tut-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+a {
+  color: var(--tut-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--tut-primary-dark);
 }
 
 /* --- Top Navbar (Bootstrap 5) --- */
@@ -225,13 +242,20 @@ body {
   margin-top: var(--tut-navbar-height);
   min-height: calc(100vh - var(--tut-navbar-height));
   transition: margin-left 0.25s ease;
+  padding-bottom: 3rem;
+}
+.tut-main-area > .container,
+.tut-main-area > .container-fluid {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 /* --- Page Header --- */
 .tut-page-header {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%);
+  background: linear-gradient(135deg, #f0f7ff 0%, #f8faff 50%, #ffffff 100%);
   border-bottom: 1px solid var(--tut-border);
-  padding: 2rem 0 1.5rem;
+  padding: 2.5rem 0 2rem;
+  margin-bottom: 0;
 }
 .tut-page-header h1 {
   font-size: 1.5rem;

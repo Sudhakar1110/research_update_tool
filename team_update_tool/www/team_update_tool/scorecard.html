@@ -4,7 +4,7 @@
 
 {% block style %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* =====================================
    SCORECARD 2.0 — Premium KPI Dashboard
@@ -333,8 +333,8 @@
 /* ─── Team Summary Section ─── */
 .sc-team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
   margin-bottom: 2rem;
 }
 .sc-team-card {
@@ -418,8 +418,9 @@
 /* ─── Member Scorecard Grid ─── */
 .sc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
 /* ─── Member Card ─── */
@@ -761,14 +762,14 @@
 .sc-skeleton--summary .sc-skeleton-bar { height: 70px; }
 .sc-skeleton--team {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 0.85rem;
   margin-bottom: 1.75rem;
 }
 .sc-skeleton--team .sc-skeleton-bar { height: 80px; }
 .sc-skeleton--grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: 1.25rem;
 }
 .sc-skeleton--card {
