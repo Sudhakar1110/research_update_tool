@@ -11,6 +11,10 @@ required_apps = ["erpnext"]
 
 app_include_css = "/assets/team_update_tool/css/team_update_tool.css"
 
+# Portal runs without "bench build": load a tiny stand-in for the frappe-web
+# bundle so frappe.ready() / frappe.call() work on website pages.
+web_include_js = ["/team_update_tool/frappe_web_shim.js"]
+
 after_install = "team_update_tool.install.after_install"
 app_setup = "team_update_tool.install.force_sync_doctypes"
 after_migrate = "team_update_tool.install.sync_workspace_and_notifications"
