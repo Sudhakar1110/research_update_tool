@@ -16,7 +16,7 @@ CHILD_TABLES = [
 
 
 def execute():
-    """Add parent/parenttype/parentfield columns to child tables that were
+    """Add parent/parenttype/parentfield/idx columns to child tables that were
     originally created without istable=1, causing 'Unknown column parent' errors."""
     
     for table_name in CHILD_TABLES:
@@ -45,9 +45,11 @@ def _ensure_child_table_columns(table_name):
         columns_to_add.append("parenttype varchar(255)")
     if "parentfield" not in existing_columns:
         columns_to_add.append("parentfield varchar(255)")
-    
+    if "idx" not in existing_columns:
+        columns_to_add.append("idx int default 0")
+
     if not columns_to_add:
-        print(f"  ✓ {table_name}: parent columns already exist")
+        print(f"  ✓ {table_name}: child table columns already exist")
         return
     
     # Add missing columns
