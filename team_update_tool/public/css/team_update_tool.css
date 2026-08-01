@@ -1662,11 +1662,593 @@ body {
 
 /* Royal Project Items */
 .tut-proj-item {
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 1.15rem 1.25rem; 
-  border-radius: 1rem; 
+  padding: 1.15rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 137, 255, 0.06);
+  transition: all 0.25s ease;
+}
+.tut-proj-item:last-child { border-bottom: none; }
+.tut-proj-item:hover {
+  background: linear-gradient(135deg, rgba(0, 137, 255, 0.03) 0%, rgba(167, 139, 250, 0.02) 100%);
+}
+
+/* Royal Project Title */
+.tut-proj-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #05133C;
+  margin: 0 0 0.35rem;
+}
+.tut-proj-title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.tut-proj-title a:hover {
+  color: var(--tut-royal-secondary);
+}
+
+/* Royal Project Meta */
+.tut-proj-meta {
+  font-size: 0.85rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;}
+.tut-proj-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Royal Status Badge */
+.tut-royal-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.35rem 0.85rem;
+  border-radius: 50rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.tut-status-active {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+  color: #059669;
+  border: 1px solid rgba(5, 150, 105, 0.2);
+}
+.tut-status-completed {
+  background: linear-gradient(135deg, rgba(0, 137, 255, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+  color: #0089FF;
+  border: 1px solid rgba(0, 137, 255, 0.2);
+}
+.tut-status-pending {
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.1) 0%, rgba(255, 197, 61, 0.1) 100%);
+  color: #FF8C00;
+  border: 1px solid rgba(255, 140, 0, 0.2);
+}
+.tut-status-overdue {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+/* =====================================
+   PROFESSIONAL PAGE TRANSITIONS
+   ===================================== */
+
+/* Smooth page load animation */
+@keyframes tutFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tut-main-area > .container,
+.tut-main-area > div {
+  animation: tutFadeIn 0.4s ease-out;
+}
+
+/* Stagger animation for grid items */
+@keyframes tutStagger {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tut-stagger-item {
+  opacity: 0;
+  animation: tutStagger 0.4s ease-out forwards;
+}
+.tut-stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.tut-stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.tut-stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.tut-stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.tut-stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.tut-stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.tut-stagger-item:nth-child(7) { animation-delay: 0.35s; }
+.tut-stagger-item:nth-child(8) { animation-delay: 0.4s; }
+.tut-stagger-item:nth-child(9) { animation-delay: 0.45s; }
+.tut-stagger-item:nth-child(10) { animation-delay: 0.5s; }
+.tut-stagger-item:nth-child(11) { animation-delay: 0.55s; }
+.tut-stagger-item:nth-child(12) { animation-delay: 0.6s; }
+
+/* =====================================
+   PROFESSIONAL FORM STYLES
+   ===================================== */
+
+/* Enhanced form inputs */
+.tut-form-control,
+.form-control {
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background: #ffffff;
+  transition: all 0.2s ease;n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.tut-form-control:focus,
+.form-control:focus {
+  border-color: var(--tut-primary);
+  box-shadow: 0 0 0 4px rgba(0, 137, 255, 0.1), 0 1px 2px rgba(0, 0, 0, 0.03);
+  outline: none;
+}
+.tut-form-control::placeholder,
+.form-control::placeholder {
+  color: #9ca3af;
+}
+
+/* Enhanced form labels */
+.tut-form-label,
+.form-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Enhanced form select */
+.tut-form-select,
+.form-select {
+  border: 2px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 1rem center;
+  appearance: none;
+  transition: all 0.2s ease;
+}
+.tut-form-select:focus,
+.form-select:focus {
+  border-color: var(--tut-primary);
+  box-shadow: 0 0 0 4px rgba(0, 137, 255, 0.1);
+  outline: none;
+}
+
+/* Enhanced textarea */
+textarea.form-control:focus,
+textarea.tut-form-control:focus {
+  min-height: 120px;
+}
+
+/* Form help text */
+.tut-form-text,
+.form-text {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 0.35rem;
+}
+
+/* =====================================
+   PROFESSIONAL BUTTON STYLES
+   ===================================== */
+
+/* Primary button */
+.btn-tut-primary {
+  background: var(--tut-primary-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 137, 255, 0.25);
+}
+.btn-tut-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+.btn-tut-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 137, 255, 0.35);
+}
+.btn-tut-primary:hover::before {
+  left: 100%;
+}
+.btn-tut-primary:active {
+  transform: translateY(0);
+}
+
+/* Success button */
+.btn-tut-success {
+  background: var(--tut-success-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+.btn-tut-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
+}
+
+/* Gold button */
+.btn-tut-gold {
+  background: var(--tut-gold-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.25);
+}
+.btn-tut-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 140, 0, 0.35);
+}
+
+/* Danger button */
+.btn-tut-danger {
+  background: var(--tut-danger-gradient);
+  color: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+.btn-tut-danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
+}
+
+/* Outline buttons */
+.btn-tut-outline {
+  background: transparent;
+  color: var(--tut-primary);
+  border: 2px solid var(--tut-primary);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+.btn-tut-outline:hover {
+  background: var(--tut-primary);
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+/* =====================================
+   PROFESSIONAL MICRO-INTERACTIONS
+   ===================================== */
+
+/* Ripple effect for buttons */
+.btn-tut-primary,
+.btn-tut-success,
+.btn-tut-gold,
+.btn-tut-danger {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Pulse animation for notifications */
+@keyframes tutPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.tut-pulse {
+  animation: tutPulse 2s ease-in-out infinite;
+}
+
+/* Glow effect on focus */
+.tut-glow:focus {
+  box-shadow: 0 0 0 4px rgba(0, 137, 255, 0.2), 0 0 20px rgba(0, 137, 255, 0.15);
+}
+
+/* Scale on hover for interactive elements */
+.tut-hover-scale {
+  transition: transform 0.2s ease;
+}
+.tut-hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Card press effect */
+.tut-press {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.tut-press:active {
+  transform: scale(0.98);
+}
+
+/* =====================================
+   PROFESSIONAL SCROLLBAR
+   ===================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #94a3b8 0%, #64748b 100%);
+}
+
+/* =====================================
+   PROFESSIONAL SELECTION HIGHLIGHT
+   ===================================== */
+::selection {
+  background: rgba(0, 137, 255, 0.2);
+  color: #0f172a;
+}
+
+/* =====================================
+   PROFESSIONAL FOOTER STYLES
+   ===================================== */
+.tut-footer {
+  background: linear-gradient(135deg, #05133C 0%, #0A1E4A 100%);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 3rem 0 1.5rem;
+}
+.tut-footer a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.tut-footer a:hover {
+  color: #ffffff;
+}
+.tut-footer-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tut-footer-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  max-width: 320px;
+}
+.tut-footer-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.tut-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tut-footer-links li {
+  margin-bottom: 0.5rem;
+}
+.tut-footer-links a {
+  font-size: 0.9rem;
+}
+.tut-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* =====================================
+   PROFESSIONAL ALERT STYLES
+   ===================================== */
+.alert-tut-success {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+  border: 1px solid rgba(5, 150, 105, 0.2);
+  color: #065f46;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+.alert-tut-info {
+  background: linear-gradient(135deg, rgba(0, 137, 255, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
+  border: 1px solid rgba(0, 137, 255, 0.2);
+  color: #1e40af;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+.alert-tut-warning {
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.08) 0%, rgba(255, 197, 61, 0.08) 100%);
+  border: 1px solid rgba(255, 140, 0, 0.2);
+  color: #92400e;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+.alert-tut-danger {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.08) 0%, rgba(239, 68, 68, 0.08) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  color: #991b1b;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+/* =====================================
+   PROFESSIONAL TOOLTIP STYLES
+   ===================================== */
+.tut-tooltip {
+  position: relative;
+  cursor: help;
+}
+.tut-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #ffffff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.15s ease;
+  z-index: 9999;
+}
+.tut-tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =====================================
+   PROFESSIONAL DIVIDER
+   ===================================== */
+.tut-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--tut-border-light) 50%, transparent 100%);
+  margin: 2rem 0;
+}
+
+/* =====================================
+   PROFESSIONAL AVATAR STYLES
+   ===================================== */
+.tut-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.tut-avatar-lg {
+  width: 64px;
+  height: 64px;
+}
+.tut-avatar-sm {
+  width: 32px;
+  height: 32px;
+}
+.tut-avatar-group {
+  display: flex;
+  align-items: center;
+}
+.tut-avatar-group .tut-avatar {
+  margin-left: -12px;
+}
+.tut-avatar-group .tut-avatar:first-child {
+  margin-left: 0;
+}
+
+/* =====================================
+   PROFESSIONAL DATA TABLE
+   ===================================== */
+.tut-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--tut-shadow-sm);
+}
+.tut-table thead th {
+  background: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.tut-table tbody td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #334155;}
+.tut-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.tut-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+/* =====================================
+   PROFESSIONAL BADGE VARIANTS
+   ===================================== */
+.tut-badge-primary {
+  background: linear-gradient(135deg, rgba(0, 137, 255, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+  color: #0089FF;
+  border: 1px solid rgba(0, 137, 255, 0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 50rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.tut-badge-success {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+  color: #059669;
+  border: 1px solid rgba(5, 150, 105, 0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 50rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.tut-badge-warning {
+  background: linear-gradient(135deg, rgba(255, 140, 0, 0.1) 0%, rgba(255, 197, 61, 0.1) 100%);
+  color: #FF8C00;
+  border: 1px solid rgba(255, 140, 0, 0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 50rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.tut-badge-danger {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 50rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+der-radius: 1rem; 
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none; 
   color: inherit; 

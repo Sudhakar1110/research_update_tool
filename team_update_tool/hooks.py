@@ -10,6 +10,7 @@ app_color = "#2E8B57"
 required_apps = ["erpnext"]
 
 app_include_css = "/assets/team_update_tool/css/team_update_tool.css"
+website_include_css = "/assets/team_update_tool/css/team_update_tool.css"
 website_include_js = "/assets/team_update_tool/js/team_update_tool.js"
 
 after_install = "team_update_tool.install.after_install"
